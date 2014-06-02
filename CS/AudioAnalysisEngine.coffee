@@ -9,25 +9,30 @@ class AudioAnalysisEngine
 	_testAudio: null
 	_alreadySetup: false
 
+	_samplesPerSecond: 30
+	_ticker = null #analysis interval
+	_frequencyData: []
+	_averageAmp: 0
+	_lastAverageAmp: null
+	_waitingForPeak: false
+
 
 	constructor: ->
 		@_context = new webkitAudioContext()
 		@setupAnalyser()
 
 		@_testAudio = document.getElementById('test_audio')
-		# document.getElementById('magic').onclick = => @setupTestAudio()
-		document.getElementById('magic').onclick = =>
-			navigator.webkitGetUserMedia
-				audio: true
-			,@setupMic, @onError
-
-
+		document.getElementById('magic').onclick = => @setupTestAudio()
+		# document.getElementById('magic').onclick = =>
+		# 	navigator.webkitGetUserMedia
+		# 		audio: true
+		# 	,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
 		@_analyserNode.fftSide = 32
+		@_frequencyData = new Uint8Array @_analyserNode.frequencyBinCount
 		
-
 	setupTestAudio: =>
 		console.log 'setup test audio', @_testAudio
 		if (@_alreadySetup)
@@ -54,3 +59,31 @@ class AudioAnalysisEngine
 
 	startAnalysis: =>
 		console.log 'analysis started'
+		@_ticker = setInterval =>
+			@analyse()
+		, 1000 / @_samplesPerSecond
+
+	analyse: =>
+		@_analyserNode.getByteFrequencyData @_frequencyData
+		length = @_frequencyData.length
+
+		for i in [0..length-1] by 1
+			if i is 0
+				@_lastAverageAmp = @_averageAmp
+				@_averageAmp = 0
+			@_averageAmp += @_frequencyData[i];
+
+			if i is length-1
+				@_averageAmp = @_averageAmp / length
+				@_averageAmp = Math.ceil @_averageAmp
+				@checkForPeak()
+
+	checkForPeak: =>
+		if @_averageAmp > @_lastAverageAmp and !@_waitingForPeak
+			@_waitingForPeak = true
+
+		if @_averageAmp < @_lastAverageAmp and @_waitingForPeak
+			@_waitingForPeak = false
+			console.log 'peak'
+
+

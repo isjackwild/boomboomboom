@@ -8,6 +8,8 @@
   });
 
   AudioAnalysisEngine = (function() {
+    var _ticker;
+
     AudioAnalysisEngine.prototype._context = null;
 
     AudioAnalysisEngine.prototype._source = null;
@@ -16,7 +18,21 @@
 
     AudioAnalysisEngine.prototype._alreadySetup = false;
 
+    AudioAnalysisEngine.prototype._samplesPerSecond = 30;
+
+    _ticker = null;
+
+    AudioAnalysisEngine.prototype._frequencyData = [];
+
+    AudioAnalysisEngine.prototype._averageAmp = 0;
+
+    AudioAnalysisEngine.prototype._lastAverageAmp = null;
+
+    AudioAnalysisEngine.prototype._waitingForPeak = false;
+
     function AudioAnalysisEngine() {
+      this.checkForPeak = __bind(this.checkForPeak, this);
+      this.analyse = __bind(this.analyse, this);
       this.startAnalysis = __bind(this.startAnalysis, this);
       this.onError = __bind(this.onError, this);
       this.setupMic = __bind(this.setupMic, this);
@@ -27,16 +43,15 @@
       this._testAudio = document.getElementById('test_audio');
       document.getElementById('magic').onclick = (function(_this) {
         return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
+          return _this.setupTestAudio();
         };
       })(this);
     }
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
       this._analyserNode = this._context.createAnalyser();
-      return this._analyserNode.fftSide = 32;
+      this._analyserNode.fftSide = 32;
+      return this._frequencyData = new Uint8Array(this._analyserNode.frequencyBinCount);
     };
 
     AudioAnalysisEngine.prototype.setupTestAudio = function() {
@@ -69,7 +84,44 @@
     };
 
     AudioAnalysisEngine.prototype.startAnalysis = function() {
-      return console.log('analysis started');
+      console.log('analysis started');
+      return this._ticker = setInterval((function(_this) {
+        return function() {
+          return _this.analyse();
+        };
+      })(this), 1000 / this._samplesPerSecond);
+    };
+
+    AudioAnalysisEngine.prototype.analyse = function() {
+      var i, length, _i, _ref, _results;
+      this._analyserNode.getByteFrequencyData(this._frequencyData);
+      length = this._frequencyData.length;
+      _results = [];
+      for (i = _i = 0, _ref = length - 1; _i <= _ref; i = _i += 1) {
+        if (i === 0) {
+          this._lastAverageAmp = this._averageAmp;
+          this._averageAmp = 0;
+        }
+        this._averageAmp += this._frequencyData[i];
+        if (i === length - 1) {
+          this._averageAmp = this._averageAmp / length;
+          this._averageAmp = Math.ceil(this._averageAmp);
+          _results.push(this.checkForPeak());
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    AudioAnalysisEngine.prototype.checkForPeak = function() {
+      if (this._averageAmp > this._lastAverageAmp && !this._waitingForPeak) {
+        this._waitingForPeak = true;
+      }
+      if (this._averageAmp < this._lastAverageAmp && this._waitingForPeak) {
+        this._waitingForPeak = false;
+        return console.log('peak');
+      }
     };
 
     return AudioAnalysisEngine;
