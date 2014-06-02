@@ -30,6 +30,11 @@
 
     AudioAnalysisEngine.prototype._waitingForPeak = false;
 
+    AudioAnalysisEngine.prototype._loudestFreqFound = {
+      frequency: 0,
+      index: null
+    };
+
     AudioAnalysisEngine.prototype._debugCV = null;
 
     AudioAnalysisEngine.prototype._debugCTX = null;
@@ -57,7 +62,6 @@
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
       this._analyserNode = this._context.createAnalyser();
-      this._analyserNode.fftSize = 1024;
       this._analyserNode.smoothingTimeConstant = 0.3;
       return this._frequencyData = new Uint8Array(this._analyserNode.frequencyBinCount);
     };
@@ -105,8 +109,13 @@
       this._analyserNode.getByteFrequencyData(this._frequencyData);
       length = this._frequencyData.length;
       this.drawDebugEqualizer();
+      this._loudestFreqFound.frequency = 0;
       _results = [];
       for (i = _i = 0, _ref = length - 1; _i <= _ref; i = _i += 1) {
+        if (this._frequencyData[i] > this._loudestFreqFound.frequency) {
+          this._loudestFreqFound.frequency = this._frequencyData[i];
+          this._loudestFreqFound.index = i;
+        }
         if (i === 0) {
           this._lastAverageAmp = this._averageAmp;
           this._averageAmp = 0;
@@ -129,7 +138,8 @@
       }
       if (this._averageAmp < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
-        return console.log('peak');
+        console.log('peak');
+        return console.log(this._loudestFreqFound.index, this._loudestFreqFound.frequency);
       }
     };
 
@@ -144,10 +154,10 @@
       var i, _i, _ref, _results;
       this._debugCTX.clearRect(0, 0, this._debugCV.width, this._debugCV.height);
       _results = [];
-      for (i = _i = 0, _ref = this._frequencyData.length - 1; _i < _ref; i = _i += 1) {
+      for (i = _i = 0, _ref = this._frequencyData.length - 1; _i < _ref; i = _i += 2) {
         this._debugCTX.beginPath();
-        this._debugCTX.moveTo(i, this._debugCV.height);
-        this._debugCTX.lineTo(i, this._debugCV.height - this._frequencyData[i] / 2);
+        this._debugCTX.moveTo(i / 2, this._debugCV.height);
+        this._debugCTX.lineTo(i / 2, this._debugCV.height - this._frequencyData[i] / 2);
         _results.push(this._debugCTX.stroke());
       }
       return _results;

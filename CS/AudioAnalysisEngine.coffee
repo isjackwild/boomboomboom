@@ -16,6 +16,11 @@ class AudioAnalysisEngine
 	_lastAverageAmp: null
 	_waitingForPeak: false
 
+	_loudestFreqFound: {
+		frequency: 0,
+		index: null
+	}
+
 	_debugCV: null
 	_debugCTX: null
 
@@ -34,7 +39,7 @@ class AudioAnalysisEngine
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
-		@_analyserNode.fftSize = 1024
+		# @_analyserNode.fftSize = 1024
 		@_analyserNode.smoothingTimeConstant = 0.3
 		@_frequencyData = new Uint8Array @_analyserNode.frequencyBinCount
 		
@@ -68,12 +73,20 @@ class AudioAnalysisEngine
 			@analyse()
 		, 1000 / @_samplesPerSecond
 
+
 	analyse: =>
 		@_analyserNode.getByteFrequencyData @_frequencyData
 		length = @_frequencyData.length
 		@drawDebugEqualizer()
 
+		@_loudestFreqFound.frequency = 0
+
 		for i in [0..length-1] by 1
+
+			if @_frequencyData[i] > @_loudestFreqFound.frequency
+				@_loudestFreqFound.frequency = @_frequencyData[i]
+				@_loudestFreqFound.index = i
+
 			if i is 0
 				@_lastAverageAmp = @_averageAmp
 				@_averageAmp = 0
@@ -84,6 +97,8 @@ class AudioAnalysisEngine
 				@_averageAmp = Math.ceil @_averageAmp
 				@checkForPeak()
 
+
+
 	checkForPeak: =>
 		if @_averageAmp > @_lastAverageAmp and !@_waitingForPeak
 			@_waitingForPeak = true
@@ -91,6 +106,7 @@ class AudioAnalysisEngine
 		if @_averageAmp < @_lastAverageAmp and @_waitingForPeak
 			@_waitingForPeak = false
 			console.log 'peak'
+			console.log @_loudestFreqFound.index, @_loudestFreqFound.frequency
 
 	setupDebugEqualizer: =>
 		@_debugCV = document.getElementById 'debugVisualiser'
@@ -102,10 +118,10 @@ class AudioAnalysisEngine
 	drawDebugEqualizer: =>
 		@_debugCTX.clearRect 0,0,@_debugCV.width,@_debugCV.height
 
-		for i in [0...@_frequencyData.length-1] by 1
+		for i in [0...@_frequencyData.length-1] by 2
 			@_debugCTX.beginPath()
-			@_debugCTX.moveTo i, @_debugCV.height
-			@_debugCTX.lineTo i, @_debugCV.height - @_frequencyData[i]/2
+			@_debugCTX.moveTo i/2, @_debugCV.height
+			@_debugCTX.lineTo i/2, @_debugCV.height - @_frequencyData[i]/2
 			@_debugCTX.stroke()
 
 
