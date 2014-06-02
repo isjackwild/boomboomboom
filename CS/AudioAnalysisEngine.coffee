@@ -9,12 +9,13 @@ class AudioAnalysisEngine
 	_testAudio: null
 	_alreadySetup: false
 
-	_samplesPerSecond: 30
+	_samplesPerSecond: 20
 	_ticker = null #analysis interval
 	_frequencyData: []
 	_averageAmp: 0
 	_lastAverageAmp: null
 	_waitingForPeak: false
+	_peakSensitivityOffset: 1
 
 	_loudestFreqFound: {
 		frequency: 0,
@@ -32,10 +33,10 @@ class AudioAnalysisEngine
 
 		@_testAudio = document.getElementById('test_audio')
 		document.getElementById('magic').onclick = => @setupTestAudio()
-		# document.getElementById('magic').onclick = =>
-		# 	navigator.webkitGetUserMedia
-		# 		audio: true
-		# 	,@setupMic, @onError
+		document.getElementById('magic').onclick = =>
+			navigator.webkitGetUserMedia
+				audio: true
+			,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -60,7 +61,7 @@ class AudioAnalysisEngine
 			return
 		@_source = @_context.createMediaStreamSource(stream)
 		@_source.connect @_analyserNode
-		@_analyserNode.connect @_context.destination
+		# @_analyserNode.connect @_context.destination
 		@startAnalysis()
 		@_alreadySetup = true
 
@@ -72,6 +73,10 @@ class AudioAnalysisEngine
 		@_ticker = setInterval =>
 			@analyse()
 		, 1000 / @_samplesPerSecond
+
+		# setInterval =>
+		# 	console.log @_frequencyData
+		# , 5000
 
 
 	analyse: =>
@@ -103,10 +108,9 @@ class AudioAnalysisEngine
 		if @_averageAmp > @_lastAverageAmp and !@_waitingForPeak
 			@_waitingForPeak = true
 
-		if @_averageAmp < @_lastAverageAmp and @_waitingForPeak
+		if @_averageAmp+@_peakSensitivityOffset < @_lastAverageAmp and @_waitingForPeak
 			@_waitingForPeak = false
-			console.log 'peak'
-			console.log @_loudestFreqFound.index, @_loudestFreqFound.frequency
+			console.log 'peak', @_loudestFreqFound.index, @_loudestFreqFound.frequency
 
 	setupDebugEqualizer: =>
 		@_debugCV = document.getElementById 'debugVisualiser'
