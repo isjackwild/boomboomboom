@@ -10,3 +10,13 @@ body {
   height: 100%;
   background: #00f;
 }
+#debugVisualiser {
+  width: 300px;
+  height: 150px;
+  background: #fff;
+  border: 3px solid #f00;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10;
+}

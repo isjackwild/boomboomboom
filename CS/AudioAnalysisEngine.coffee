@@ -16,10 +16,14 @@ class AudioAnalysisEngine
 	_lastAverageAmp: null
 	_waitingForPeak: false
 
+	_debugCV: null
+	_debugCTX: null
+
 
 	constructor: ->
 		@_context = new webkitAudioContext()
 		@setupAnalyser()
+		@setupDebugEqualizer()
 
 		@_testAudio = document.getElementById('test_audio')
 		document.getElementById('magic').onclick = => @setupTestAudio()
@@ -30,7 +34,8 @@ class AudioAnalysisEngine
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
-		@_analyserNode.fftSide = 32
+		@_analyserNode.fftSize = 1024
+		@_analyserNode.smoothingTimeConstant = 0.3
 		@_frequencyData = new Uint8Array @_analyserNode.frequencyBinCount
 		
 	setupTestAudio: =>
@@ -66,6 +71,7 @@ class AudioAnalysisEngine
 	analyse: =>
 		@_analyserNode.getByteFrequencyData @_frequencyData
 		length = @_frequencyData.length
+		@drawDebugEqualizer()
 
 		for i in [0..length-1] by 1
 			if i is 0
@@ -85,5 +91,23 @@ class AudioAnalysisEngine
 		if @_averageAmp < @_lastAverageAmp and @_waitingForPeak
 			@_waitingForPeak = false
 			console.log 'peak'
+
+	setupDebugEqualizer: =>
+		@_debugCV = document.getElementById 'debugVisualiser'
+		@_debugCV.width = 600
+		@_debugCV.height = 150
+		@_debugCTX = @_debugCV.getContext "2d"
+
+
+	drawDebugEqualizer: =>
+		@_debugCTX.clearRect 0,0,@_debugCV.width,@_debugCV.height
+
+		for i in [0...@_frequencyData.length-1] by 1
+			@_debugCTX.beginPath()
+			@_debugCTX.moveTo i, @_debugCV.height
+			@_debugCTX.lineTo i, @_debugCV.height - @_frequencyData[i]/2
+			@_debugCTX.stroke()
+
+
 
 

@@ -30,7 +30,13 @@
 
     AudioAnalysisEngine.prototype._waitingForPeak = false;
 
+    AudioAnalysisEngine.prototype._debugCV = null;
+
+    AudioAnalysisEngine.prototype._debugCTX = null;
+
     function AudioAnalysisEngine() {
+      this.drawDebugEqualizer = __bind(this.drawDebugEqualizer, this);
+      this.setupDebugEqualizer = __bind(this.setupDebugEqualizer, this);
       this.checkForPeak = __bind(this.checkForPeak, this);
       this.analyse = __bind(this.analyse, this);
       this.startAnalysis = __bind(this.startAnalysis, this);
@@ -40,6 +46,7 @@
       this.setupAnalyser = __bind(this.setupAnalyser, this);
       this._context = new webkitAudioContext();
       this.setupAnalyser();
+      this.setupDebugEqualizer();
       this._testAudio = document.getElementById('test_audio');
       document.getElementById('magic').onclick = (function(_this) {
         return function() {
@@ -50,7 +57,8 @@
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
       this._analyserNode = this._context.createAnalyser();
-      this._analyserNode.fftSide = 32;
+      this._analyserNode.fftSize = 1024;
+      this._analyserNode.smoothingTimeConstant = 0.3;
       return this._frequencyData = new Uint8Array(this._analyserNode.frequencyBinCount);
     };
 
@@ -96,6 +104,7 @@
       var i, length, _i, _ref, _results;
       this._analyserNode.getByteFrequencyData(this._frequencyData);
       length = this._frequencyData.length;
+      this.drawDebugEqualizer();
       _results = [];
       for (i = _i = 0, _ref = length - 1; _i <= _ref; i = _i += 1) {
         if (i === 0) {
@@ -122,6 +131,26 @@
         this._waitingForPeak = false;
         return console.log('peak');
       }
+    };
+
+    AudioAnalysisEngine.prototype.setupDebugEqualizer = function() {
+      this._debugCV = document.getElementById('debugVisualiser');
+      this._debugCV.width = 600;
+      this._debugCV.height = 150;
+      return this._debugCTX = this._debugCV.getContext("2d");
+    };
+
+    AudioAnalysisEngine.prototype.drawDebugEqualizer = function() {
+      var i, _i, _ref, _results;
+      this._debugCTX.clearRect(0, 0, this._debugCV.width, this._debugCV.height);
+      _results = [];
+      for (i = _i = 0, _ref = this._frequencyData.length - 1; _i < _ref; i = _i += 1) {
+        this._debugCTX.beginPath();
+        this._debugCTX.moveTo(i, this._debugCV.height);
+        this._debugCTX.lineTo(i, this._debugCV.height - this._frequencyData[i] / 2);
+        _results.push(this._debugCTX.stroke());
+      }
+      return _results;
     };
 
     return AudioAnalysisEngine;
