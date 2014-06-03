@@ -6,6 +6,7 @@ $ ->
 	gui.add audioAnalysisEngine, '_samplesPerSecond'
 	gui.add audioAnalysisEngine, '_peakSensitivityOffset'
 	gui.add audioAnalysisEngine, '_sensivitityForHighPeak'
+	gui.add audioAnalysisEngine, '_sensivitityForLowPeak'
 	gui.add audioAnalysisEngine._analyserNode, 'smoothingTimeConstant'
 	gui.add audioAnalysisEngine._analyserNode, 'fftSize'
 
@@ -30,10 +31,14 @@ class AudioAnalysisEngine
 		freq: null
 	}
 	_averageFrequency: null
-	_sensivitityForHighPeak: 5
+	_sensivitityForHighPeak: 40
+	_sensivitityForLowPeak: 20
 
 	_bpmCalcArray: []
 	_approxBPM: null
+
+	_volCalcArray: []
+	_averageVol: null
 
 	_debugCV: null
 	_debugCTX: null
@@ -110,13 +115,13 @@ class AudioAnalysisEngine
 
 		@_frequencyOfPeak.amp = 0
 
-		for i in [0..@_frequencyData.length-1] by 1
+		for i in [0..@_frequencyData.length-1] by 1 
 
 			if @_frequencyData[i] > @_frequencyOfPeak.amp
-				@_frequencyOfPeak.amp = @_frequencyData[i]
-				@_frequencyOfPeak.freq = i
+				@_frequencyOfPeak.freq = i #set highest freq found as this one
+				@_frequencyOfPeak.amp = @_frequencyData[i] #how high the peak was
 
-			if i is 0
+			if i is 0 #reset
 				@_lastAverageAmp = @_averageAmp
 				@_averageAmp = 0
 			
@@ -124,9 +129,9 @@ class AudioAnalysisEngine
 
 			if i is @_frequencyData.length-1
 				@_averageAmp = @_averageAmp / @_frequencyData.length
-				@_averageAmp = Math.ceil @_averageAmp
+				@_averageAmp = Math.ceil @_averageAmp  #average amplitude over all the frequencies
+				@calculateAverageVol @_averageAmp
 				@checkForPeak()
-
 
 
 	checkForPeak: =>
@@ -134,40 +139,58 @@ class AudioAnalysisEngine
 			@_waitingForPeak = true
 
 		if @_averageAmp+@_peakSensitivityOffset < @_lastAverageAmp and @_waitingForPeak
+			#a peak has happened
 			@_waitingForPeak = false
-			@calculateAveragePeakFrequency()
-			@calculateAverageBpm()
+			@calculateAveragePeakFrequency() #what was the highest frequency at the time of the peak
+			@calculateAverageBpm() #what is the bmp
 
-			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency*@_sensivitityForHighPeak
-				console.log 'high peak', @_frequencyOfPeak.freq
+			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
+				console.log 'higher than av peak', @_frequencyOfPeak.freq
+			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
+				console.log 'lower than av peak', @_frequencyOfPeak.freq
 			# else
-			# 	console.log 'peak' 
+			# 	console.log 'peak'
 
 
 	calculateAveragePeakFrequency: =>
 		#dont include high peaks as they skew the average
-		if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency*@_sensivitityForHighPeak
-			return
+		# if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
+		# 	return
 
-		@_averageFreqCalcArray.push @_frequencyOfPeak.freq
+		@_averageFreqCalcArray.push @_frequencyOfPeak.freq #get ten peaks
 		if @_averageFreqCalcArray.length is 10
 			tempAvFreq = 0
 			for i in [0..@_averageFreqCalcArray.length-1] by 1
 				tempAvFreq += @_averageFreqCalcArray[i]
 				if i is @_averageFreqCalcArray.length-1
-					tempAvFreq /= @_averageFreqCalcArray.length
+					tempAvFreq /= @_averageFreqCalcArray.length #get average freq of them
 					@_averageFrequency = tempAvFreq
 					@_averageFreqCalcArray = []
 					console.log 'av freq is ' + @_averageFrequency
 
 
 	calculateAverageBpm: =>
-		@_bpmCalcArray.push new Date().getTime()
+		@_bpmCalcArray.push new Date().getTime() #get ten times of bpm
 		if @_bpmCalcArray.length is 10
 			timeForTenPeaks = @_bpmCalcArray[@_bpmCalcArray.length-1] - @_bpmCalcArray[0]
 			@_bpmCalcArray = []
 			@_approxBPM = Math.floor (60000 / timeForTenPeaks)*10
 			console.log "approx BPM is " + @_approxBPM
+
+
+	calculateAverageVol: (amplitude) =>
+		# console.log 'happening', amplitude
+		@_volCalcArray.push amplitude
+		if @_volCalcArray.length is @_samplesPerSecond
+			tempAvVol = 0
+			for i in [0..@_volCalcArray.length-1] by 1
+				tempAvVol += @_volCalcArray[i]
+				if i is @_volCalcArray.length-1
+					tempAvVol /= @_volCalcArray.length
+					@_averageVol = tempAvVol
+					@_volCalcArray = []
+					console.log 'av vol is ' + @_averageVol
+
 
 
 	setupDebugEqualizer: =>

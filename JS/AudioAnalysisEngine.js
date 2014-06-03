@@ -9,6 +9,7 @@
     gui.add(audioAnalysisEngine, '_samplesPerSecond');
     gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
     gui.add(audioAnalysisEngine, '_sensivitityForHighPeak');
+    gui.add(audioAnalysisEngine, '_sensivitityForLowPeak');
     gui.add(audioAnalysisEngine._analyserNode, 'smoothingTimeConstant');
     return gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
   });
@@ -47,11 +48,17 @@
 
     AudioAnalysisEngine.prototype._averageFrequency = null;
 
-    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 5;
+    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 40;
+
+    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 20;
 
     AudioAnalysisEngine.prototype._bpmCalcArray = [];
 
     AudioAnalysisEngine.prototype._approxBPM = null;
+
+    AudioAnalysisEngine.prototype._volCalcArray = [];
+
+    AudioAnalysisEngine.prototype._averageVol = null;
 
     AudioAnalysisEngine.prototype._debugCV = null;
 
@@ -60,6 +67,7 @@
     function AudioAnalysisEngine() {
       this.drawDebugEqualizer = __bind(this.drawDebugEqualizer, this);
       this.setupDebugEqualizer = __bind(this.setupDebugEqualizer, this);
+      this.calculateAverageVol = __bind(this.calculateAverageVol, this);
       this.calculateAverageBpm = __bind(this.calculateAverageBpm, this);
       this.calculateAveragePeakFrequency = __bind(this.calculateAveragePeakFrequency, this);
       this.checkForPeak = __bind(this.checkForPeak, this);
@@ -144,8 +152,8 @@
       _results = [];
       for (i = _i = 0, _ref = this._frequencyData.length - 1; _i <= _ref; i = _i += 1) {
         if (this._frequencyData[i] > this._frequencyOfPeak.amp) {
-          this._frequencyOfPeak.amp = this._frequencyData[i];
           this._frequencyOfPeak.freq = i;
+          this._frequencyOfPeak.amp = this._frequencyData[i];
         }
         if (i === 0) {
           this._lastAverageAmp = this._averageAmp;
@@ -155,6 +163,7 @@
         if (i === this._frequencyData.length - 1) {
           this._averageAmp = this._averageAmp / this._frequencyData.length;
           this._averageAmp = Math.ceil(this._averageAmp);
+          this.calculateAverageVol(this._averageAmp);
           _results.push(this.checkForPeak());
         } else {
           _results.push(void 0);
@@ -171,17 +180,16 @@
         this._waitingForPeak = false;
         this.calculateAveragePeakFrequency();
         this.calculateAverageBpm();
-        if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency * this._sensivitityForHighPeak) {
-          return console.log('high peak', this._frequencyOfPeak.freq);
+        if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
+          return console.log('higher than av peak', this._frequencyOfPeak.freq);
+        } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
+          return console.log('lower than av peak', this._frequencyOfPeak.freq);
         }
       }
     };
 
     AudioAnalysisEngine.prototype.calculateAveragePeakFrequency = function() {
       var i, tempAvFreq, _i, _ref, _results;
-      if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency * this._sensivitityForHighPeak) {
-        return;
-      }
       this._averageFreqCalcArray.push(this._frequencyOfPeak.freq);
       if (this._averageFreqCalcArray.length === 10) {
         tempAvFreq = 0;
@@ -209,6 +217,27 @@
         this._bpmCalcArray = [];
         this._approxBPM = Math.floor((60000 / timeForTenPeaks) * 10);
         return console.log("approx BPM is " + this._approxBPM);
+      }
+    };
+
+    AudioAnalysisEngine.prototype.calculateAverageVol = function(amplitude) {
+      var i, tempAvVol, _i, _ref, _results;
+      this._volCalcArray.push(amplitude);
+      if (this._volCalcArray.length === this._samplesPerSecond) {
+        tempAvVol = 0;
+        _results = [];
+        for (i = _i = 0, _ref = this._volCalcArray.length - 1; _i <= _ref; i = _i += 1) {
+          tempAvVol += this._volCalcArray[i];
+          if (i === this._volCalcArray.length - 1) {
+            tempAvVol /= this._volCalcArray.length;
+            this._averageVol = tempAvVol;
+            this._volCalcArray = [];
+            _results.push(console.log('av vol is ' + this._averageVol));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
       }
     };
 
