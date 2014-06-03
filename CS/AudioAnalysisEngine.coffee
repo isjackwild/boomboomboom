@@ -17,7 +17,7 @@ class AudioAnalysisEngine
 	_testAudio: null
 	_alreadySetup: false
 
-	_samplesPerSecond: 20
+	_samplesPerSecond: 30
 	_ticker = null #analysis interval
 	_frequencyData: []
 	_averageFreqCalcArray: []
@@ -148,8 +148,8 @@ class AudioAnalysisEngine
 				console.log 'higher than av peak', @_frequencyOfPeak.freq
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
 				console.log 'lower than av peak', @_frequencyOfPeak.freq
-			# else
-			# 	console.log 'peak'
+			else
+				console.log 'average peak'
 
 
 	calculateAveragePeakFrequency: =>
@@ -187,7 +187,7 @@ class AudioAnalysisEngine
 				tempAvVol += @_volCalcArray[i]
 				if i is @_volCalcArray.length-1
 					tempAvVol /= @_volCalcArray.length
-					@_averageVol = tempAvVol
+					@_averageVol = Math.floor tempAvVol
 					@_volCalcArray = []
 					console.log 'av vol is ' + @_averageVol
 

@@ -25,7 +25,7 @@
 
     AudioAnalysisEngine.prototype._alreadySetup = false;
 
-    AudioAnalysisEngine.prototype._samplesPerSecond = 20;
+    AudioAnalysisEngine.prototype._samplesPerSecond = 30;
 
     _ticker = null;
 
@@ -184,6 +184,8 @@
           return console.log('higher than av peak', this._frequencyOfPeak.freq);
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           return console.log('lower than av peak', this._frequencyOfPeak.freq);
+        } else {
+          return console.log('average peak');
         }
       }
     };
@@ -230,7 +232,7 @@
           tempAvVol += this._volCalcArray[i];
           if (i === this._volCalcArray.length - 1) {
             tempAvVol /= this._volCalcArray.length;
-            this._averageVol = tempAvVol;
+            this._averageVol = Math.floor(tempAvVol);
             this._volCalcArray = [];
             _results.push(console.log('av vol is ' + this._averageVol));
           } else {
