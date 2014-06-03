@@ -7,6 +7,7 @@ $ ->
 	gui.add audioAnalysisEngine, '_peakSensitivityOffset'
 	gui.add audioAnalysisEngine, '_sensivitityForHighPeak'
 	gui.add audioAnalysisEngine, '_sensivitityForLowPeak'
+	gui.add audioAnalysisEngine, '_bassCutoff'
 	gui.add audioAnalysisEngine._analyserNode, 'smoothingTimeConstant'
 	gui.add audioAnalysisEngine._analyserNode, 'fftSize'
 
@@ -20,10 +21,13 @@ class AudioAnalysisEngine
 	_samplesPerSecond: 30
 	_ticker = null #analysis interval
 	_frequencyData: []
+	_bassFrequencyData: []
 	_averageFreqCalcArray: []
 	_averageAmp: 0
 	_lastAverageAmp: null
 	_waitingForPeak: false
+	_bassWaitingForPeak: false
+	_bassCutoff: 1000
 	_peakSensitivityOffset: 1
 
 	_frequencyOfPeak: {
@@ -112,10 +116,9 @@ class AudioAnalysisEngine
 	analyse: =>
 		@_analyserNode.getByteFrequencyData @_frequencyData
 		@drawDebugEqualizer()
-
 		@_frequencyOfPeak.amp = 0
 
-		for i in [0..@_frequencyData.length-1] by 1 
+		for i in [0..@_frequencyData.length-1] by 1 #check for highest peak over the whole range
 
 			if @_frequencyData[i] > @_frequencyOfPeak.amp
 				@_frequencyOfPeak.freq = i #set highest freq found as this one
@@ -125,13 +128,27 @@ class AudioAnalysisEngine
 				@_lastAverageAmp = @_averageAmp
 				@_averageAmp = 0
 			
-			@_averageAmp += @_frequencyData[i];
+			@_averageAmp += @_frequencyData[i]
 
 			if i is @_frequencyData.length-1
 				@_averageAmp = @_averageAmp / @_frequencyData.length
 				@_averageAmp = Math.ceil @_averageAmp  #average amplitude over all the frequencies
-				@calculateAverageVol @_averageAmp
+				@calculateAverageVol()
 				@checkForPeak()
+
+		# console.log @_frequencyData
+		for i in [@_bassCutoff..@_frequencyData.length-1] by 1
+			if i is @_bassCutoff
+				@_lastBassAverageAmp = @_bassAverageAmp
+				@_bassAverageAmp = 0
+
+			@_bassAverageAmp += @_frequencyData[i]
+
+			if i is @_frequencyData.length-1
+				@_bassAverageAmp = @_bassAverageAmp / (@_frequencyData.length - @_bassCutoff)
+				@_bassAverageAmp = Math.ceil @_bassAverageAmp
+				@checkForBassPeak()
+
 
 
 	checkForPeak: =>
@@ -144,19 +161,26 @@ class AudioAnalysisEngine
 			@calculateAveragePeakFrequency() #what was the highest frequency at the time of the peak
 			@calculateAverageBpm() #what is the bmp
 
+			# console.log "peak"
+
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
-				console.log 'higher than av peak', @_frequencyOfPeak.freq
+				console.log 'higher than av peak'
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
-				console.log 'lower than av peak', @_frequencyOfPeak.freq
+				console.log 'lower than av peak'
 			else
 				console.log 'average peak'
 
+	checkForBassPeak: =>
+		if @_bassAverageAmp > @_lastBassAverageAmp and !@_bassWaitingForPeak
+			@_bassWaitingForPeak = true
+
+		if @_bassAverageAmp+@_peakSensitivityOffset < @_lastBassAverageAmp and @_bassWaitingForPeak
+			@_bassWaitingForPeak = true
+			console.log "BASSSSS"
+
+
 
 	calculateAveragePeakFrequency: =>
-		#dont include high peaks as they skew the average
-		# if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
-		# 	return
-
 		@_averageFreqCalcArray.push @_frequencyOfPeak.freq #get ten peaks
 		if @_averageFreqCalcArray.length is 10
 			tempAvFreq = 0
@@ -166,7 +190,7 @@ class AudioAnalysisEngine
 					tempAvFreq /= @_averageFreqCalcArray.length #get average freq of them
 					@_averageFrequency = tempAvFreq
 					@_averageFreqCalcArray = []
-					console.log 'av freq is ' + @_averageFrequency
+					# console.log 'av freq is ' + @_averageFrequency
 
 
 	calculateAverageBpm: =>
@@ -175,12 +199,11 @@ class AudioAnalysisEngine
 			timeForTenPeaks = @_bpmCalcArray[@_bpmCalcArray.length-1] - @_bpmCalcArray[0]
 			@_bpmCalcArray = []
 			@_approxBPM = Math.floor (60000 / timeForTenPeaks)*10
-			console.log "approx BPM is " + @_approxBPM
+			# console.log "approx BPM is " + @_approxBPM
 
 
-	calculateAverageVol: (amplitude) =>
-		# console.log 'happening', amplitude
-		@_volCalcArray.push amplitude
+	calculateAverageVol: =>
+		@_volCalcArray.push @_averageAmp
 		if @_volCalcArray.length is @_samplesPerSecond
 			tempAvVol = 0
 			for i in [0..@_volCalcArray.length-1] by 1
@@ -189,8 +212,7 @@ class AudioAnalysisEngine
 					tempAvVol /= @_volCalcArray.length
 					@_averageVol = Math.floor tempAvVol
 					@_volCalcArray = []
-					console.log 'av vol is ' + @_averageVol
-
+					# console.log 'av vol is ' + @_averageVol
 
 
 	setupDebugEqualizer: =>
@@ -210,5 +232,20 @@ class AudioAnalysisEngine
 			@_debugCTX.stroke()
 
 
+
+#Data I have to work with:
+
+#When there is a peak
+#When there is a peak of a higher freq than the average
+#When there is a peak of a lower freq than the average
+#BPM
+#Approx frequency of the peaks are at the moment
+#Approx volume at the moment
+
+
+#Would be good to find
+
+#When there is a peak in only the upper frequencies
+#When there is a peak at a really low frequency
 
 

@@ -10,6 +10,7 @@
     gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
     gui.add(audioAnalysisEngine, '_sensivitityForHighPeak');
     gui.add(audioAnalysisEngine, '_sensivitityForLowPeak');
+    gui.add(audioAnalysisEngine, '_bassCutoff');
     gui.add(audioAnalysisEngine._analyserNode, 'smoothingTimeConstant');
     return gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
   });
@@ -31,6 +32,8 @@
 
     AudioAnalysisEngine.prototype._frequencyData = [];
 
+    AudioAnalysisEngine.prototype._bassFrequencyData = [];
+
     AudioAnalysisEngine.prototype._averageFreqCalcArray = [];
 
     AudioAnalysisEngine.prototype._averageAmp = 0;
@@ -38,6 +41,10 @@
     AudioAnalysisEngine.prototype._lastAverageAmp = null;
 
     AudioAnalysisEngine.prototype._waitingForPeak = false;
+
+    AudioAnalysisEngine.prototype._bassWaitingForPeak = false;
+
+    AudioAnalysisEngine.prototype._bassCutoff = 1000;
 
     AudioAnalysisEngine.prototype._peakSensitivityOffset = 1;
 
@@ -70,6 +77,7 @@
       this.calculateAverageVol = __bind(this.calculateAverageVol, this);
       this.calculateAverageBpm = __bind(this.calculateAverageBpm, this);
       this.calculateAveragePeakFrequency = __bind(this.calculateAveragePeakFrequency, this);
+      this.checkForBassPeak = __bind(this.checkForBassPeak, this);
       this.checkForPeak = __bind(this.checkForPeak, this);
       this.analyse = __bind(this.analyse, this);
       this.startAnalysis = __bind(this.startAnalysis, this);
@@ -145,11 +153,10 @@
     };
 
     AudioAnalysisEngine.prototype.analyse = function() {
-      var i, _i, _ref, _results;
+      var i, _i, _j, _ref, _ref1, _ref2, _results;
       this._analyserNode.getByteFrequencyData(this._frequencyData);
       this.drawDebugEqualizer();
       this._frequencyOfPeak.amp = 0;
-      _results = [];
       for (i = _i = 0, _ref = this._frequencyData.length - 1; _i <= _ref; i = _i += 1) {
         if (this._frequencyData[i] > this._frequencyOfPeak.amp) {
           this._frequencyOfPeak.freq = i;
@@ -163,8 +170,21 @@
         if (i === this._frequencyData.length - 1) {
           this._averageAmp = this._averageAmp / this._frequencyData.length;
           this._averageAmp = Math.ceil(this._averageAmp);
-          this.calculateAverageVol(this._averageAmp);
-          _results.push(this.checkForPeak());
+          this.calculateAverageVol();
+          this.checkForPeak();
+        }
+      }
+      _results = [];
+      for (i = _j = _ref1 = this._bassCutoff, _ref2 = this._frequencyData.length - 1; _j <= _ref2; i = _j += 1) {
+        if (i === this._bassCutoff) {
+          this._lastBassAverageAmp = this._bassAverageAmp;
+          this._bassAverageAmp = 0;
+        }
+        this._bassAverageAmp += this._frequencyData[i];
+        if (i === this._frequencyData.length - 1) {
+          this._bassAverageAmp = this._bassAverageAmp / (this._frequencyData.length - this._bassCutoff);
+          this._bassAverageAmp = Math.ceil(this._bassAverageAmp);
+          _results.push(this.checkForBassPeak());
         } else {
           _results.push(void 0);
         }
@@ -181,12 +201,22 @@
         this.calculateAveragePeakFrequency();
         this.calculateAverageBpm();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
-          return console.log('higher than av peak', this._frequencyOfPeak.freq);
+          return console.log('higher than av peak');
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
-          return console.log('lower than av peak', this._frequencyOfPeak.freq);
+          return console.log('lower than av peak');
         } else {
           return console.log('average peak');
         }
+      }
+    };
+
+    AudioAnalysisEngine.prototype.checkForBassPeak = function() {
+      if (this._bassAverageAmp > this._lastBassAverageAmp && !this._bassWaitingForPeak) {
+        this._bassWaitingForPeak = true;
+      }
+      if (this._bassAverageAmp + this._peakSensitivityOffset < this._lastBassAverageAmp && this._bassWaitingForPeak) {
+        this._bassWaitingForPeak = true;
+        return console.log("BASSSSS");
       }
     };
 
@@ -201,8 +231,7 @@
           if (i === this._averageFreqCalcArray.length - 1) {
             tempAvFreq /= this._averageFreqCalcArray.length;
             this._averageFrequency = tempAvFreq;
-            this._averageFreqCalcArray = [];
-            _results.push(console.log('av freq is ' + this._averageFrequency));
+            _results.push(this._averageFreqCalcArray = []);
           } else {
             _results.push(void 0);
           }
@@ -217,14 +246,13 @@
       if (this._bpmCalcArray.length === 10) {
         timeForTenPeaks = this._bpmCalcArray[this._bpmCalcArray.length - 1] - this._bpmCalcArray[0];
         this._bpmCalcArray = [];
-        this._approxBPM = Math.floor((60000 / timeForTenPeaks) * 10);
-        return console.log("approx BPM is " + this._approxBPM);
+        return this._approxBPM = Math.floor((60000 / timeForTenPeaks) * 10);
       }
     };
 
-    AudioAnalysisEngine.prototype.calculateAverageVol = function(amplitude) {
+    AudioAnalysisEngine.prototype.calculateAverageVol = function() {
       var i, tempAvVol, _i, _ref, _results;
-      this._volCalcArray.push(amplitude);
+      this._volCalcArray.push(this._averageAmp);
       if (this._volCalcArray.length === this._samplesPerSecond) {
         tempAvVol = 0;
         _results = [];
@@ -233,8 +261,7 @@
           if (i === this._volCalcArray.length - 1) {
             tempAvVol /= this._volCalcArray.length;
             this._averageVol = Math.floor(tempAvVol);
-            this._volCalcArray = [];
-            _results.push(console.log('av vol is ' + this._averageVol));
+            _results.push(this._volCalcArray = []);
           } else {
             _results.push(void 0);
           }
