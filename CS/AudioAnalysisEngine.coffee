@@ -7,9 +7,12 @@ $ ->
 	gui.add audioAnalysisEngine, '_peakSensitivityOffset'
 	gui.add audioAnalysisEngine, '_sensivitityForHighPeak'
 	gui.add audioAnalysisEngine, '_sensivitityForLowPeak'
-	gui.add audioAnalysisEngine, '_bassCutoff'
 	gui.add audioAnalysisEngine._analyserNode, 'smoothingTimeConstant'
 	gui.add audioAnalysisEngine._analyserNode, 'fftSize'
+	gui.add(audioAnalysisEngine, '_bassCutoff').listen()
+	gui.add(audioAnalysisEngine, '_approxBPM').listen()
+	gui.add(audioAnalysisEngine, '_averageFrequency').listen()
+	gui.add(audioAnalysisEngine, '_averageVol').listen()
 
 
 class AudioAnalysisEngine
@@ -21,7 +24,6 @@ class AudioAnalysisEngine
 	_samplesPerSecond: 30
 	_ticker = null #analysis interval
 	_frequencyData: []
-	_bassFrequencyData: []
 	_averageFreqCalcArray: []
 	_averageAmp: 0
 	_lastAverageAmp: null
@@ -34,15 +36,15 @@ class AudioAnalysisEngine
 		frequency: 0,
 		freq: null
 	}
-	_averageFrequency: null
-	_sensivitityForHighPeak: 40
+	_averageFrequency: 0
+	_sensivitityForHighPeak: 33
 	_sensivitityForLowPeak: 20
 
 	_bpmCalcArray: []
-	_approxBPM: null
+	_approxBPM: 0
 
 	_volCalcArray: []
-	_averageVol: null
+	_averageVol: 0
 
 	_debugCV: null
 	_debugCTX: null
@@ -56,10 +58,10 @@ class AudioAnalysisEngine
 
 		@_testAudio = document.getElementById('test_audio')
 		document.getElementById('magic').onclick = => @setupTestAudio()
-		# document.getElementById('magic').onclick = =>
-		# 	navigator.webkitGetUserMedia
-		# 		audio: true
-		# 	,@setupMic, @onError
+		document.getElementById('magic').onclick = =>
+			navigator.webkitGetUserMedia
+				audio: true
+			,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -163,6 +165,7 @@ class AudioAnalysisEngine
 
 			# console.log "peak"
 
+			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
 				console.log 'higher than av peak'
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
@@ -170,7 +173,7 @@ class AudioAnalysisEngine
 			else
 				console.log 'average peak'
 
-	checkForBassPeak: =>
+	checkForBassPeak: => #would be good if this was based on a peak much lower than the average. At the moment a very bassy song would set this off every time a peak was detected.
 		if @_bassAverageAmp > @_lastBassAverageAmp and !@_bassWaitingForPeak
 			@_bassWaitingForPeak = true
 
@@ -180,6 +183,7 @@ class AudioAnalysisEngine
 
 
 
+	#Do logic which detects when there has been a significant change in the averages over the last few averages
 	calculateAveragePeakFrequency: =>
 		@_averageFreqCalcArray.push @_frequencyOfPeak.freq #get ten peaks
 		if @_averageFreqCalcArray.length is 10
@@ -190,9 +194,12 @@ class AudioAnalysisEngine
 					tempAvFreq /= @_averageFreqCalcArray.length #get average freq of them
 					@_averageFrequency = tempAvFreq
 					@_averageFreqCalcArray = []
+
+					@_bassCutoff = @_averageFrequency + 555
 					# console.log 'av freq is ' + @_averageFrequency
 
 
+	#Do logic which detects when there has been a significant change in the averages over the last few averages
 	calculateAverageBpm: =>
 		@_bpmCalcArray.push new Date().getTime() #get ten times of bpm
 		if @_bpmCalcArray.length is 10
@@ -202,6 +209,7 @@ class AudioAnalysisEngine
 			# console.log "approx BPM is " + @_approxBPM
 
 
+	#Do logic which detects when there has been a significant change in the averages over the last few averages
 	calculateAverageVol: =>
 		@_volCalcArray.push @_averageAmp
 		if @_volCalcArray.length is @_samplesPerSecond
@@ -238,14 +246,10 @@ class AudioAnalysisEngine
 #When there is a peak
 #When there is a peak of a higher freq than the average
 #When there is a peak of a lower freq than the average
+#When there is a peak at a really low frequency
 #BPM
 #Approx frequency of the peaks are at the moment
 #Approx volume at the moment
 
-
-#Would be good to find
-
-#When there is a peak in only the upper frequencies
-#When there is a peak at a really low frequency
 
 

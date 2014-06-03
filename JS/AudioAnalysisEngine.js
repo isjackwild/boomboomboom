@@ -10,9 +10,12 @@
     gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
     gui.add(audioAnalysisEngine, '_sensivitityForHighPeak');
     gui.add(audioAnalysisEngine, '_sensivitityForLowPeak');
-    gui.add(audioAnalysisEngine, '_bassCutoff');
     gui.add(audioAnalysisEngine._analyserNode, 'smoothingTimeConstant');
-    return gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
+    gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
+    gui.add(audioAnalysisEngine, '_bassCutoff').listen();
+    gui.add(audioAnalysisEngine, '_approxBPM').listen();
+    gui.add(audioAnalysisEngine, '_averageFrequency').listen();
+    return gui.add(audioAnalysisEngine, '_averageVol').listen();
   });
 
   AudioAnalysisEngine = (function() {
@@ -31,8 +34,6 @@
     _ticker = null;
 
     AudioAnalysisEngine.prototype._frequencyData = [];
-
-    AudioAnalysisEngine.prototype._bassFrequencyData = [];
 
     AudioAnalysisEngine.prototype._averageFreqCalcArray = [];
 
@@ -53,19 +54,19 @@
       freq: null
     };
 
-    AudioAnalysisEngine.prototype._averageFrequency = null;
+    AudioAnalysisEngine.prototype._averageFrequency = 0;
 
-    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 40;
+    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 33;
 
     AudioAnalysisEngine.prototype._sensivitityForLowPeak = 20;
 
     AudioAnalysisEngine.prototype._bpmCalcArray = [];
 
-    AudioAnalysisEngine.prototype._approxBPM = null;
+    AudioAnalysisEngine.prototype._approxBPM = 0;
 
     AudioAnalysisEngine.prototype._volCalcArray = [];
 
-    AudioAnalysisEngine.prototype._averageVol = null;
+    AudioAnalysisEngine.prototype._averageVol = 0;
 
     AudioAnalysisEngine.prototype._debugCV = null;
 
@@ -94,6 +95,13 @@
       document.getElementById('magic').onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
+        };
+      })(this);
+      document.getElementById('magic').onclick = (function(_this) {
+        return function() {
+          return navigator.webkitGetUserMedia({
+            audio: true
+          }, _this.setupMic, _this.onError);
         };
       })(this);
     }
@@ -231,7 +239,8 @@
           if (i === this._averageFreqCalcArray.length - 1) {
             tempAvFreq /= this._averageFreqCalcArray.length;
             this._averageFrequency = tempAvFreq;
-            _results.push(this._averageFreqCalcArray = []);
+            this._averageFreqCalcArray = [];
+            _results.push(this._bassCutoff = this._averageFrequency + 555);
           } else {
             _results.push(void 0);
           }
