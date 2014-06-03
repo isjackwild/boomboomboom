@@ -3,8 +3,13 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   $(function() {
-    var audioAnalysisEngine;
-    return audioAnalysisEngine = new AudioAnalysisEngine();
+    var audioAnalysisEngine, gui;
+    audioAnalysisEngine = new AudioAnalysisEngine();
+    gui = new dat.GUI();
+    gui.add(audioAnalysisEngine, '_samplesPerSecond');
+    gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
+    gui.add(audioAnalysisEngine._analyserNode, 'smoothingTimeConstant');
+    return gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
   });
 
   AudioAnalysisEngine = (function() {
@@ -37,6 +42,8 @@
       index: null
     };
 
+    AudioAnalysisEngine.prototype._bpmCalcArray = [];
+
     AudioAnalysisEngine.prototype._debugCV = null;
 
     AudioAnalysisEngine.prototype._debugCTX = null;
@@ -50,16 +57,13 @@
       this.onError = __bind(this.onError, this);
       this.setupMic = __bind(this.setupMic, this);
       this.setupTestAudio = __bind(this.setupTestAudio, this);
+      this.setupFilters = __bind(this.setupFilters, this);
       this.setupAnalyser = __bind(this.setupAnalyser, this);
       this._context = new webkitAudioContext();
       this.setupAnalyser();
+      this.setupFilters();
       this.setupDebugEqualizer();
       this._testAudio = document.getElementById('test_audio');
-      document.getElementById('magic').onclick = (function(_this) {
-        return function() {
-          return _this.setupTestAudio();
-        };
-      })(this);
       document.getElementById('magic').onclick = (function(_this) {
         return function() {
           return navigator.webkitGetUserMedia({
@@ -71,8 +75,18 @@
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
       this._analyserNode = this._context.createAnalyser();
-      this._analyserNode.smoothingTimeConstant = 0.3;
+      this._analyserNode.smoothingTimeConstant = 0.2;
       return this._frequencyData = new Uint8Array(this._analyserNode.frequencyBinCount);
+    };
+
+    AudioAnalysisEngine.prototype.setupFilters = function() {
+      this._dynamicsCompressor = this._context.createDynamicsCompressor();
+      this._dynamicsCompressor.threshold = -24;
+      this._dynamicsCompressor.knee = 30;
+      this._dynamicsCompressor.ratio = 12;
+      this._dynamicsCompressor.reduction = 0;
+      this._dynamicsCompressor.attack = 0.003;
+      return this._dynamicsCompressor.release = 0.250;
     };
 
     AudioAnalysisEngine.prototype.setupTestAudio = function() {
@@ -94,7 +108,8 @@
         return;
       }
       this._source = this._context.createMediaStreamSource(stream);
-      this._source.connect(this._analyserNode);
+      this._source.connect(this._dynamicsCompressor);
+      this._dynamicsCompressor.connect(this._analyserNode);
       this.startAnalysis();
       return this._alreadySetup = true;
     };
@@ -141,12 +156,24 @@
     };
 
     AudioAnalysisEngine.prototype.checkForPeak = function() {
+      var approxBPM, timeForTenPeaks;
       if (this._averageAmp > this._lastAverageAmp && !this._waitingForPeak) {
         this._waitingForPeak = true;
       }
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
-        return console.log('peak', this._loudestFreqFound.index, this._loudestFreqFound.frequency);
+        if (this._loudestFreqFound.index < 7) {
+          console.log('low peak', this._loudestFreqFound.index);
+        } else if (this._loudestFreqFound.index > 33) {
+          console.log('high peak', this._loudestFreqFound.index);
+        }
+        this._bpmCalcArray.push(new Date().getTime());
+        if (this._bpmCalcArray.length === 10) {
+          timeForTenPeaks = this._bpmCalcArray[this._bpmCalcArray.length - 1] - this._bpmCalcArray[0];
+          this._bpmCalcArray = [];
+          approxBPM = Math.floor((60000 / timeForTenPeaks) * 10);
+          return console.log("approx BPM is " + approxBPM);
+        }
       }
     };
 
