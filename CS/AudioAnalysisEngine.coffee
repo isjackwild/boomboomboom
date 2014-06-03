@@ -5,6 +5,7 @@ $ ->
 	gui = new dat.GUI()
 	gui.add audioAnalysisEngine, '_samplesPerSecond'
 	gui.add audioAnalysisEngine, '_peakSensitivityOffset'
+	gui.add audioAnalysisEngine, '_sensivitityForHighPeak'
 	gui.add audioAnalysisEngine._analyserNode, 'smoothingTimeConstant'
 	gui.add audioAnalysisEngine._analyserNode, 'fftSize'
 
@@ -18,17 +19,21 @@ class AudioAnalysisEngine
 	_samplesPerSecond: 20
 	_ticker = null #analysis interval
 	_frequencyData: []
+	_averageFreqCalcArray: []
 	_averageAmp: 0
 	_lastAverageAmp: null
 	_waitingForPeak: false
 	_peakSensitivityOffset: 1
 
-	_loudestFreqFound: {
+	_frequencyOfPeak: {
 		frequency: 0,
-		index: null
+		freq: null
 	}
+	_averageFrequency: null
+	_sensivitityForHighPeak: 5
 
 	_bpmCalcArray: []
+	_approxBPM: null
 
 	_debugCV: null
 	_debugCTX: null
@@ -41,11 +46,11 @@ class AudioAnalysisEngine
 		@setupDebugEqualizer()
 
 		@_testAudio = document.getElementById('test_audio')
-		# document.getElementById('magic').onclick = => @setupTestAudio()
-		document.getElementById('magic').onclick = =>
-			navigator.webkitGetUserMedia
-				audio: true
-			,@setupMic, @onError
+		document.getElementById('magic').onclick = => @setupTestAudio()
+		# document.getElementById('magic').onclick = =>
+		# 	navigator.webkitGetUserMedia
+		# 		audio: true
+		# 	,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -101,24 +106,24 @@ class AudioAnalysisEngine
 
 	analyse: =>
 		@_analyserNode.getByteFrequencyData @_frequencyData
-		length = @_frequencyData.length
 		@drawDebugEqualizer()
 
-		@_loudestFreqFound.frequency = 0
+		@_frequencyOfPeak.amp = 0
 
-		for i in [0..length-1] by 1
+		for i in [0..@_frequencyData.length-1] by 1
 
-			if @_frequencyData[i] > @_loudestFreqFound.frequency
-				@_loudestFreqFound.frequency = @_frequencyData[i]
-				@_loudestFreqFound.index = i
+			if @_frequencyData[i] > @_frequencyOfPeak.amp
+				@_frequencyOfPeak.amp = @_frequencyData[i]
+				@_frequencyOfPeak.freq = i
 
 			if i is 0
 				@_lastAverageAmp = @_averageAmp
 				@_averageAmp = 0
+			
 			@_averageAmp += @_frequencyData[i];
 
-			if i is length-1
-				@_averageAmp = @_averageAmp / length
+			if i is @_frequencyData.length-1
+				@_averageAmp = @_averageAmp / @_frequencyData.length
 				@_averageAmp = Math.ceil @_averageAmp
 				@checkForPeak()
 
@@ -130,20 +135,39 @@ class AudioAnalysisEngine
 
 		if @_averageAmp+@_peakSensitivityOffset < @_lastAverageAmp and @_waitingForPeak
 			@_waitingForPeak = false
-			#test if hi or lo freq peak
-			if @_loudestFreqFound.index < 7
-				console.log 'low peak', @_loudestFreqFound.index
-			else if @_loudestFreqFound.index > 33
-				console.log 'high peak', @_loudestFreqFound.index
+			@calculateAveragePeakFrequency()
+			@calculateAverageBpm()
 
-			#calculate (approx) BPM
-			@_bpmCalcArray.push new Date().getTime()
-			if @_bpmCalcArray.length is 10
-				timeForTenPeaks = @_bpmCalcArray[@_bpmCalcArray.length-1] - @_bpmCalcArray[0]
-				@_bpmCalcArray = []
-				approxBPM = Math.floor (60000 / timeForTenPeaks)*10
-				console.log "approx BPM is " + approxBPM
+			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency*@_sensivitityForHighPeak
+				console.log 'high peak', @_frequencyOfPeak.freq
+			# else
+			# 	console.log 'peak' 
 
+
+	calculateAveragePeakFrequency: =>
+		#dont include high peaks as they skew the average
+		if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency*@_sensivitityForHighPeak
+			return
+
+		@_averageFreqCalcArray.push @_frequencyOfPeak.freq
+		if @_averageFreqCalcArray.length is 10
+			tempAvFreq = 0
+			for i in [0..@_averageFreqCalcArray.length-1] by 1
+				tempAvFreq += @_averageFreqCalcArray[i]
+				if i is @_averageFreqCalcArray.length-1
+					tempAvFreq /= @_averageFreqCalcArray.length
+					@_averageFrequency = tempAvFreq
+					@_averageFreqCalcArray = []
+					console.log 'av freq is ' + @_averageFrequency
+
+
+	calculateAverageBpm: =>
+		@_bpmCalcArray.push new Date().getTime()
+		if @_bpmCalcArray.length is 10
+			timeForTenPeaks = @_bpmCalcArray[@_bpmCalcArray.length-1] - @_bpmCalcArray[0]
+			@_bpmCalcArray = []
+			@_approxBPM = Math.floor (60000 / timeForTenPeaks)*10
+			console.log "approx BPM is " + @_approxBPM
 
 
 	setupDebugEqualizer: =>
@@ -156,7 +180,7 @@ class AudioAnalysisEngine
 	drawDebugEqualizer: =>
 		@_debugCTX.clearRect 0,0,@_debugCV.width,@_debugCV.height
 
-		for i in [0...@_frequencyData.length-1] by 2
+		for i in [0..@_frequencyData.length-1] by 2
 			@_debugCTX.beginPath()
 			@_debugCTX.moveTo i/2, @_debugCV.height
 			@_debugCTX.lineTo i/2, @_debugCV.height - @_frequencyData[i]/2
