@@ -46,6 +46,7 @@ module.exports = function(grunt){
 			compile: {
 				files: {
 					'JS/AudioAnalysisEngine.js' : 'CS/AudioAnalysisEngine.coffee',
+					'JS/Events.js' : 'CS/Events.coffee',
 				},
 			},
 		},

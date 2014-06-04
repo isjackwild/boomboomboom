@@ -2,26 +2,28 @@
   var AudioAnalysisEngine,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  $(function() {
-    var audioAnalysisEngine, gui;
-    audioAnalysisEngine = new AudioAnalysisEngine();
-    gui = new dat.GUI();
-    gui.add(audioAnalysisEngine, '_samplesPerSecond');
-    gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
-    gui.add(audioAnalysisEngine, '_sensivitityForHighPeak');
-    gui.add(audioAnalysisEngine, '_sensivitityForLowPeak');
-    gui.add(audioAnalysisEngine, '_longBreakLength');
-    gui.add(audioAnalysisEngine, '_shortBreakLength');
-    gui.add(audioAnalysisEngine, '_breakSensitivity');
-    gui.add(audioAnalysisEngine, '_dropJumpBPMSensitivity');
-    gui.add(audioAnalysisEngine, '_sensitivityForHighFrequencyVariation');
-    gui.add(audioAnalysisEngine._analyserNode, 'smoothingTimeConstant');
-    gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
-    gui.add(audioAnalysisEngine, '_bassCutoff').listen();
-    gui.add(audioAnalysisEngine, '_approxBPM').listen();
-    gui.add(audioAnalysisEngine, '_averageFrequency').listen();
-    return gui.add(audioAnalysisEngine, '_averageVol').listen();
-  });
+  $((function(_this) {
+    return function() {
+      var audioAnalysisEngine, gui;
+      audioAnalysisEngine = new AudioAnalysisEngine();
+      gui = new dat.GUI();
+      gui.add(audioAnalysisEngine, '_samplesPerSecond');
+      gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
+      gui.add(audioAnalysisEngine, '_sensivitityForHighPeak');
+      gui.add(audioAnalysisEngine, '_sensivitityForLowPeak');
+      gui.add(audioAnalysisEngine, '_longBreakLength');
+      gui.add(audioAnalysisEngine, '_shortBreakLength');
+      gui.add(audioAnalysisEngine, '_breakSensitivity');
+      gui.add(audioAnalysisEngine, '_dropJumpBPMSensitivity');
+      gui.add(audioAnalysisEngine, '_sensitivityForHighFrequencyVariation');
+      gui.add(audioAnalysisEngine._analyserNode, 'smoothingTimeConstant');
+      gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
+      gui.add(audioAnalysisEngine, '_bassCutoff').listen();
+      gui.add(audioAnalysisEngine, '_approxBPM').listen();
+      gui.add(audioAnalysisEngine, '_averageFrequency').listen();
+      return gui.add(audioAnalysisEngine, '_averageVol').listen();
+    };
+  })(this));
 
   AudioAnalysisEngine = (function() {
     var _ticker;
@@ -235,14 +237,18 @@
         this.checkForBreak();
         this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
-          return this.eventRouter("hiPeak");
+          this.eventRouter("hiPeak");
+          return window.events.hiPeak.dispatch();
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
-          return this.eventRouter("loPeak");
+          this.eventRouter("loPeak");
+          return window.events.loPeak.dispatch();
         } else {
           if (this._averageAmp + this._peakSensitivityOffset * 3 < this._lastAverageAmp) {
-            return this.eventRouter('hardPeak');
+            this.eventRouter('hardPeak');
+            return window.events.hardPeak.dispatch();
           } else {
-            return this.eventRouter("softPeak");
+            this.eventRouter("softPeak");
+            return window.events.softPeak.dispatch();
           }
         }
       }
@@ -255,7 +261,8 @@
         }
         if (this._bassAverageAmp + this._peakSensitivityOffset < this._lastBassAverageAmp && this._bassWaitingForPeak) {
           this._bassWaitingForPeak = true;
-          return this.eventRouter("bass");
+          this.eventRouter("bass");
+          return window.events.bass.dispatch();
         }
       }
     };
@@ -299,14 +306,14 @@
             if (i === this._frequencyVariationCheck.length - 1) {
               avDifference /= this._frequencyVariationCheck.length;
               this._frequencyVariationCheck = [];
-              if (avDifference > this._highFrequencyVariationSensitivity) {
+              if (avDifference > this._sensitivityForHighFrequencyVariation) {
                 this._currentFrequencyVariation = 'high';
-                console.log(avDifference);
               } else {
                 this._currentFrequencyVariation = 'low';
               }
               if (this._lastFrequencyVariation !== this._currentFrequencyVariation) {
                 this.eventRouter("changeFreqVar");
+                window.events.changeFreqVar.dispatch(this._currentFrequencyVariation);
                 _results.push(this._lastFrequencyVariation = this._currentFrequencyVariation);
               } else {
                 _results.push(void 0);
@@ -328,8 +335,10 @@
         this._timeSinceLastPeak = this._thisPeakTime - this._lastPeakTime;
         this._lastPeakTime = this._thisPeakTime;
         if (this._timeSinceLastPeak > this._longBreakLength) {
-          return this.eventRouter("longBreak");
+          this.eventRouter("longBreak");
+          return window.events.longBreak.dispatch();
         } else if (this._timeSinceLastPeak > this._shortBreakLength) {
+          window.events.shortBreak.dispatch();
           return this.eventRouter("shortBreak");
         }
       }
@@ -342,13 +351,16 @@
         timeForTenPeaks = this._bpmCalcArray[this._bpmCalcArray.length - 1] - this._bpmCalcArray[0];
         this._bpmCalcArray = [];
         this._approxBPM = Math.floor((60000 / timeForTenPeaks) * 10);
+        window.events.BPM.dispatch(this._approxBPM);
       }
       if (!this._lastBPM) {
         return this._lastBPM = this._approxBPM;
       } else {
         if (this._approxBPM > this._lastBPM + this._dropJumpBPMSensitivity) {
+          window.events.BPMJump.dispatch(this._approxBPM);
           this.eventRouter('BPMJump');
         } else if (this._approxBPM < this._lastBPM - this._dropJumpBPMSensitivity) {
+          window.events.BPMDrop.dispatch(this._approxBPM);
           this.eventRouter('BPMDrop');
         }
         return this._lastBPM = this._approxBPM;
@@ -366,6 +378,7 @@
           if (i === this._volCalcArray.length - 1) {
             tempAvVol /= this._volCalcArray.length;
             this._averageVol = Math.floor(tempAvVol);
+            window.events.volume.dispatch(this._averageVol);
             _results.push(this._volCalcArray = []);
           } else {
             _results.push(void 0);

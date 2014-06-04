@@ -1,5 +1,23 @@
+# Signal = signals.Signal
+# events = {
+# 	hiPeak: new Signal()
+# 	loPeak: new Signal()
+# 	hardPeak: new Signal()
+# 	softPeak: new Signal()
+# 	bass: new Signal()
+# 	shortBreak: new Signal()
+# 	longBreak: new Signal()
+# 	BPM: new Signal()
+# 	BPMDrop: new Signal()
+# 	BPMJump: new Signal()
+# 	changeFreqVar: new Signal()
+# 	volume: new Signal()
+# }
+
+
+
 #Audio Analysis Engine
-$ ->
+$ =>
 	audioAnalysisEngine = new AudioAnalysisEngine();
 
 	gui = new dat.GUI()
@@ -134,10 +152,6 @@ class AudioAnalysisEngine
 			@analyse()
 		, 1000 / @_samplesPerSecond
 
-		# setInterval =>
-		# 	console.log @_frequencyData
-		# , 5000
-
 
 	analyse: =>
 		@_analyserNode.getByteFrequencyData @_frequencyData
@@ -190,13 +204,17 @@ class AudioAnalysisEngine
 			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
 				@eventRouter "hiPeak"
+				window.events.hiPeak.dispatch()
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
 				@eventRouter "loPeak"
+				window.events.loPeak.dispatch()
 			else
 				if @_averageAmp+@_peakSensitivityOffset*3 < @_lastAverageAmp
 					@eventRouter 'hardPeak'
+					window.events.hardPeak.dispatch()
 				else
 					@eventRouter "softPeak"
+					window.events.softPeak.dispatch()
 
 
 	checkForBassPeak: => #would be good if this was based on a peak much lower than the average. At the moment a very bassy song would set this off every time a peak was detected.
@@ -207,6 +225,7 @@ class AudioAnalysisEngine
 			if @_bassAverageAmp+@_peakSensitivityOffset < @_lastBassAverageAmp and @_bassWaitingForPeak
 				@_bassWaitingForPeak = true
 				@eventRouter "bass"
+				window.events.bass.dispatch()
 
 
 	#Do logic which detects when there has been a significant change in the averages over the last few averages
@@ -239,14 +258,14 @@ class AudioAnalysisEngine
 					if i is @_frequencyVariationCheck.length-1
 						avDifference /= @_frequencyVariationCheck.length
 						@_frequencyVariationCheck = []
-						if avDifference > @_highFrequencyVariationSensitivity
+						if avDifference > @_sensitivityForHighFrequencyVariation
 							@_currentFrequencyVariation = 'high'
-							console.log avDifference
 						else
 							@_currentFrequencyVariation = 'low'
 
 						if @_lastFrequencyVariation != @_currentFrequencyVariation
 							@eventRouter "changeFreqVar"
+							window.events.changeFreqVar.dispatch @_currentFrequencyVariation
 							@_lastFrequencyVariation = @_currentFrequencyVariation
 
 
@@ -260,7 +279,9 @@ class AudioAnalysisEngine
 			@_lastPeakTime = @_thisPeakTime
 			if @_timeSinceLastPeak > @_longBreakLength #if it's been a while since the last peak with a big difference in amplitude
 				@eventRouter "longBreak"
+				window.events.longBreak.dispatch()
 			else if @_timeSinceLastPeak > @_shortBreakLength #if it's been a while since the last peak with a big difference in amplitude
+				window.events.shortBreak.dispatch()
 				@eventRouter "shortBreak"
 
 
@@ -271,16 +292,18 @@ class AudioAnalysisEngine
 			timeForTenPeaks = @_bpmCalcArray[@_bpmCalcArray.length-1] - @_bpmCalcArray[0]
 			@_bpmCalcArray = []
 			@_approxBPM = Math.floor (60000 / timeForTenPeaks)*10
+			window.events.BPM.dispatch @_approxBPM
 		
 		if !@_lastBPM
 			@_lastBPM = @_approxBPM
 		else
 			if @_approxBPM > @_lastBPM+@_dropJumpBPMSensitivity
+				window.events.BPMJump.dispatch @_approxBPM
 				@eventRouter 'BPMJump'
 			else if @_approxBPM < @_lastBPM-@_dropJumpBPMSensitivity
+				window.events.BPMDrop.dispatch @_approxBPM
 				@eventRouter 'BPMDrop'
 			@_lastBPM = @_approxBPM
-
 
 
 
@@ -294,9 +317,11 @@ class AudioAnalysisEngine
 				if i is @_volCalcArray.length-1
 					tempAvVol /= @_volCalcArray.length
 					@_averageVol = Math.floor tempAvVol
+					window.events.volume.dispatch @_averageVol
 					@_volCalcArray = []
 
 
+	#replace this with the events signal system
 	eventRouter: (event) =>
 		switch event
 			when "hiPeak" then console.log 'high peak'
@@ -320,6 +345,7 @@ class AudioAnalysisEngine
 		@_debugCV.width = 600
 		@_debugCV.height = 150
 		@_debugCTX = @_debugCV.getContext "2d"
+
 
 
 	drawDebugEqualizer: =>
