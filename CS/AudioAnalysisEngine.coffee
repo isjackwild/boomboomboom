@@ -203,17 +203,17 @@ class AudioAnalysisEngine
 
 			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
-				@eventRouter "hiPeak"
+				@eventLogger "hiPeak"
 				window.events.hiPeak.dispatch()
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
-				@eventRouter "loPeak"
+				@eventLogger "loPeak"
 				window.events.loPeak.dispatch()
 			else
 				if @_averageAmp+@_peakSensitivityOffset*3 < @_lastAverageAmp
-					@eventRouter 'hardPeak'
+					@eventLogger 'hardPeak'
 					window.events.hardPeak.dispatch()
 				else
-					@eventRouter "softPeak"
+					@eventLogger "softPeak"
 					window.events.softPeak.dispatch()
 
 
@@ -224,7 +224,7 @@ class AudioAnalysisEngine
 
 			if @_bassAverageAmp+@_peakSensitivityOffset < @_lastBassAverageAmp and @_bassWaitingForPeak
 				@_bassWaitingForPeak = true
-				@eventRouter "bass"
+				@eventLogger "bass"
 				window.events.bass.dispatch()
 
 
@@ -264,7 +264,7 @@ class AudioAnalysisEngine
 							@_currentFrequencyVariation = 'low'
 
 						if @_lastFrequencyVariation != @_currentFrequencyVariation
-							@eventRouter "changeFreqVar"
+							@eventLogger "changeFreqVar"
 							window.events.changeFreqVar.dispatch @_currentFrequencyVariation
 							@_lastFrequencyVariation = @_currentFrequencyVariation
 
@@ -278,11 +278,11 @@ class AudioAnalysisEngine
 			@_timeSinceLastPeak = @_thisPeakTime - @_lastPeakTime
 			@_lastPeakTime = @_thisPeakTime
 			if @_timeSinceLastPeak > @_longBreakLength #if it's been a while since the last peak with a big difference in amplitude
-				@eventRouter "longBreak"
+				@eventLogger "longBreak"
 				window.events.longBreak.dispatch()
 			else if @_timeSinceLastPeak > @_shortBreakLength #if it's been a while since the last peak with a big difference in amplitude
 				window.events.shortBreak.dispatch()
-				@eventRouter "shortBreak"
+				@eventLogger "shortBreak"
 
 
 	#Do logic which detects when there has been a significant change in the averages over the last few averages
@@ -299,10 +299,10 @@ class AudioAnalysisEngine
 		else
 			if @_approxBPM > @_lastBPM+@_dropJumpBPMSensitivity
 				window.events.BPMJump.dispatch @_approxBPM
-				@eventRouter 'BPMJump'
+				@eventLogger 'BPMJump'
 			else if @_approxBPM < @_lastBPM-@_dropJumpBPMSensitivity
 				window.events.BPMDrop.dispatch @_approxBPM
-				@eventRouter 'BPMDrop'
+				@eventLogger 'BPMDrop'
 			@_lastBPM = @_approxBPM
 
 
@@ -322,7 +322,7 @@ class AudioAnalysisEngine
 
 
 	#replace this with the events signal system
-	eventRouter: (event) =>
+	eventLogger: (event) =>
 		switch event
 			when "hiPeak" then console.log 'high peak'
 			when "loPeak" then console.log 'low peak'
@@ -350,7 +350,6 @@ class AudioAnalysisEngine
 
 	drawDebugEqualizer: =>
 		@_debugCTX.clearRect 0,0,@_debugCV.width,@_debugCV.height
-
 		for i in [0..@_frequencyData.length-1] by 2
 			@_debugCTX.beginPath()
 			@_debugCTX.moveTo i/2, @_debugCV.height

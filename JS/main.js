@@ -442,3 +442,71 @@
   })();
 
 }).call(this);
+
+(function() {
+  var BackgroundGenerator;
+
+  $((function(_this) {
+    return function() {
+      var backgroundGenerator;
+      return backgroundGenerator = new BackgroundGenerator();
+    };
+  })(this));
+
+  BackgroundGenerator = (function() {
+    function BackgroundGenerator() {}
+
+    return BackgroundGenerator;
+
+  })();
+
+}).call(this);
+
+(function() {
+  var Signal, test;
+
+  Signal = signals.Signal;
+
+  window.events = {
+    hiPeak: new Signal(),
+    loPeak: new Signal(),
+    hardPeak: new Signal(),
+    softPeak: new Signal(),
+    bass: new Signal(),
+    shortBreak: new Signal(),
+    longBreak: new Signal(),
+    BPM: new Signal(),
+    BPMDrop: new Signal(),
+    BPMJump: new Signal(),
+    changeFreqVar: new Signal(),
+    volume: new Signal()
+  };
+
+  test = (function(_this) {
+    return function() {
+      return console.log('event system works');
+    };
+  })(this);
+
+  window.events.softPeak.add(test);
+
+}).call(this);
+
+(function() {
+  var ShapeGenerator;
+
+  $((function(_this) {
+    return function() {
+      var shapeGenerator;
+      return shapeGenerator = new ShapeGenerator();
+    };
+  })(this));
+
+  ShapeGenerator = (function() {
+    function ShapeGenerator() {}
+
+    return ShapeGenerator;
+
+  })();
+
+}).call(this);

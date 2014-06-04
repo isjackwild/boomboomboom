@@ -1,5 +1,4 @@
 Signal = signals.Signal
-
 window.events = {
 	hiPeak: new Signal()
 	loPeak: new Signal()
@@ -18,5 +17,6 @@ window.events = {
 
 
 test = =>
-	console.log 'lkjhasdlfkjslkj'
-events.softPeak.add(test);
+	console.log 'event system works'
+
+window.events.softPeak.add(test);

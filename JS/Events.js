@@ -20,10 +20,10 @@
 
   test = (function(_this) {
     return function() {
-      return console.log('lkjhasdlfkjslkj');
+      return console.log('event system works');
     };
   })(this);
 
-  events.softPeak.add(test);
+  window.events.softPeak.add(test);
 
 }).call(this);
