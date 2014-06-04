@@ -173,13 +173,17 @@ class AudioAnalysisEngine
 			else
 				console.log 'average peak'
 
-	checkForBassPeak: => #would be good if this was based on a peak much lower than the average. At the moment a very bassy song would set this off every time a peak was detected.
-		if @_bassAverageAmp > @_lastBassAverageAmp and !@_bassWaitingForPeak
-			@_bassWaitingForPeak = true
+			if @_lastAverageAmp - @_averageAmp > @_lastAverageAmp*1.5
+				console.log "amp difference " + (@_lastAverageAmp - @_averageAmp)
 
-		if @_bassAverageAmp+@_peakSensitivityOffset < @_lastBassAverageAmp and @_bassWaitingForPeak
-			@_bassWaitingForPeak = true
-			console.log "BASSSSS"
+	checkForBassPeak: => #would be good if this was based on a peak much lower than the average. At the moment a very bassy song would set this off every time a peak was detected.
+		if @_bassAverageAmp > @_averageVol / 2
+			if @_bassAverageAmp > @_lastBassAverageAmp and !@_bassWaitingForPeak
+				@_bassWaitingForPeak = true
+
+			if @_bassAverageAmp+@_peakSensitivityOffset < @_lastBassAverageAmp and @_bassWaitingForPeak
+				@_bassWaitingForPeak = true
+				console.log "BASSSSS", @_bassAverageAmp
 
 
 

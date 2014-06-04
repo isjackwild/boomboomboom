@@ -209,22 +209,27 @@
         this.calculateAveragePeakFrequency();
         this.calculateAverageBpm();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
-          return console.log('higher than av peak');
+          console.log('higher than av peak');
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
-          return console.log('lower than av peak');
+          console.log('lower than av peak');
         } else {
-          return console.log('average peak');
+          console.log('average peak');
+        }
+        if (this._lastAverageAmp - this._averageAmp > this._lastAverageAmp * 1.5) {
+          return console.log("amp difference " + (this._lastAverageAmp - this._averageAmp));
         }
       }
     };
 
     AudioAnalysisEngine.prototype.checkForBassPeak = function() {
-      if (this._bassAverageAmp > this._lastBassAverageAmp && !this._bassWaitingForPeak) {
-        this._bassWaitingForPeak = true;
-      }
-      if (this._bassAverageAmp + this._peakSensitivityOffset < this._lastBassAverageAmp && this._bassWaitingForPeak) {
-        this._bassWaitingForPeak = true;
-        return console.log("BASSSSS");
+      if (this._bassAverageAmp > this._averageVol / 2) {
+        if (this._bassAverageAmp > this._lastBassAverageAmp && !this._bassWaitingForPeak) {
+          this._bassWaitingForPeak = true;
+        }
+        if (this._bassAverageAmp + this._peakSensitivityOffset < this._lastBassAverageAmp && this._bassWaitingForPeak) {
+          this._bassWaitingForPeak = true;
+          return console.log("BASSSSS", this._bassAverageAmp);
+        }
       }
     };
 
