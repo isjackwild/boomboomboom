@@ -16,7 +16,7 @@ window.events = {
 
 
 
-test = =>
-	console.log 'event system works'
+# test = =>
+# 	console.log 'event system works'
 
-window.events.softPeak.add(test);
+# window.events.softPeak.add(test);

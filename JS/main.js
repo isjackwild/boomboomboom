@@ -444,17 +444,39 @@
 }).call(this);
 
 (function() {
-  var BackgroundGenerator;
+  var BackgroundGenerator,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  $((function(_this) {
-    return function() {
-      var backgroundGenerator;
-      return backgroundGenerator = new BackgroundGenerator();
-    };
-  })(this));
+  $(function() {
+    var backgroundGenerator;
+    return backgroundGenerator = new BackgroundGenerator();
+  });
 
   BackgroundGenerator = (function() {
-    function BackgroundGenerator() {}
+    BackgroundGenerator.prototype._cv = null;
+
+    BackgroundGenerator.prototype._whichColour = 0;
+
+    function BackgroundGenerator() {
+      this.randomiseBackgroundColour = __bind(this.randomiseBackgroundColour, this);
+      console.log('setup background generation');
+      this._cv = document.getElementById("magic");
+      console.log(this._cv);
+      this.setupListeners();
+    }
+
+    BackgroundGenerator.prototype.setupListeners = function() {
+      return window.events.hardPeak.add(this.randomiseBackgroundColour);
+    };
+
+    BackgroundGenerator.prototype.randomiseBackgroundColour = function() {
+      this._whichColour += 1;
+      if (this._whichColour % 2 === 1) {
+        return this._cv.style.background = "black";
+      } else {
+        return this._cv.style.background = "white";
+      }
+    };
 
     return BackgroundGenerator;
 
@@ -463,7 +485,7 @@
 }).call(this);
 
 (function() {
-  var Signal, test;
+  var Signal;
 
   Signal = signals.Signal;
 
@@ -481,14 +503,6 @@
     changeFreqVar: new Signal(),
     volume: new Signal()
   };
-
-  test = (function(_this) {
-    return function() {
-      return console.log('event system works');
-    };
-  })(this);
-
-  window.events.softPeak.add(test);
 
 }).call(this);
 

@@ -1,5 +1,5 @@
 (function() {
-  var Signal, test;
+  var Signal;
 
   Signal = signals.Signal;
 
@@ -17,13 +17,5 @@
     changeFreqVar: new Signal(),
     volume: new Signal()
   };
-
-  test = (function(_this) {
-    return function() {
-      return console.log('event system works');
-    };
-  })(this);
-
-  window.events.softPeak.add(test);
 
 }).call(this);
