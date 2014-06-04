@@ -10,6 +10,8 @@
     gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
     gui.add(audioAnalysisEngine, '_sensivitityForHighPeak');
     gui.add(audioAnalysisEngine, '_sensivitityForLowPeak');
+    gui.add(audioAnalysisEngine, '_breakLength');
+    gui.add(audioAnalysisEngine, '_breakSensitivity');
     gui.add(audioAnalysisEngine._analyserNode, 'smoothingTimeConstant');
     gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
     gui.add(audioAnalysisEngine, '_bassCutoff').listen();
@@ -43,11 +45,11 @@
 
     AudioAnalysisEngine.prototype._waitingForPeak = false;
 
+    AudioAnalysisEngine.prototype._peakSensitivityOffset = 1;
+
     AudioAnalysisEngine.prototype._bassWaitingForPeak = false;
 
     AudioAnalysisEngine.prototype._bassCutoff = 1000;
-
-    AudioAnalysisEngine.prototype._peakSensitivityOffset = 1;
 
     AudioAnalysisEngine.prototype._frequencyOfPeak = {
       frequency: 0,
@@ -59,6 +61,16 @@
     AudioAnalysisEngine.prototype._sensivitityForHighPeak = 33;
 
     AudioAnalysisEngine.prototype._sensivitityForLowPeak = 20;
+
+    AudioAnalysisEngine.prototype._lastPeakTime = null;
+
+    AudioAnalysisEngine.prototype._thisPeakTime = null;
+
+    AudioAnalysisEngine.prototype._timeSinceLastPeak = null;
+
+    AudioAnalysisEngine.prototype._breakLength = 1000;
+
+    AudioAnalysisEngine.prototype._breakSensitivity = 2;
 
     AudioAnalysisEngine.prototype._bpmCalcArray = [];
 
@@ -75,8 +87,10 @@
     function AudioAnalysisEngine() {
       this.drawDebugEqualizer = __bind(this.drawDebugEqualizer, this);
       this.setupDebugEqualizer = __bind(this.setupDebugEqualizer, this);
+      this.eventRouter = __bind(this.eventRouter, this);
       this.calculateAverageVol = __bind(this.calculateAverageVol, this);
       this.calculateAverageBpm = __bind(this.calculateAverageBpm, this);
+      this.checkForBreak = __bind(this.checkForBreak, this);
       this.calculateAveragePeakFrequency = __bind(this.calculateAveragePeakFrequency, this);
       this.checkForBassPeak = __bind(this.checkForBassPeak, this);
       this.checkForPeak = __bind(this.checkForPeak, this);
@@ -208,15 +222,13 @@
         this._waitingForPeak = false;
         this.calculateAveragePeakFrequency();
         this.calculateAverageBpm();
+        this.checkForBreak();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
-          console.log('higher than av peak');
+          return this.eventRouter("hiPeak");
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
-          console.log('lower than av peak');
+          return this.eventRouter("loPeak");
         } else {
-          console.log('average peak');
-        }
-        if (this._lastAverageAmp - this._averageAmp > this._lastAverageAmp * 1.5) {
-          return console.log("amp difference " + (this._lastAverageAmp - this._averageAmp));
+          return this.eventRouter("avPeak");
         }
       }
     };
@@ -228,7 +240,7 @@
         }
         if (this._bassAverageAmp + this._peakSensitivityOffset < this._lastBassAverageAmp && this._bassWaitingForPeak) {
           this._bassWaitingForPeak = true;
-          return console.log("BASSSSS", this._bassAverageAmp);
+          return this.eventRouter("bass");
         }
       }
     };
@@ -251,6 +263,19 @@
           }
         }
         return _results;
+      }
+    };
+
+    AudioAnalysisEngine.prototype.checkForBreak = function() {
+      if (!this._lastPeakTime) {
+        return this._lastPeakTime = new Date().getTime();
+      } else if (this._lastAverageAmp > this._averageVol * this._breakSensitivity) {
+        this._thisPeakTime = new Date().getTime();
+        this._timeSinceLastPeak = this._thisPeakTime - this._lastPeakTime;
+        this._lastPeakTime = this._thisPeakTime;
+        if (this._timeSinceLastPeak > this._breakLength && this._lastAverageAmp) {
+          return this.eventRouter("break");
+        }
       }
     };
 
@@ -281,6 +306,21 @@
           }
         }
         return _results;
+      }
+    };
+
+    AudioAnalysisEngine.prototype.eventRouter = function(event) {
+      switch (event) {
+        case "hiPeak":
+          return console.log('high peak');
+        case "loPeak":
+          return console.log('low peak');
+        case "avPeak":
+          return console.log('average peak');
+        case "bass":
+          return console.log('BASSSS');
+        case "break":
+          return console.log('break');
       }
     };
 

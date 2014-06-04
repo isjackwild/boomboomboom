@@ -7,6 +7,8 @@ $ ->
 	gui.add audioAnalysisEngine, '_peakSensitivityOffset'
 	gui.add audioAnalysisEngine, '_sensivitityForHighPeak'
 	gui.add audioAnalysisEngine, '_sensivitityForLowPeak'
+	gui.add audioAnalysisEngine, '_breakLength'
+	gui.add audioAnalysisEngine, '_breakSensitivity'
 	gui.add audioAnalysisEngine._analyserNode, 'smoothingTimeConstant'
 	gui.add audioAnalysisEngine._analyserNode, 'fftSize'
 	gui.add(audioAnalysisEngine, '_bassCutoff').listen()
@@ -23,15 +25,17 @@ class AudioAnalysisEngine
 
 	_samplesPerSecond: 30
 	_ticker = null #analysis interval
+
 	_frequencyData: []
 	_averageFreqCalcArray: []
+
 	_averageAmp: 0
 	_lastAverageAmp: null
+
 	_waitingForPeak: false
+	_peakSensitivityOffset: 1
 	_bassWaitingForPeak: false
 	_bassCutoff: 1000
-	_peakSensitivityOffset: 1
-
 	_frequencyOfPeak: {
 		frequency: 0,
 		freq: null
@@ -39,6 +43,12 @@ class AudioAnalysisEngine
 	_averageFrequency: 0
 	_sensivitityForHighPeak: 33
 	_sensivitityForLowPeak: 20
+
+	_lastPeakTime: null
+	_thisPeakTime: null
+	_timeSinceLastPeak: null
+	_breakLength: 1000
+	_breakSensitivity: 2
 
 	_bpmCalcArray: []
 	_approxBPM: 0
@@ -152,7 +162,6 @@ class AudioAnalysisEngine
 				@checkForBassPeak()
 
 
-
 	checkForPeak: =>
 		if @_averageAmp > @_lastAverageAmp and !@_waitingForPeak
 			@_waitingForPeak = true
@@ -162,19 +171,16 @@ class AudioAnalysisEngine
 			@_waitingForPeak = false
 			@calculateAveragePeakFrequency() #what was the highest frequency at the time of the peak
 			@calculateAverageBpm() #what is the bmp
-
-			# console.log "peak"
+			@checkForBreak()
 
 			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
-				console.log 'higher than av peak'
+				@eventRouter "hiPeak"
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
-				console.log 'lower than av peak'
+				@eventRouter "loPeak"
 			else
-				console.log 'average peak'
+				@eventRouter "avPeak"
 
-			if @_lastAverageAmp - @_averageAmp > @_lastAverageAmp*1.5
-				console.log "amp difference " + (@_lastAverageAmp - @_averageAmp)
 
 	checkForBassPeak: => #would be good if this was based on a peak much lower than the average. At the moment a very bassy song would set this off every time a peak was detected.
 		if @_bassAverageAmp > @_averageVol / 2
@@ -183,8 +189,7 @@ class AudioAnalysisEngine
 
 			if @_bassAverageAmp+@_peakSensitivityOffset < @_lastBassAverageAmp and @_bassWaitingForPeak
 				@_bassWaitingForPeak = true
-				console.log "BASSSSS", @_bassAverageAmp
-
+				@eventRouter "bass"
 
 
 	#Do logic which detects when there has been a significant change in the averages over the last few averages
@@ -201,6 +206,18 @@ class AudioAnalysisEngine
 
 					@_bassCutoff = @_averageFrequency + 555
 					# console.log 'av freq is ' + @_averageFrequency
+
+
+	#check for jumps in the volume of the song
+	checkForBreak: =>
+		if !@_lastPeakTime
+				@_lastPeakTime = new Date().getTime()
+		else if @_lastAverageAmp > @_averageVol*@_breakSensitivity #check if this peak has had a big jump in amplitude
+			@_thisPeakTime = new Date().getTime()
+			@_timeSinceLastPeak = @_thisPeakTime - @_lastPeakTime
+			@_lastPeakTime = @_thisPeakTime
+			if @_timeSinceLastPeak > @_breakLength and @_lastAverageAmp #if it's been a while since the last peak with a big difference in amplitude
+				@eventRouter "break"
 
 
 	#Do logic which detects when there has been a significant change in the averages over the last few averages
@@ -225,6 +242,14 @@ class AudioAnalysisEngine
 					@_averageVol = Math.floor tempAvVol
 					@_volCalcArray = []
 					# console.log 'av vol is ' + @_averageVol
+
+	eventRouter: (event) =>
+		switch event
+			when "hiPeak" then console.log 'high peak'
+			when "loPeak" then console.log 'low peak'
+			when "avPeak" then console.log 'average peak'
+			when "bass" then console.log 'BASSSS'
+			when "break" then console.log 'break'
 
 
 	setupDebugEqualizer: =>
