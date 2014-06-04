@@ -10,8 +10,11 @@
     gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
     gui.add(audioAnalysisEngine, '_sensivitityForHighPeak');
     gui.add(audioAnalysisEngine, '_sensivitityForLowPeak');
-    gui.add(audioAnalysisEngine, '_breakLength');
+    gui.add(audioAnalysisEngine, '_longBreakLength');
+    gui.add(audioAnalysisEngine, '_shortBreakLength');
     gui.add(audioAnalysisEngine, '_breakSensitivity');
+    gui.add(audioAnalysisEngine, '_dropJumpBPMSensitivity');
+    gui.add(audioAnalysisEngine, '_sensitivityForHighFrequencyVariation');
     gui.add(audioAnalysisEngine._analyserNode, 'smoothingTimeConstant');
     gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
     gui.add(audioAnalysisEngine, '_bassCutoff').listen();
@@ -45,7 +48,7 @@
 
     AudioAnalysisEngine.prototype._waitingForPeak = false;
 
-    AudioAnalysisEngine.prototype._peakSensitivityOffset = 1;
+    AudioAnalysisEngine.prototype._peakSensitivityOffset = 5;
 
     AudioAnalysisEngine.prototype._bassWaitingForPeak = false;
 
@@ -53,14 +56,21 @@
 
     AudioAnalysisEngine.prototype._frequencyOfPeak = {
       frequency: 0,
-      freq: null
+      freq: null,
+      lastFreq: null
     };
 
     AudioAnalysisEngine.prototype._averageFrequency = 0;
 
+    AudioAnalysisEngine.prototype._frequencyVariationCheck = [];
+
+    AudioAnalysisEngine.prototype._lastFrequencyVariation = null;
+
     AudioAnalysisEngine.prototype._sensivitityForHighPeak = 33;
 
     AudioAnalysisEngine.prototype._sensivitityForLowPeak = 20;
+
+    AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 55;
 
     AudioAnalysisEngine.prototype._lastPeakTime = null;
 
@@ -68,13 +78,19 @@
 
     AudioAnalysisEngine.prototype._timeSinceLastPeak = null;
 
-    AudioAnalysisEngine.prototype._breakLength = 1000;
+    AudioAnalysisEngine.prototype._shortBreakLength = 1000;
+
+    AudioAnalysisEngine.prototype._longBreakLength = 2500;
 
     AudioAnalysisEngine.prototype._breakSensitivity = 2;
 
     AudioAnalysisEngine.prototype._bpmCalcArray = [];
 
     AudioAnalysisEngine.prototype._approxBPM = 0;
+
+    AudioAnalysisEngine.prototype._lastBPM = null;
+
+    AudioAnalysisEngine.prototype._dropJumpBPMSensitivity = 150;
 
     AudioAnalysisEngine.prototype._volCalcArray = [];
 
@@ -91,6 +107,7 @@
       this.calculateAverageVol = __bind(this.calculateAverageVol, this);
       this.calculateAverageBpm = __bind(this.calculateAverageBpm, this);
       this.checkForBreak = __bind(this.checkForBreak, this);
+      this.checkForFrequencyVariation = __bind(this.checkForFrequencyVariation, this);
       this.calculateAveragePeakFrequency = __bind(this.calculateAveragePeakFrequency, this);
       this.checkForBassPeak = __bind(this.checkForBassPeak, this);
       this.checkForPeak = __bind(this.checkForPeak, this);
@@ -109,13 +126,6 @@
       document.getElementById('magic').onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
-        };
-      })(this);
-      document.getElementById('magic').onclick = (function(_this) {
-        return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
         };
       })(this);
     }
@@ -223,18 +233,23 @@
         this.calculateAveragePeakFrequency();
         this.calculateAverageBpm();
         this.checkForBreak();
+        this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           return this.eventRouter("hiPeak");
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           return this.eventRouter("loPeak");
         } else {
-          return this.eventRouter("avPeak");
+          if (this._averageAmp + this._peakSensitivityOffset * 3 < this._lastAverageAmp) {
+            return this.eventRouter('hardPeak');
+          } else {
+            return this.eventRouter("softPeak");
+          }
         }
       }
     };
 
     AudioAnalysisEngine.prototype.checkForBassPeak = function() {
-      if (this._bassAverageAmp > this._averageVol / 2) {
+      if (this._bassAverageAmp > this._averageVol / 1.5) {
         if (this._bassAverageAmp > this._lastBassAverageAmp && !this._bassWaitingForPeak) {
           this._bassWaitingForPeak = true;
         }
@@ -257,12 +272,51 @@
             tempAvFreq /= this._averageFreqCalcArray.length;
             this._averageFrequency = tempAvFreq;
             this._averageFreqCalcArray = [];
-            _results.push(this._bassCutoff = this._averageFrequency + 555);
+            _results.push(this._bassCutoff = this._averageFrequency + 500);
           } else {
             _results.push(void 0);
           }
         }
         return _results;
+      }
+    };
+
+    AudioAnalysisEngine.prototype.checkForFrequencyVariation = function() {
+      var avDifference, differenceInFreq, i, _i, _ref, _results;
+      if (!this._frequencyOfPeak.lastFreq) {
+        return this._frequencyOfPeak.lastFreq = this._frequencyOfPeak.freq;
+      } else {
+        differenceInFreq = Math.abs(this._frequencyOfPeak.freq - this._frequencyOfPeak.lastFreq);
+        this._frequencyOfPeak.lastFreq = this._frequencyOfPeak.freq;
+        this._frequencyVariationCheck.push(differenceInFreq);
+        if (this._frequencyVariationCheck.length === 10) {
+          _results = [];
+          for (i = _i = 0, _ref = this._frequencyVariationCheck.length - 1; _i <= _ref; i = _i += 1) {
+            if (i === 0) {
+              avDifference = 0;
+            }
+            avDifference += this._frequencyVariationCheck[i];
+            if (i === this._frequencyVariationCheck.length - 1) {
+              avDifference /= this._frequencyVariationCheck.length;
+              this._frequencyVariationCheck = [];
+              if (avDifference > this._highFrequencyVariationSensitivity) {
+                this._currentFrequencyVariation = 'high';
+                console.log(avDifference);
+              } else {
+                this._currentFrequencyVariation = 'low';
+              }
+              if (this._lastFrequencyVariation !== this._currentFrequencyVariation) {
+                this.eventRouter("changeFreqVar");
+                _results.push(this._lastFrequencyVariation = this._currentFrequencyVariation);
+              } else {
+                _results.push(void 0);
+              }
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        }
       }
     };
 
@@ -273,8 +327,10 @@
         this._thisPeakTime = new Date().getTime();
         this._timeSinceLastPeak = this._thisPeakTime - this._lastPeakTime;
         this._lastPeakTime = this._thisPeakTime;
-        if (this._timeSinceLastPeak > this._breakLength && this._lastAverageAmp) {
-          return this.eventRouter("break");
+        if (this._timeSinceLastPeak > this._longBreakLength) {
+          return this.eventRouter("longBreak");
+        } else if (this._timeSinceLastPeak > this._shortBreakLength) {
+          return this.eventRouter("shortBreak");
         }
       }
     };
@@ -285,7 +341,17 @@
       if (this._bpmCalcArray.length === 10) {
         timeForTenPeaks = this._bpmCalcArray[this._bpmCalcArray.length - 1] - this._bpmCalcArray[0];
         this._bpmCalcArray = [];
-        return this._approxBPM = Math.floor((60000 / timeForTenPeaks) * 10);
+        this._approxBPM = Math.floor((60000 / timeForTenPeaks) * 10);
+      }
+      if (!this._lastBPM) {
+        return this._lastBPM = this._approxBPM;
+      } else {
+        if (this._approxBPM > this._lastBPM + this._dropJumpBPMSensitivity) {
+          this.eventRouter('BPMJump');
+        } else if (this._approxBPM < this._lastBPM - this._dropJumpBPMSensitivity) {
+          this.eventRouter('BPMDrop');
+        }
+        return this._lastBPM = this._approxBPM;
       }
     };
 
@@ -315,12 +381,26 @@
           return console.log('high peak');
         case "loPeak":
           return console.log('low peak');
-        case "avPeak":
-          return console.log('average peak');
+        case "hardPeak":
+          return console.log('hard peak');
+        case "softPeak":
+          return console.log('soft peak');
         case "bass":
           return console.log('BASSSS');
-        case "break":
-          return console.log('break');
+        case "shortBreak":
+          return console.log('short break');
+        case "longBreak":
+          return console.log('long break');
+        case "BPMDrop":
+          return console.log('drop in BPM');
+        case "BPMJump":
+          return console.log('jump in BPM');
+        case "changeFreqVar":
+          if (this._currentFrequencyVariation === "high") {
+            return console.log('CRAZY');
+          } else if (this._currentFrequencyVariation === "low") {
+            return console.log('currently low frequency variation');
+          }
       }
     };
 
