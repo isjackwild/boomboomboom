@@ -130,6 +130,13 @@
           return _this.setupTestAudio();
         };
       })(this);
+      document.getElementById('magic').onclick = (function(_this) {
+        return function() {
+          return navigator.webkitGetUserMedia({
+            audio: true
+          }, _this.setupMic, _this.onError);
+        };
+      })(this);
     }
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
@@ -243,7 +250,7 @@
           this.eventLogger("loPeak");
           return window.events.loPeak.dispatch();
         } else {
-          if (this._averageAmp + this._peakSensitivityOffset * 3 < this._lastAverageAmp) {
+          if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
             this.eventLogger('hardPeak');
             return window.events.hardPeak.dispatch();
           } else {

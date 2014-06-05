@@ -1,3 +1,5 @@
+#Maybe change this to use the backbone events module — it's already included in two.js
+
 Signal = signals.Signal
 window.events = {
 	hiPeak: new Signal()

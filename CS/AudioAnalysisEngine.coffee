@@ -1,21 +1,3 @@
-# Signal = signals.Signal
-# events = {
-# 	hiPeak: new Signal()
-# 	loPeak: new Signal()
-# 	hardPeak: new Signal()
-# 	softPeak: new Signal()
-# 	bass: new Signal()
-# 	shortBreak: new Signal()
-# 	longBreak: new Signal()
-# 	BPM: new Signal()
-# 	BPMDrop: new Signal()
-# 	BPMJump: new Signal()
-# 	changeFreqVar: new Signal()
-# 	volume: new Signal()
-# }
-
-
-
 #Audio Analysis Engine
 $ =>
 	audioAnalysisEngine = new AudioAnalysisEngine();
@@ -100,10 +82,10 @@ class AudioAnalysisEngine
 		document.getElementById('magic').onclick = => @setupTestAudio()
 
 		#comment this out to disable mid and use audio insteaad
-		# document.getElementById('magic').onclick = =>
-		# 	navigator.webkitGetUserMedia
-		# 		audio: true
-		# 	,@setupMic, @onError
+		document.getElementById('magic').onclick = =>
+			navigator.webkitGetUserMedia
+				audio: true
+			,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -209,7 +191,7 @@ class AudioAnalysisEngine
 				@eventLogger "loPeak"
 				window.events.loPeak.dispatch()
 			else
-				if @_averageAmp+@_peakSensitivityOffset*3 < @_lastAverageAmp
+				if @_averageAmp+@_peakSensitivityOffset*2 < @_lastAverageAmp
 					@eventLogger 'hardPeak'
 					window.events.hardPeak.dispatch()
 				else
