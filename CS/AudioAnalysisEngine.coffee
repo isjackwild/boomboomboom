@@ -60,6 +60,7 @@ class AudioAnalysisEngine
 	_longBreakLength: 2500
 	_breakSensitivity: 2
 
+	#move things such as volume and approx BPM into the Events.coffee file — send them out as events and listen / store in an object in there. Keep it clean.
 	_bpmCalcArray: []
 	_approxBPM: 0
 	_lastBPM: null
@@ -338,6 +339,14 @@ class AudioAnalysisEngine
 			@_debugCTX.lineTo i/2, @_debugCV.height - @_frequencyData[i]/2
 			@_debugCTX.stroke()
 
+
+#clean-up / comment out the methods i don't end up using in the graphics
+
+#if using mic for parties etc, should write a setup method to normalise the volumes etc.
+
+#should probably try and re-write pretty much all the methods to make them more accurate... look into this after experimenting with the graphics
+
+#two modes: music controlled and ipad / iphone controlled
 
 
 
