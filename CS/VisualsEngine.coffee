@@ -1,6 +1,7 @@
 $ ->
 	visualsEngine = new VisualsEngine();
 
+
 	# test = =>
 	# 	console.log 'event system works'
 
@@ -8,6 +9,8 @@ $ ->
 
 class VisualsEngine
 	_cv: null
+
+	_two: null
 
 	_whichColour: 0
 
@@ -17,11 +20,24 @@ class VisualsEngine
 		@_ctx = @_cv.getContext '2d'
 		console.log @_cv, @_ctx
 		@setupListeners()
+		@setupTwoJs()
+		
 
 	setupListeners: ->
 		window.events.longBreak.add(@randomiseBackgroundColour)
 		window.events.hardPeak.add(@onHardPeak)
 		window.events.hiPeak.add(@onHighPeak)
+
+
+	setupTwoJs: ->
+		console.log 'setup two'
+		elem = document.getElementById 'twoMagic'
+		params = {
+			fullscreen: true
+			autostart: true
+		}
+		@_two = new Two(params).appendTo(elem)
+
 
 	onHardPeak: =>
 		@_ctx.fillStyle = 'black'

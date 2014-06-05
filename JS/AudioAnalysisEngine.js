@@ -130,13 +130,6 @@
           return _this.setupTestAudio();
         };
       })(this);
-      document.getElementById('magic').onclick = (function(_this) {
-        return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
-        };
-      })(this);
     }
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {

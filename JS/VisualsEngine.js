@@ -10,6 +10,8 @@
   VisualsEngine = (function() {
     VisualsEngine.prototype._cv = null;
 
+    VisualsEngine.prototype._two = null;
+
     VisualsEngine.prototype._whichColour = 0;
 
     function VisualsEngine() {
@@ -21,12 +23,24 @@
       this._ctx = this._cv.getContext('2d');
       console.log(this._cv, this._ctx);
       this.setupListeners();
+      this.setupTwoJs();
     }
 
     VisualsEngine.prototype.setupListeners = function() {
       window.events.longBreak.add(this.randomiseBackgroundColour);
       window.events.hardPeak.add(this.onHardPeak);
       return window.events.hiPeak.add(this.onHighPeak);
+    };
+
+    VisualsEngine.prototype.setupTwoJs = function() {
+      var elem, params;
+      console.log('setup two');
+      elem = document.getElementById('twoMagic');
+      params = {
+        fullscreen: true,
+        autostart: true
+      };
+      return this._two = new Two(params).appendTo(elem);
     };
 
     VisualsEngine.prototype.onHardPeak = function() {
