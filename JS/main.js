@@ -4,8 +4,8 @@
 
   $((function(_this) {
     return function() {
-      var audioAnalysisEngine, gui;
-      audioAnalysisEngine = new AudioAnalysisEngine();
+      var gui;
+      window.audioAnalysisEngine = new AudioAnalysisEngine();
       gui = new dat.GUI();
       gui.add(audioAnalysisEngine, '_samplesPerSecond');
       gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
@@ -238,10 +238,11 @@
         this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
-          return window.events.hiPeak.dispatch();
+          console.log("!!!!");
+          return window.events.highPeak.dispatch();
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
-          return window.events.loPeak.dispatch();
+          return window.events.lowPeak.dispatch();
         } else {
           if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
             this.eventLogger('hardPeak');
@@ -449,8 +450,8 @@
   Signal = signals.Signal;
 
   window.events = {
-    hiPeak: new Signal(),
-    loPeak: new Signal(),
+    lowPeak: new Signal(),
+    highPeak: new Signal(),
     hardPeak: new Signal(),
     softPeak: new Signal(),
     bass: new Signal(),
@@ -470,8 +471,7 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   $(function() {
-    var visualsEngine;
-    return visualsEngine = new VisualsEngine();
+    return window.visualsEngine = new VisualsEngine();
   });
 
   VisualsEngine = (function() {
@@ -479,88 +479,98 @@
 
     VisualsEngine.prototype._shapes = [];
 
+    VisualsEngine.prototype._peakCount = 0;
+
     VisualsEngine.prototype._two = null;
+
+    VisualsEngine.prototype._twoElem = null;
 
     VisualsEngine.prototype._whichColour = 0;
 
     function VisualsEngine() {
       this.randomiseBackgroundColour = __bind(this.randomiseBackgroundColour, this);
+      this.onPeak = __bind(this.onPeak, this);
+      this.onLowPeak = __bind(this.onLowPeak, this);
       this.onHighPeak = __bind(this.onHighPeak, this);
-      this.onHardPeak = __bind(this.onHardPeak, this);
+      this.onSoftPeak = __bind(this.onSoftPeak, this);
       console.log('setup background generation');
       this._cv = document.getElementById("magic");
       this._ctx = this._cv.getContext('2d');
-      console.log(this._cv, this._ctx);
       this.setupListeners();
       this.setupTwoJs();
     }
 
     VisualsEngine.prototype.setupListeners = function() {
       window.events.longBreak.add(this.randomiseBackgroundColour);
-      window.events.hardPeak.add(this.onHardPeak);
-      return window.events.hiPeak.add(this.onHighPeak);
+      window.events.hardPeak.add(this.randomiseBackgroundColour);
+      window.events.softPeak.add(this.onSoftPeak);
+      window.events.highPeak.add(this.onHighPeak);
+      return window.events.lowPeak.add(this.onLowPeak);
     };
 
     VisualsEngine.prototype.setupTwoJs = function() {
-      var circle, clear, elem, params;
+      var params;
       console.log('setup two');
-      elem = document.getElementById('twoMagic');
+      this._twoElem = document.getElementById('twoMagic');
       params = {
         fullscreen: true,
         autostart: true
       };
-      this._two = new Two(params).appendTo(elem);
-      circle = this._two.makeCircle(400, 400, 50);
-      circle.fill = "rgb(0,255,0)";
-      circle.noStroke();
-      this._shapes.push(circle);
-      return clear = setTimeout((function(_this) {
-        return function() {
-          var shape, that, _i, _len, _ref, _results;
-          that = _this;
-          _ref = _this._shapes;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            shape = _ref[_i];
-            shape.remove();
-            _this._shapes.splice(shape.index, 1);
-            _results.push(console.log('remove shape', _this._shapes));
-          }
-          return _results;
-        };
-      })(this), 1000);
+      this._two = new Two(params).appendTo(this._twoElem);
+      return console.log(this._two);
     };
 
-    VisualsEngine.prototype.onHardPeak = function() {
-      var clear;
-      this._ctx.fillStyle = 'black';
-      this._ctx.rect(this._cv.width / 4, this._cv.height / 4, (this._cv.width / 4) * 2, (this._cv.height / 4) * 2);
-      this._ctx.fill();
-      return clear = setTimeout((function(_this) {
-        return function() {
-          return _this._ctx.clearRect((_this._cv.width / 4) - 10, (_this._cv.height / 4) - 10, ((_this._cv.width / 4) * 2) + 10, ((_this._cv.height / 4) * 2) + 10);
-        };
-      })(this), 200);
+    VisualsEngine.prototype.onSoftPeak = function() {
+      return this.onPeak("soft");
     };
 
     VisualsEngine.prototype.onHighPeak = function() {
-      var clear2;
-      this._ctx.fillStyle = 'white';
-      this._ctx.rect(0, 0, this._cv.width, this._cv.height / 6);
-      this._ctx.fill();
-      return clear2 = setTimeout((function(_this) {
-        return function() {
-          return _this._ctx.clearRect(0, 0, _this._cv.width, (_this._cv.height / 6) + 10);
-        };
-      })(this), 200);
+      console.log("????");
+      return this.onPeak("hi");
+    };
+
+    VisualsEngine.prototype.onLowPeak = function() {
+      return this.onPeak("lo");
+    };
+
+    VisualsEngine.prototype.onPeak = function(type) {
+      var circle, col, shape, _i, _len, _ref;
+      if (type === "soft") {
+        col = "rgb(0,200,200)";
+      } else if (type === "hi") {
+        col = "rgb(255,155,255)";
+      } else if (type === "lo") {
+        col = "rgb(100,0,100)";
+      }
+      if (this._peakCount % 3 === 0) {
+        circle = this._two.makeCircle(Math.random() * this._two.width, Math.random() * this._two.height, 150);
+        circle.fill = col;
+        circle.lifeSpan = 500;
+        circle.noStroke();
+        this._shapes.push(circle);
+      } else if (this._peakCount % 3 === 1) {
+        _ref = this._shapes;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          shape = _ref[_i];
+          shape.remove();
+          this._shapes.splice(shape.index, 1);
+        }
+      }
+      return this._peakCount += 1;
     };
 
     VisualsEngine.prototype.randomiseBackgroundColour = function() {
+      var col1, col2;
+      col1 = "rgb(" + (10 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (10 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (10 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + ")";
+      col2 = "rgb(" + (100 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (100 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (100 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + ")";
+      console.log(col1, col2);
       this._whichColour += 1;
       if (this._whichColour % 2 === 1) {
-        return this._cv.style.background = "grey";
+        console.log("lalala");
+        return this._twoElem.style.background = col1;
       } else {
-        return this._cv.style.background = "DarkSlateGray ";
+        console.log("jsjsjs");
+        return this._twoElem.style.background = col2;
       }
     };
 

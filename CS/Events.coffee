@@ -2,8 +2,8 @@
 
 Signal = signals.Signal
 window.events = {
-	hiPeak: new Signal()
-	loPeak: new Signal()
+	lowPeak: new Signal()
+	highPeak: new Signal()
 	hardPeak: new Signal()
 	softPeak: new Signal()
 	bass: new Signal()

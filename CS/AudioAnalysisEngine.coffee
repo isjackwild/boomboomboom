@@ -1,6 +1,6 @@
 #Audio Analysis Engine
 $ =>
-	audioAnalysisEngine = new AudioAnalysisEngine();
+	window.audioAnalysisEngine = new AudioAnalysisEngine();
 
 	gui = new dat.GUI()
 	gui.add audioAnalysisEngine, '_samplesPerSecond'
@@ -108,7 +108,7 @@ class AudioAnalysisEngine
 		console.log 'setup test audio', @_testAudio
 		if (@_alreadySetup)
 			return
-		@_source = @_context.createMediaElementSource(@_testAudio)
+		@_source = @_context.createMediaElementSource @_testAudio
 		@_source.connect @_analyserNode
 		@_analyserNode.connect @_context.destination
 		@_testAudio.play()
@@ -119,7 +119,7 @@ class AudioAnalysisEngine
 		console.log 'setup mic'
 		if (@_alreadySetup)
 			return
-		@_source = @_context.createMediaStreamSource(stream)
+		@_source = @_context.createMediaStreamSource stream
 		@_source.connect @_dynamicsCompressor
 		@_dynamicsCompressor.connect @_analyserNode
 		# @_analyserNode.connect @_context.destination
@@ -187,10 +187,11 @@ class AudioAnalysisEngine
 			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
 				@eventLogger "hiPeak"
-				window.events.hiPeak.dispatch()
+				console.log "!!!!"
+				window.events.highPeak.dispatch()
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
 				@eventLogger "loPeak"
-				window.events.loPeak.dispatch()
+				window.events.lowPeak.dispatch()
 			else
 				if @_averageAmp+@_peakSensitivityOffset*2 < @_lastAverageAmp
 					@eventLogger 'hardPeak'

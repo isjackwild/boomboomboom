@@ -4,8 +4,8 @@
 
   $((function(_this) {
     return function() {
-      var audioAnalysisEngine, gui;
-      audioAnalysisEngine = new AudioAnalysisEngine();
+      var gui;
+      window.audioAnalysisEngine = new AudioAnalysisEngine();
       gui = new dat.GUI();
       gui.add(audioAnalysisEngine, '_samplesPerSecond');
       gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
@@ -238,10 +238,11 @@
         this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
-          return window.events.hiPeak.dispatch();
+          console.log("!!!!");
+          return window.events.highPeak.dispatch();
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
-          return window.events.loPeak.dispatch();
+          return window.events.lowPeak.dispatch();
         } else {
           if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
             this.eventLogger('hardPeak');
