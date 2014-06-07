@@ -10,6 +10,8 @@
   VisualsEngine = (function() {
     VisualsEngine.prototype._cv = null;
 
+    VisualsEngine.prototype._shapes = [];
+
     VisualsEngine.prototype._two = null;
 
     VisualsEngine.prototype._whichColour = 0;
@@ -33,14 +35,33 @@
     };
 
     VisualsEngine.prototype.setupTwoJs = function() {
-      var elem, params;
+      var circle, clear, elem, params;
       console.log('setup two');
       elem = document.getElementById('twoMagic');
       params = {
         fullscreen: true,
         autostart: true
       };
-      return this._two = new Two(params).appendTo(elem);
+      this._two = new Two(params).appendTo(elem);
+      circle = this._two.makeCircle(400, 400, 50);
+      circle.fill = "rgb(0,255,0)";
+      circle.noStroke();
+      this._shapes.push(circle);
+      return clear = setTimeout((function(_this) {
+        return function() {
+          var shape, that, _i, _len, _ref, _results;
+          that = _this;
+          _ref = _this._shapes;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            shape = _ref[_i];
+            shape.remove();
+            _this._shapes.splice(shape.index, 1);
+            _results.push(console.log('remove shape', _this._shapes));
+          }
+          return _results;
+        };
+      })(this), 1000);
     };
 
     VisualsEngine.prototype.onHardPeak = function() {

@@ -80,7 +80,7 @@ class AudioAnalysisEngine
 		@setupDebugEqualizer()
 
 		@_testAudio = document.getElementById('test_audio')
-		document.getElementById('magic').onclick = => @setupTestAudio()
+		document.getElementById('twoMagic').onclick = => @setupTestAudio()
 
 		#comment this out to disable mid and use audio insteaad
 		# document.getElementById('magic').onclick = =>

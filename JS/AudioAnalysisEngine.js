@@ -125,7 +125,7 @@
       this.setupFilters();
       this.setupDebugEqualizer();
       this._testAudio = document.getElementById('test_audio');
-      document.getElementById('magic').onclick = (function(_this) {
+      document.getElementById('twoMagic').onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
         };

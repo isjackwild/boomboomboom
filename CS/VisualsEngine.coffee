@@ -10,6 +10,8 @@ $ ->
 class VisualsEngine
 	_cv: null
 
+	_shapes: []
+
 	_two: null
 
 	_whichColour: 0
@@ -37,6 +39,25 @@ class VisualsEngine
 			autostart: true
 		}
 		@_two = new Two(params).appendTo(elem)
+
+		# console.log @_two, "<<<"
+
+		##a quick test
+		circle = @_two.makeCircle 400, 400, 50
+		circle.fill = "rgb(0,255,0)"
+		circle.noStroke()
+
+		@_shapes.push circle
+
+		clear = setTimeout =>
+			that = @
+			for shape in @_shapes
+				shape.remove()
+				@_shapes.splice shape.index, 1
+				console.log 'remove shape', @_shapes
+		, 1000
+
+		# @_two.update()
 
 
 	onHardPeak: =>
