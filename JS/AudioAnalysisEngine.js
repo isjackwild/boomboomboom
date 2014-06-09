@@ -238,7 +238,6 @@
         this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
-          console.log("!!!!");
           return window.events.highPeak.dispatch();
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");

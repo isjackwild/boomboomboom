@@ -238,7 +238,6 @@
         this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
-          console.log("!!!!");
           return window.events.highPeak.dispatch();
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
@@ -487,7 +486,13 @@
 
     VisualsEngine.prototype._whichColour = 0;
 
+    VisualsEngine.prototype._colourBucket = {
+      fg: new Array(20),
+      bg: new Array(5)
+    };
+
     function VisualsEngine() {
+      this.HSVtoRGB = __bind(this.HSVtoRGB, this);
       this.randomiseBackgroundColour = __bind(this.randomiseBackgroundColour, this);
       this.onPeak = __bind(this.onPeak, this);
       this.onLowPeak = __bind(this.onLowPeak, this);
@@ -498,6 +503,7 @@
       this._ctx = this._cv.getContext('2d');
       this.setupListeners();
       this.setupTwoJs();
+      this.updateColourBucket();
     }
 
     VisualsEngine.prototype.setupListeners = function() {
@@ -516,8 +522,30 @@
         fullscreen: true,
         autostart: true
       };
-      this._two = new Two(params).appendTo(this._twoElem);
-      return console.log(this._two);
+      return this._two = new Two(params).appendTo(this._twoElem);
+    };
+
+    VisualsEngine.prototype.updateColourBucket = function() {
+      var i, tempCol, _i, _j, _results;
+      console.log('update colours');
+      for (i = _i = 0; _i < 20; i = ++_i) {
+        tempCol = {
+          h: Math.floor(Math.random() * 360),
+          s: 88,
+          v: 80
+        };
+        this._colourBucket.fg[i] = tempCol;
+      }
+      _results = [];
+      for (i = _j = 0; _j < 5; i = ++_j) {
+        tempCol = {
+          h: Math.floor(Math.random() * 360),
+          s: 20,
+          v: 20
+        };
+        _results.push(this._colourBucket.bg[i] = tempCol);
+      }
+      return _results;
     };
 
     VisualsEngine.prototype.onSoftPeak = function() {
@@ -525,7 +553,6 @@
     };
 
     VisualsEngine.prototype.onHighPeak = function() {
-      console.log("????");
       return this.onPeak("hi");
     };
 
@@ -534,14 +561,24 @@
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
-      var circle, col, shape, _i, _len, _ref;
+      var circle, col, shape, whichCol, _i, _len, _ref;
+      whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
+      col = this._colourBucket.fg[whichCol];
       if (type === "soft") {
-        col = "rgb(0,200,200)";
+        col.s -= 10;
+        col = this.HSVtoRGB(col);
+        col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       } else if (type === "hi") {
-        col = "rgb(255,155,255)";
+        col.v += 20;
+        col = this.HSVtoRGB(col);
+        col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       } else if (type === "lo") {
-        col = "rgb(100,0,100)";
+        col.v -= 30;
+        col.s -= 20;
+        col = this.HSVtoRGB(col);
+        col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       }
+      console.log(col);
       if (this._peakCount % 3 === 0) {
         circle = this._two.makeCircle(Math.random() * this._two.width, Math.random() * this._two.height, 150);
         circle.fill = col;
@@ -563,15 +600,103 @@
       var col1, col2;
       col1 = "rgb(" + (10 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (10 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (10 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + ")";
       col2 = "rgb(" + (100 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (100 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (100 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + ")";
-      console.log(col1, col2);
       this._whichColour += 1;
       if (this._whichColour % 2 === 1) {
-        console.log("lalala");
         return this._twoElem.style.background = col1;
       } else {
-        console.log("jsjsjs");
         return this._twoElem.style.background = col2;
       }
+    };
+
+    VisualsEngine.prototype.HSVtoRGB = function(h, s, v) {
+      var b, f, g, i, p, q, r, rgb, t;
+      if (s === void 0) {
+        if (h.h > 360) {
+          h.h -= 360;
+        }
+        if (h.s > 100) {
+          h.s = 100;
+        }
+        if (h.v > 100) {
+          h.v = 100;
+        }
+        if (h.h < 0) {
+          h.h = 360 - Math.abs(h.h);
+        }
+        if (h.s < 0) {
+          h.s = 0;
+        }
+        if (h.v < 0) {
+          h.v = 0;
+        }
+        s = h.s / 100;
+        v = h.v / 100;
+        h = h.h / 360;
+      } else {
+        if (h > 360) {
+          h -= 360;
+        }
+        if (s > 100) {
+          s = 100;
+        }
+        if (v > 100) {
+          v = 100;
+        }
+        if (h < 0) {
+          h = 360 - Math.abs(h.h);
+        }
+        if (s < 0) {
+          s = 0;
+        }
+        if (v < 0) {
+          v = 0;
+        }
+        h = h / 360;
+        s = s / 100;
+        v = v / 100;
+      }
+      i = Math.floor(h * 6);
+      f = h * 6 - i;
+      p = v * (1 - s);
+      q = v * (1 - f * s);
+      t = v * (1 - (1 - f) * s);
+      switch (i % 6) {
+        case 0:
+          r = v;
+          g = t;
+          b = p;
+          break;
+        case 1:
+          r = q;
+          g = v;
+          b = p;
+          break;
+        case 2:
+          r = p;
+          g = v;
+          b = t;
+          break;
+        case 3:
+          r = p;
+          g = q;
+          b = v;
+          break;
+        case 4:
+          r = t;
+          g = p;
+          b = v;
+          break;
+        case 5:
+          r = v;
+          g = p;
+          b = q;
+      }
+      rgb = {
+        r: Math.floor(r * 255),
+        g: Math.floor(g * 255),
+        b: Math.floor(b * 255)
+      };
+      return rgb;
     };
 
     return VisualsEngine;

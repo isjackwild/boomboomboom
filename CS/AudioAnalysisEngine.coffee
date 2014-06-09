@@ -187,7 +187,6 @@ class AudioAnalysisEngine
 			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
 				@eventLogger "hiPeak"
-				console.log "!!!!"
 				window.events.highPeak.dispatch()
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
 				@eventLogger "loPeak"
