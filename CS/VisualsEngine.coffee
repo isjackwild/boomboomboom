@@ -11,6 +11,10 @@ class VisualsEngine
 	_two: null
 	_twoElem: null
 
+	_volume: 10
+	_frequency: 10
+	_bpm: 150
+
 	_whichColour: 0
 
 	_colourBucket: {
@@ -43,6 +47,9 @@ class VisualsEngine
 	setupListeners: ->
 		window.events.longBreak.add @randomiseBackgroundColour
 		window.events.peak.add @onPeak
+		window.events.BPM.add @gotBPM
+		window.events.volume.add @gotVolume
+		window.events.frequency.add @gotFrequency
 
 
 	setupTwoJs: ->
@@ -53,6 +60,21 @@ class VisualsEngine
 			autostart: true
 		}
 		@_two = new Two(params).appendTo(@_twoElem)
+
+
+	gotBPM: (BPM) ->
+		@_bpm = BPM
+		@updateColourBucket()
+
+
+	gotFrequency: (freq) ->
+		@_frequency = freq
+		@updateColourBucket()
+
+
+	gotVolume: (vol) ->
+		@_volume = vol
+		@updateColourBucket()
 
 
 	updateColourBucket: ->
@@ -72,17 +94,6 @@ class VisualsEngine
 			}
 			@_colourBucket.bg[i] = tempCol
 
-
-		
-	#look up how to pass arguments using signals.js, instead of setting up these methods just use onPeak('argument')
-	onSoftPeak: =>
-		@onPeak "soft"
-
-	onHighPeak: =>
-		@onPeak "hi"
-
-	onLowPeak: =>
-		@onPeak "lo"
 
 	onPeak: (type) =>
 

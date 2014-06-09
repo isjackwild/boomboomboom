@@ -11,6 +11,7 @@ window.events = {
 	BPMJump: new Signal()
 	changeFreqVar: new Signal()
 	volume: new Signal()
+	frequency: new Signal()
 }
 
 

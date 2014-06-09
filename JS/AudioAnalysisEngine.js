@@ -245,7 +245,7 @@
         this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
-          return window.events.highPeak.dispatch('hi');
+          return window.events.peak.dispatch('hi');
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
           return window.events.peak.dispatch('lo');
@@ -285,6 +285,7 @@
           if (i === this._averageFreqCalcArray.length - 1) {
             tempAvFreq /= this._averageFreqCalcArray.length;
             this._averageFrequency = tempAvFreq;
+            window.events.frequency.dispatch(this._averageFrequency);
             this._averageFreqCalcArray = [];
             _results.push(this._bassCutoff = this._averageFrequency + 500);
           } else {

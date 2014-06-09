@@ -187,7 +187,7 @@ class AudioAnalysisEngine
 			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
 				@eventLogger "hiPeak"
-				window.events.highPeak.dispatch 'hi'
+				window.events.peak.dispatch 'hi'
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
 				@eventLogger "loPeak"
 				window.events.peak.dispatch 'lo'
@@ -221,6 +221,7 @@ class AudioAnalysisEngine
 				if i is @_averageFreqCalcArray.length-1
 					tempAvFreq /= @_averageFreqCalcArray.length #get average freq of them
 					@_averageFrequency = tempAvFreq
+					window.events.frequency.dispatch @_averageFrequency
 					@_averageFreqCalcArray = []
 					@_bassCutoff = @_averageFrequency + 500
 
