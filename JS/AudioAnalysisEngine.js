@@ -50,7 +50,7 @@
 
     AudioAnalysisEngine.prototype._waitingForPeak = false;
 
-    AudioAnalysisEngine.prototype._peakSensitivityOffset = 5;
+    AudioAnalysisEngine.prototype._peakSensitivityOffset = 3;
 
     AudioAnalysisEngine.prototype._bassWaitingForPeak = false;
 

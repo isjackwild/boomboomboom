@@ -50,7 +50,7 @@
 
     AudioAnalysisEngine.prototype._waitingForPeak = false;
 
-    AudioAnalysisEngine.prototype._peakSensitivityOffset = 5;
+    AudioAnalysisEngine.prototype._peakSensitivityOffset = 3;
 
     AudioAnalysisEngine.prototype._bassWaitingForPeak = false;
 
@@ -581,12 +581,14 @@
         console.log('update colours');
         for (i = _k = 0, _ref2 = this._colourBucket.fg.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
           this._colourBucket.fg[i].s = 50;
-          this._colourBucket.fg[i].v = 50;
+          this._colourBucket.fg[i].v = Math.floor(this.convertToRange(this._frequency, [0, 50], [40, 80]));
+          console.log(this._colourBucket.fg[i].v, 'fg v');
         }
         _results1 = [];
         for (i = _l = 0, _ref3 = this._colourBucket.bg.length; 0 <= _ref3 ? _l < _ref3 : _l > _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
-          this._colourBucket.bg[i].s = 50;
-          _results1.push(this._colourBucket.bg[i].v = 50);
+          this._colourBucket.bg[i].s = 40;
+          this._colourBucket.bg[i].v = Math.floor(this.convertToRange(this._frequency, [0, 50], [10, 60]));
+          _results1.push(console.log(this._colourBucket.bg[i].v, 'bg v'));
         }
         return _results1;
       }
@@ -607,18 +609,18 @@
         col = this.HSVtoRGB(tempH, tempS, tempV);
         col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       } else if (type === "hi") {
-        tempS = 100;
+        tempS = tempS + 20;
         tempV = 100;
         col = this.HSVtoRGB(tempH, tempS, tempV);
         col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       } else if (type === "lo") {
-        tempV = tempV - 40;
+        tempV = tempV - 50;
         col = this.HSVtoRGB(tempH, tempS, tempV);
         col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       }
       console.log(col);
       if (this._peakCount % 3 === 0) {
-        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 400);
+        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 500);
         circle.fill = col;
         circle.lifeSpan = 500;
         circle.noStroke();
@@ -732,6 +734,20 @@
         b: Math.floor(b * 255)
       };
       return rgb;
+    };
+
+    VisualsEngine.prototype.convertToRange = function(value, srcRange, dstRange) {
+      var adjValue, dstMax, srcMax;
+      if (value < srcRange[0]) {
+        return dstRange[0];
+      } else if (value > srcRange[1]) {
+        return dstRange[1];
+      } else {
+        srcMax = srcRange[1] - srcRange[0];
+        dstMax = dstRange[1] - dstRange[0];
+        adjValue = value - srcRange[0];
+        return (adjValue * dstMax / srcMax) + dstRange[0];
+      }
     };
 
     return VisualsEngine;

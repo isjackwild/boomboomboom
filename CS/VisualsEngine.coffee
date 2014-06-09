@@ -102,10 +102,12 @@ class VisualsEngine
 			console.log 'update colours'
 			for i in [0...@_colourBucket.fg.length]
 				@_colourBucket.fg[i].s = 50
-				@_colourBucket.fg[i].v = 50
+				@_colourBucket.fg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [40,80])
+				console.log @_colourBucket.fg[i].v, 'fg v'
 			for i in [0...@_colourBucket.bg.length]
-				@_colourBucket.bg[i].s = 50
-				@_colourBucket.bg[i].v = 50
+				@_colourBucket.bg[i].s = 40
+				@_colourBucket.bg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [10,60])
+				console.log @_colourBucket.bg[i].v, 'bg v'
 
 
 	onPeak: (type) =>
@@ -126,12 +128,12 @@ class VisualsEngine
 			col = @HSVtoRGB tempH, tempS, tempV
 			col = "rgb("+col.r+","+col.g+","+col.b+")"
 		else if type is "hi"
-			tempS = 100
+			tempS = tempS+20
 			tempV = 100
 			col = @HSVtoRGB tempH, tempS, tempV
 			col = "rgb("+col.r+","+col.g+","+col.b+")"
 		else if type is "lo"
-			tempV = tempV-40
+			tempV = tempV-50
 			col = @HSVtoRGB tempH, tempS, tempV
 			col = "rgb("+col.r+","+col.g+","+col.b+")"
 
@@ -140,7 +142,7 @@ class VisualsEngine
 
 		##a quick test
 		if @_peakCount % 3 is 0
-			circle = @_two.makeCircle @_two.width/2, @_two.height/2, 400
+			circle = @_two.makeCircle @_two.width/2, @_two.height/2, 500
 			circle.fill = col
 			circle.lifeSpan = 500
 			circle.noStroke()
@@ -244,6 +246,17 @@ class VisualsEngine
 		}
 		
 		return rgb
+	#add this to my UTILS
+	convertToRange: (value, srcRange, dstRange) ->
+		if value < srcRange[0]
+			return dstRange[0]
+		else if value > srcRange[1]
+			return dstRange[1]
+		else
+			srcMax = srcRange[1] - srcRange[0]
+			dstMax = dstRange[1] - dstRange[0]
+			adjValue = value  - srcRange[0]
+			return (adjValue * dstMax / srcMax) + dstRange[0]
 
 
 
