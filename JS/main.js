@@ -490,11 +490,11 @@
 
     VisualsEngine.prototype._twoElem = null;
 
-    VisualsEngine.prototype._volume = 10;
+    VisualsEngine.prototype._volume = 20;
 
     VisualsEngine.prototype._frequency = 10;
 
-    VisualsEngine.prototype._bpm = 150;
+    VisualsEngine.prototype._bpm = 200;
 
     VisualsEngine.prototype._whichColour = 0;
 
@@ -509,6 +509,7 @@
       this.HSVtoRGB = __bind(this.HSVtoRGB, this);
       this.randomiseBackgroundColour = __bind(this.randomiseBackgroundColour, this);
       this.onPeak = __bind(this.onPeak, this);
+      this.filterOutGrossHues = __bind(this.filterOutGrossHues, this);
       this.gotVolume = __bind(this.gotVolume, this);
       this.gotFrequency = __bind(this.gotFrequency, this);
       this.gotBPM = __bind(this.gotBPM, this);
@@ -555,13 +556,14 @@
     };
 
     VisualsEngine.prototype.updateColourBucket = function() {
-      var i, tempCol, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3, _results, _results1;
+      var contrast, i, tempCol, tempH, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3, _results, _results1;
       if (this._coloursSetup === false) {
         console.log('generate colours');
         this._coloursSetup = true;
         for (i = _i = 0, _ref = this._colourBucket.fg.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+          tempH = this.filterOutGrossHues();
           tempCol = {
-            h: Math.floor(Math.random() * 360),
+            h: tempH,
             s: 70,
             v: 80
           };
@@ -569,8 +571,9 @@
         }
         _results = [];
         for (i = _j = 0, _ref1 = this._colourBucket.bg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+          tempH = this.filterOutGrossHues();
           tempCol = {
-            h: Math.floor(Math.random() * 360),
+            h: tempH,
             s: 20,
             v: 20
           };
@@ -579,18 +582,30 @@
         return _results;
       } else {
         console.log('update colours');
+        contrast = this.convertToRange(this._bpm, [100, 500], [20, 0]);
+        console.log(contrast, "contrast");
         for (i = _k = 0, _ref2 = this._colourBucket.fg.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-          this._colourBucket.fg[i].s = 50;
-          this._colourBucket.fg[i].v = Math.floor(this.convertToRange(this._frequency, [0, 50], [40, 80]));
+          this._colourBucket.fg[i].s = this.convertToRange(this._frequency, [0, 50], [30 + contrast / 2, 60 + contrast / 2]);
+          this._colourBucket.fg[i].v = Math.floor(this.convertToRange(this._frequency, [0, 50], [40 - contrast, 100 - contrast]));
           console.log(this._colourBucket.fg[i].v, 'fg v');
         }
         _results1 = [];
         for (i = _l = 0, _ref3 = this._colourBucket.bg.length; 0 <= _ref3 ? _l < _ref3 : _l > _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
-          this._colourBucket.bg[i].s = 40;
-          this._colourBucket.bg[i].v = Math.floor(this.convertToRange(this._frequency, [0, 50], [10, 60]));
+          this._colourBucket.bg[i].s = this.convertToRange(this._frequency, [0, 50], [0, 20]);
+          this._colourBucket.bg[i].v = Math.floor(this.convertToRange(this._frequency, [0, 50], [20, 60]));
           _results1.push(console.log(this._colourBucket.bg[i].v, 'bg v'));
         }
         return _results1;
+      }
+    };
+
+    VisualsEngine.prototype.filterOutGrossHues = function() {
+      var tempH;
+      tempH = Math.floor((Math.random() * 200) + 160);
+      if (tempH > 60 && tempH < 160 || tempH > 270) {
+        return this.filterOutGrossHues();
+      } else {
+        return tempH;
       }
     };
 
@@ -609,12 +624,13 @@
         col = this.HSVtoRGB(tempH, tempS, tempV);
         col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       } else if (type === "hi") {
-        tempS = tempS + 20;
+        tempS = tempS - 30;
         tempV = 100;
         col = this.HSVtoRGB(tempH, tempS, tempV);
         col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       } else if (type === "lo") {
-        tempV = tempV - 50;
+        tempS = 15;
+        tempV = tempV - 10;
         col = this.HSVtoRGB(tempH, tempS, tempV);
         col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       }

@@ -11,9 +11,9 @@ class VisualsEngine
 	_two: null
 	_twoElem: null
 
-	_volume: 10
+	_volume: 20
 	_frequency: 10
-	_bpm: 150
+	_bpm: 200
 
 	_whichColour: 0
 
@@ -84,15 +84,17 @@ class VisualsEngine
 			console.log 'generate colours'
 			@_coloursSetup = true
 			for i in [0...@_colourBucket.fg.length]
+				tempH = @filterOutGrossHues()
 				tempCol = {
-					h: Math.floor Math.random()*360
+					h: tempH
 					s: 70
 					v: 80
 				}
 				@_colourBucket.fg[i] = tempCol
 			for i in [0...@_colourBucket.bg.length]
+				tempH = @filterOutGrossHues()
 				tempCol = {
-					h: Math.floor Math.random()*360
+					h: tempH
 					s: 20
 					v: 20
 				}
@@ -100,14 +102,23 @@ class VisualsEngine
 		else
 			#this should take into account the vol, freq and bpm
 			console.log 'update colours'
+			contrast = @convertToRange @_bpm, [100,500], [20, 0]
+			console.log contrast, "contrast"
 			for i in [0...@_colourBucket.fg.length]
-				@_colourBucket.fg[i].s = 50
-				@_colourBucket.fg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [40,80])
+				@_colourBucket.fg[i].s = @convertToRange @_frequency, [0,50], [30+contrast/2, 60+contrast/2]
+				@_colourBucket.fg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [40-contrast,100-contrast])
 				console.log @_colourBucket.fg[i].v, 'fg v'
 			for i in [0...@_colourBucket.bg.length]
-				@_colourBucket.bg[i].s = 40
-				@_colourBucket.bg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [10,60])
+				@_colourBucket.bg[i].s = @convertToRange @_frequency, [0,50], [0, 20]
+				@_colourBucket.bg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [20,60])
 				console.log @_colourBucket.bg[i].v, 'bg v'
+
+	filterOutGrossHues: =>
+		tempH = Math.floor (Math.random()*200)+160
+		if tempH > 60 and tempH < 160 or tempH > 270
+			@filterOutGrossHues()
+		else
+			return tempH
 
 
 	onPeak: (type) =>
@@ -128,12 +139,13 @@ class VisualsEngine
 			col = @HSVtoRGB tempH, tempS, tempV
 			col = "rgb("+col.r+","+col.g+","+col.b+")"
 		else if type is "hi"
-			tempS = tempS+20
+			tempS = tempS-30
 			tempV = 100
 			col = @HSVtoRGB tempH, tempS, tempV
 			col = "rgb("+col.r+","+col.g+","+col.b+")"
 		else if type is "lo"
-			tempV = tempV-50
+			tempS = 15
+			tempV = tempV-10
 			col = @HSVtoRGB tempH, tempS, tempV
 			col = "rgb("+col.r+","+col.g+","+col.b+")"
 
