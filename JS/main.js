@@ -501,7 +501,7 @@
     VisualsEngine.prototype._coloursSetup = false;
 
     VisualsEngine.prototype._colourBucket = {
-      fg: new Array(20),
+      fg: new Array(10),
       bg: new Array(5)
     };
 
@@ -556,14 +556,13 @@
     };
 
     VisualsEngine.prototype.updateColourBucket = function() {
-      var contrast, i, tempCol, tempH, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3, _results, _results1;
+      var contrast, i, tempCol, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3, _results, _results1;
       if (this._coloursSetup === false) {
         console.log('generate colours');
         this._coloursSetup = true;
         for (i = _i = 0, _ref = this._colourBucket.fg.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-          tempH = this.filterOutGrossHues();
           tempCol = {
-            h: tempH,
+            h: this.filterOutGrossHues(),
             s: 70,
             v: 80
           };
@@ -571,9 +570,8 @@
         }
         _results = [];
         for (i = _j = 0, _ref1 = this._colourBucket.bg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          tempH = this.filterOutGrossHues();
           tempCol = {
-            h: tempH,
+            h: this.filterOutGrossHues(),
             s: 20,
             v: 20
           };
@@ -585,13 +583,13 @@
         contrast = this.convertToRange(this._bpm, [100, 500], [20, 0]);
         console.log(contrast, "contrast");
         for (i = _k = 0, _ref2 = this._colourBucket.fg.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-          this._colourBucket.fg[i].s = this.convertToRange(this._frequency, [0, 50], [30 + contrast / 2, 60 + contrast / 2]);
+          this._colourBucket.fg[i].s = this.convertToRange(this._frequency, [0, 50], [20 + contrast / 2, 50 + contrast / 2]);
           this._colourBucket.fg[i].v = Math.floor(this.convertToRange(this._frequency, [0, 50], [40 - contrast, 100 - contrast]));
           console.log(this._colourBucket.fg[i].v, 'fg v');
         }
         _results1 = [];
         for (i = _l = 0, _ref3 = this._colourBucket.bg.length; 0 <= _ref3 ? _l < _ref3 : _l > _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
-          this._colourBucket.bg[i].s = this.convertToRange(this._frequency, [0, 50], [0, 20]);
+          this._colourBucket.bg[i].s = this.convertToRange(this._frequency, [0, 50], [0, 50]);
           this._colourBucket.bg[i].v = Math.floor(this.convertToRange(this._frequency, [0, 50], [20, 60]));
           _results1.push(console.log(this._colourBucket.bg[i].v, 'bg v'));
         }
@@ -636,7 +634,7 @@
       }
       console.log(col);
       if (this._peakCount % 3 === 0) {
-        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 500);
+        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 300);
         circle.fill = col;
         circle.lifeSpan = 500;
         circle.noStroke();

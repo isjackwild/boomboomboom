@@ -19,7 +19,7 @@ class VisualsEngine
 
 	_coloursSetup: false
 	_colourBucket: {
-		fg: new Array 20
+		fg: new Array 10
 		bg: new Array 5
 	}
 
@@ -84,32 +84,31 @@ class VisualsEngine
 			console.log 'generate colours'
 			@_coloursSetup = true
 			for i in [0...@_colourBucket.fg.length]
-				tempH = @filterOutGrossHues()
 				tempCol = {
-					h: tempH
+					h: @filterOutGrossHues()
 					s: 70
 					v: 80
 				}
 				@_colourBucket.fg[i] = tempCol
 			for i in [0...@_colourBucket.bg.length]
-				tempH = @filterOutGrossHues()
 				tempCol = {
-					h: tempH
+					h: @filterOutGrossHues()
 					s: 20
 					v: 20
 				}
 				@_colourBucket.bg[i] = tempCol
 		else
 			#this should take into account the vol, freq and bpm
+			#maybe this should be more subtle... things like bpm will also control the animations, so the colours don't have to vary hugely... just a little to add to the mood
 			console.log 'update colours'
 			contrast = @convertToRange @_bpm, [100,500], [20, 0]
 			console.log contrast, "contrast"
 			for i in [0...@_colourBucket.fg.length]
-				@_colourBucket.fg[i].s = @convertToRange @_frequency, [0,50], [30+contrast/2, 60+contrast/2]
+				@_colourBucket.fg[i].s = @convertToRange @_frequency, [0,50], [20+contrast/2, 50+contrast/2]
 				@_colourBucket.fg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [40-contrast,100-contrast])
 				console.log @_colourBucket.fg[i].v, 'fg v'
 			for i in [0...@_colourBucket.bg.length]
-				@_colourBucket.bg[i].s = @convertToRange @_frequency, [0,50], [0, 20]
+				@_colourBucket.bg[i].s = @convertToRange @_frequency, [0,50], [0, 50]
 				@_colourBucket.bg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [20,60])
 				console.log @_colourBucket.bg[i].v, 'bg v'
 
@@ -154,7 +153,7 @@ class VisualsEngine
 
 		##a quick test
 		if @_peakCount % 3 is 0
-			circle = @_two.makeCircle @_two.width/2, @_two.height/2, 500
+			circle = @_two.makeCircle @_two.width/2, @_two.height/2, 300
 			circle.fill = col
 			circle.lifeSpan = 500
 			circle.noStroke()
