@@ -17,6 +17,7 @@ class VisualsEngine
 
 	_whichColour: 0
 
+	_coloursSetup: false
 	_colourBucket: {
 		fg: new Array 20
 		bg: new Array 5
@@ -62,37 +63,49 @@ class VisualsEngine
 		@_two = new Two(params).appendTo(@_twoElem)
 
 
-	gotBPM: (BPM) ->
+	gotBPM: (BPM) =>
 		@_bpm = BPM
 		@updateColourBucket()
 
 
-	gotFrequency: (freq) ->
+	gotFrequency: (freq) =>
 		@_frequency = freq
 		@updateColourBucket()
 
 
-	gotVolume: (vol) ->
+	gotVolume: (vol) =>
 		@_volume = vol
 		@updateColourBucket()
 
 
+
 	updateColourBucket: ->
-		console.log 'update colours'
-		for i in [0...20]
-			tempCol = {
-				h: Math.floor Math.random()*360
-				s: 70
-				v: 80
-			}
-			@_colourBucket.fg[i] = tempCol
-		for i in [0...5]
-			tempCol = {
-				h: Math.floor Math.random()*360
-				s: 20
-				v: 20
-			}
-			@_colourBucket.bg[i] = tempCol
+		if @_coloursSetup is false
+			console.log 'generate colours'
+			@_coloursSetup = true
+			for i in [0...@_colourBucket.fg.length]
+				tempCol = {
+					h: Math.floor Math.random()*360
+					s: 70
+					v: 80
+				}
+				@_colourBucket.fg[i] = tempCol
+			for i in [0...@_colourBucket.bg.length]
+				tempCol = {
+					h: Math.floor Math.random()*360
+					s: 20
+					v: 20
+				}
+				@_colourBucket.bg[i] = tempCol
+		else
+			#this should take into account the vol, freq and bpm
+			console.log 'update colours'
+			for i in [0...@_colourBucket.fg.length]
+				@_colourBucket.fg[i].s = 50
+				@_colourBucket.fg[i].v = 50
+			for i in [0...@_colourBucket.bg.length]
+				@_colourBucket.bg[i].s = 50
+				@_colourBucket.bg[i].v = 50
 
 
 	onPeak: (type) =>
@@ -141,15 +154,20 @@ class VisualsEngine
 
 
 	randomiseBackgroundColour: =>
+		whichCol = Math.ceil Math.random()*(@_colourBucket.bg.length-1)
+		col = @_colourBucket.bg[whichCol]
+		col = @HSVtoRGB col.h, col.s, col.v
+		col = "rgb("+col.r+","+col.g+","+col.b+")"
 
-		col1 = "rgb("+(10+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(10+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(10+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+")"
-		col2 = "rgb("+(100+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(100+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(100+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+")"
+		@_twoElem.style.background = col
+		# col1 = "rgb("+(10+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(10+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(10+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+")"
+		# col2 = "rgb("+(100+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(100+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(100+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+")"
 
-		@_whichColour += 1
-		if @_whichColour % 2 is 1
-			@_twoElem.style.background = col1
-		else
-			@_twoElem.style.background = col2
+		# @_whichColour += 1
+		# if @_whichColour % 2 is 1
+		# 	@_twoElem.style.background = col1
+		# else
+		# 	@_twoElem.style.background = col2
 
 
 	#add this to my UTILS

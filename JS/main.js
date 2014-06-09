@@ -498,6 +498,8 @@
 
     VisualsEngine.prototype._whichColour = 0;
 
+    VisualsEngine.prototype._coloursSetup = false;
+
     VisualsEngine.prototype._colourBucket = {
       fg: new Array(20),
       bg: new Array(5)
@@ -507,6 +509,9 @@
       this.HSVtoRGB = __bind(this.HSVtoRGB, this);
       this.randomiseBackgroundColour = __bind(this.randomiseBackgroundColour, this);
       this.onPeak = __bind(this.onPeak, this);
+      this.gotVolume = __bind(this.gotVolume, this);
+      this.gotFrequency = __bind(this.gotFrequency, this);
+      this.gotBPM = __bind(this.gotBPM, this);
       console.log('setup background generation');
       this._cv = document.getElementById("magic");
       this._ctx = this._cv.getContext('2d');
@@ -550,26 +555,41 @@
     };
 
     VisualsEngine.prototype.updateColourBucket = function() {
-      var i, tempCol, _i, _j, _results;
-      console.log('update colours');
-      for (i = _i = 0; _i < 20; i = ++_i) {
-        tempCol = {
-          h: Math.floor(Math.random() * 360),
-          s: 70,
-          v: 80
-        };
-        this._colourBucket.fg[i] = tempCol;
+      var i, tempCol, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3, _results, _results1;
+      if (this._coloursSetup === false) {
+        console.log('generate colours');
+        this._coloursSetup = true;
+        for (i = _i = 0, _ref = this._colourBucket.fg.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+          tempCol = {
+            h: Math.floor(Math.random() * 360),
+            s: 70,
+            v: 80
+          };
+          this._colourBucket.fg[i] = tempCol;
+        }
+        _results = [];
+        for (i = _j = 0, _ref1 = this._colourBucket.bg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+          tempCol = {
+            h: Math.floor(Math.random() * 360),
+            s: 20,
+            v: 20
+          };
+          _results.push(this._colourBucket.bg[i] = tempCol);
+        }
+        return _results;
+      } else {
+        console.log('update colours');
+        for (i = _k = 0, _ref2 = this._colourBucket.fg.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+          this._colourBucket.fg[i].s = 50;
+          this._colourBucket.fg[i].v = 50;
+        }
+        _results1 = [];
+        for (i = _l = 0, _ref3 = this._colourBucket.bg.length; 0 <= _ref3 ? _l < _ref3 : _l > _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
+          this._colourBucket.bg[i].s = 50;
+          _results1.push(this._colourBucket.bg[i].v = 50);
+        }
+        return _results1;
       }
-      _results = [];
-      for (i = _j = 0; _j < 5; i = ++_j) {
-        tempCol = {
-          h: Math.floor(Math.random() * 360),
-          s: 20,
-          v: 20
-        };
-        _results.push(this._colourBucket.bg[i] = tempCol);
-      }
-      return _results;
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
@@ -615,15 +635,12 @@
     };
 
     VisualsEngine.prototype.randomiseBackgroundColour = function() {
-      var col1, col2;
-      col1 = "rgb(" + (10 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (10 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (10 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + ")";
-      col2 = "rgb(" + (100 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (100 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + "," + (100 + Math.floor(window.audioAnalysisEngine._averageFrequency * 4)) + ")";
-      this._whichColour += 1;
-      if (this._whichColour % 2 === 1) {
-        return this._twoElem.style.background = col1;
-      } else {
-        return this._twoElem.style.background = col2;
-      }
+      var col, whichCol;
+      whichCol = Math.ceil(Math.random() * (this._colourBucket.bg.length - 1));
+      col = this._colourBucket.bg[whichCol];
+      col = this.HSVtoRGB(col.h, col.s, col.v);
+      col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
+      return this._twoElem.style.background = col;
     };
 
     VisualsEngine.prototype.HSVtoRGB = function(h, s, v) {
