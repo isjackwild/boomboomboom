@@ -83,10 +83,10 @@ class AudioAnalysisEngine
 		document.getElementById('twoMagic').onclick = => @setupTestAudio()
 
 		#comment this out to disable mid and use audio insteaad
-		# document.getElementById('magic').onclick = =>
-		# 	navigator.webkitGetUserMedia
-		# 		audio: true
-		# 	,@setupMic, @onError
+		document.getElementById('twoMagic').onclick = =>
+			navigator.webkitGetUserMedia
+				audio: true
+			,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -141,7 +141,7 @@ class AudioAnalysisEngine
 		@drawDebugEqualizer()
 		@_frequencyOfPeak.amp = 0
 
-		for i in [0..@_frequencyData.length-1] by 1 #check for highest peak over the whole range
+		for i in [0...@_frequencyData.length] by 1 #check for highest peak over the whole range
 
 			if @_frequencyData[i] > @_frequencyOfPeak.amp
 				@_frequencyOfPeak.freq = i #set highest freq found as this one
@@ -160,7 +160,7 @@ class AudioAnalysisEngine
 				@checkForPeak()
 
 
-		for i in [@_bassCutoff..@_frequencyData.length-1] by 1
+		for i in [@_bassCutoff...@_frequencyData.length] by 1
 			if i is @_bassCutoff
 				@_lastBassAverageAmp = @_bassAverageAmp
 				@_bassAverageAmp = 0
@@ -187,17 +187,17 @@ class AudioAnalysisEngine
 			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
 				@eventLogger "hiPeak"
-				window.events.highPeak.dispatch()
+				window.events.highPeak.dispatch 'hi'
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
 				@eventLogger "loPeak"
-				window.events.lowPeak.dispatch()
+				window.events.peak.dispatch 'lo'
 			else
-				if @_averageAmp+@_peakSensitivityOffset*2 < @_lastAverageAmp
+				if @_averageAmp+@_peakSensitivityOffset*2.5 < @_lastAverageAmp
 					@eventLogger 'hardPeak'
-					window.events.hardPeak.dispatch()
+					window.events.peak.dispatch 'hard'
 				else
 					@eventLogger "softPeak"
-					window.events.softPeak.dispatch()
+					window.events.peak.dispatch 'soft'
 
 
 	checkForBassPeak: => #would be good if this was based on a peak much lower than the average. At the moment a very bassy song would set this off every time a peak was detected.
@@ -216,7 +216,7 @@ class AudioAnalysisEngine
 		@_averageFreqCalcArray.push @_frequencyOfPeak.freq #get ten peaks
 		if @_averageFreqCalcArray.length is 10
 			tempAvFreq = 0
-			for i in [0..@_averageFreqCalcArray.length-1] by 1
+			for i in [0...@_averageFreqCalcArray.length] by 1
 				tempAvFreq += @_averageFreqCalcArray[i]
 				if i is @_averageFreqCalcArray.length-1
 					tempAvFreq /= @_averageFreqCalcArray.length #get average freq of them
@@ -234,7 +234,7 @@ class AudioAnalysisEngine
 			@_frequencyOfPeak.lastFreq = @_frequencyOfPeak.freq
 			@_frequencyVariationCheck.push differenceInFreq
 			if @_frequencyVariationCheck.length is 10
-				for i in [0..@_frequencyVariationCheck.length-1] by 1
+				for i in [0...@_frequencyVariationCheck.length] by 1
 					if i is 0
 						avDifference = 0
 					avDifference += @_frequencyVariationCheck[i]
@@ -295,7 +295,7 @@ class AudioAnalysisEngine
 		@_volCalcArray.push @_averageAmp
 		if @_volCalcArray.length is @_samplesPerSecond
 			tempAvVol = 0
-			for i in [0..@_volCalcArray.length-1] by 1
+			for i in [0...@_volCalcArray.length] by 1
 				tempAvVol += @_volCalcArray[i]
 				if i is @_volCalcArray.length-1
 					tempAvVol /= @_volCalcArray.length
@@ -333,7 +333,7 @@ class AudioAnalysisEngine
 
 	drawDebugEqualizer: =>
 		@_debugCTX.clearRect 0,0,@_debugCV.width,@_debugCV.height
-		for i in [0..@_frequencyData.length-1] by 2
+		for i in [0...@_frequencyData.length] by 2
 			@_debugCTX.beginPath()
 			@_debugCTX.moveTo i/2, @_debugCV.height
 			@_debugCTX.lineTo i/2, @_debugCV.height - @_frequencyData[i]/2

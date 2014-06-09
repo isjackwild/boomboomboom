@@ -42,10 +42,7 @@ class VisualsEngine
 
 	setupListeners: ->
 		window.events.longBreak.add @randomiseBackgroundColour
-		window.events.hardPeak.add @randomiseBackgroundColour
-		window.events.softPeak.add @onSoftPeak
-		window.events.highPeak.add @onHighPeak
-		window.events.lowPeak.add @onLowPeak
+		window.events.peak.add @onPeak
 
 
 	setupTwoJs: ->
@@ -63,7 +60,7 @@ class VisualsEngine
 		for i in [0...20]
 			tempCol = {
 				h: Math.floor Math.random()*360
-				s: 88
+				s: 70
 				v: 80
 			}
 			@_colourBucket.fg[i] = tempCol
@@ -74,6 +71,8 @@ class VisualsEngine
 				v: 20
 			}
 			@_colourBucket.bg[i] = tempCol
+
+
 		
 	#look up how to pass arguments using signals.js, instead of setting up these methods just use onPeak('argument')
 	onSoftPeak: =>
@@ -87,30 +86,37 @@ class VisualsEngine
 
 	onPeak: (type) =>
 
+		if type is 'hard'
+			@randomiseBackgroundColour()
+			return
+
 		#hi peaks have lighter colours, lo peaks have darker colours
 		#take a colour from the bucket, and either add or minus from the viberance to get the colours for the high or low peaks
 		whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
 		col = @_colourBucket.fg[whichCol]
+		tempH = col.h
+		tempS = col.s
+		tempV = col.v
 
 		if type is "soft"
-			col.s -= 10
-			col = @HSVtoRGB col
+			col = @HSVtoRGB tempH, tempS, tempV
 			col = "rgb("+col.r+","+col.g+","+col.b+")"
 		else if type is "hi"
-			col.v += 20
-			col = @HSVtoRGB col
+			tempS = 100
+			tempV = 100
+			col = @HSVtoRGB tempH, tempS, tempV
 			col = "rgb("+col.r+","+col.g+","+col.b+")"
 		else if type is "lo"
-			col.v -= 30
-			col.s -= 20
-			col = @HSVtoRGB col
+			tempV = tempV-40
+			col = @HSVtoRGB tempH, tempS, tempV
 			col = "rgb("+col.r+","+col.g+","+col.b+")"
 
 		console.log col
 
+
 		##a quick test
 		if @_peakCount % 3 is 0
-			circle = @_two.makeCircle Math.random()*@_two.width, Math.random()*@_two.height, 150
+			circle = @_two.makeCircle @_two.width/2, @_two.height/2, 400
 			circle.fill = col
 			circle.lifeSpan = 500
 			circle.noStroke()

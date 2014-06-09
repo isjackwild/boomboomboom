@@ -41,10 +41,7 @@
 
     VisualsEngine.prototype.setupListeners = function() {
       window.events.longBreak.add(this.randomiseBackgroundColour);
-      window.events.hardPeak.add(this.randomiseBackgroundColour);
-      window.events.softPeak.add(this.onSoftPeak);
-      window.events.highPeak.add(this.onHighPeak);
-      return window.events.lowPeak.add(this.onLowPeak);
+      return window.events.peak.add(this.onPeak);
     };
 
     VisualsEngine.prototype.setupTwoJs = function() {
@@ -64,7 +61,7 @@
       for (i = _i = 0; _i < 20; i = ++_i) {
         tempCol = {
           h: Math.floor(Math.random() * 360),
-          s: 88,
+          s: 70,
           v: 80
         };
         this._colourBucket.fg[i] = tempCol;
@@ -94,26 +91,32 @@
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
-      var circle, col, shape, whichCol, _i, _len, _ref;
+      var circle, col, shape, tempH, tempS, tempV, whichCol, _i, _len, _ref;
+      if (type === 'hard') {
+        this.randomiseBackgroundColour();
+        return;
+      }
       whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
       col = this._colourBucket.fg[whichCol];
+      tempH = col.h;
+      tempS = col.s;
+      tempV = col.v;
       if (type === "soft") {
-        col.s -= 10;
-        col = this.HSVtoRGB(col);
+        col = this.HSVtoRGB(tempH, tempS, tempV);
         col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       } else if (type === "hi") {
-        col.v += 20;
-        col = this.HSVtoRGB(col);
+        tempS = 100;
+        tempV = 100;
+        col = this.HSVtoRGB(tempH, tempS, tempV);
         col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       } else if (type === "lo") {
-        col.v -= 30;
-        col.s -= 20;
-        col = this.HSVtoRGB(col);
+        tempV = tempV - 40;
+        col = this.HSVtoRGB(tempH, tempS, tempV);
         col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       }
       console.log(col);
       if (this._peakCount % 3 === 0) {
-        circle = this._two.makeCircle(Math.random() * this._two.width, Math.random() * this._two.height, 150);
+        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 400);
         circle.fill = col;
         circle.lifeSpan = 500;
         circle.noStroke();

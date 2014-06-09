@@ -130,6 +130,13 @@
           return _this.setupTestAudio();
         };
       })(this);
+      document.getElementById('twoMagic').onclick = (function(_this) {
+        return function() {
+          return navigator.webkitGetUserMedia({
+            audio: true
+          }, _this.setupMic, _this.onError);
+        };
+      })(this);
     }
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
@@ -191,7 +198,7 @@
       this._analyserNode.getByteFrequencyData(this._frequencyData);
       this.drawDebugEqualizer();
       this._frequencyOfPeak.amp = 0;
-      for (i = _i = 0, _ref = this._frequencyData.length - 1; _i <= _ref; i = _i += 1) {
+      for (i = _i = 0, _ref = this._frequencyData.length; _i < _ref; i = _i += 1) {
         if (this._frequencyData[i] > this._frequencyOfPeak.amp) {
           this._frequencyOfPeak.freq = i;
           this._frequencyOfPeak.amp = this._frequencyData[i];
@@ -209,7 +216,7 @@
         }
       }
       _results = [];
-      for (i = _j = _ref1 = this._bassCutoff, _ref2 = this._frequencyData.length - 1; _j <= _ref2; i = _j += 1) {
+      for (i = _j = _ref1 = this._bassCutoff, _ref2 = this._frequencyData.length; _j < _ref2; i = _j += 1) {
         if (i === this._bassCutoff) {
           this._lastBassAverageAmp = this._bassAverageAmp;
           this._bassAverageAmp = 0;
@@ -238,17 +245,17 @@
         this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
-          return window.events.highPeak.dispatch();
+          return window.events.highPeak.dispatch('hi');
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
-          return window.events.lowPeak.dispatch();
+          return window.events.peak.dispatch('lo');
         } else {
-          if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
+          if (this._averageAmp + this._peakSensitivityOffset * 2.5 < this._lastAverageAmp) {
             this.eventLogger('hardPeak');
-            return window.events.hardPeak.dispatch();
+            return window.events.peak.dispatch('hard');
           } else {
             this.eventLogger("softPeak");
-            return window.events.softPeak.dispatch();
+            return window.events.peak.dispatch('soft');
           }
         }
       }
@@ -273,7 +280,7 @@
       if (this._averageFreqCalcArray.length === 10) {
         tempAvFreq = 0;
         _results = [];
-        for (i = _i = 0, _ref = this._averageFreqCalcArray.length - 1; _i <= _ref; i = _i += 1) {
+        for (i = _i = 0, _ref = this._averageFreqCalcArray.length; _i < _ref; i = _i += 1) {
           tempAvFreq += this._averageFreqCalcArray[i];
           if (i === this._averageFreqCalcArray.length - 1) {
             tempAvFreq /= this._averageFreqCalcArray.length;
@@ -298,7 +305,7 @@
         this._frequencyVariationCheck.push(differenceInFreq);
         if (this._frequencyVariationCheck.length === 10) {
           _results = [];
-          for (i = _i = 0, _ref = this._frequencyVariationCheck.length - 1; _i <= _ref; i = _i += 1) {
+          for (i = _i = 0, _ref = this._frequencyVariationCheck.length; _i < _ref; i = _i += 1) {
             if (i === 0) {
               avDifference = 0;
             }
@@ -373,7 +380,7 @@
       if (this._volCalcArray.length === this._samplesPerSecond) {
         tempAvVol = 0;
         _results = [];
-        for (i = _i = 0, _ref = this._volCalcArray.length - 1; _i <= _ref; i = _i += 1) {
+        for (i = _i = 0, _ref = this._volCalcArray.length; _i < _ref; i = _i += 1) {
           tempAvVol += this._volCalcArray[i];
           if (i === this._volCalcArray.length - 1) {
             tempAvVol /= this._volCalcArray.length;
@@ -428,7 +435,7 @@
       var i, _i, _ref, _results;
       this._debugCTX.clearRect(0, 0, this._debugCV.width, this._debugCV.height);
       _results = [];
-      for (i = _i = 0, _ref = this._frequencyData.length - 1; _i <= _ref; i = _i += 2) {
+      for (i = _i = 0, _ref = this._frequencyData.length; _i < _ref; i = _i += 2) {
         this._debugCTX.beginPath();
         this._debugCTX.moveTo(i / 2, this._debugCV.height);
         this._debugCTX.lineTo(i / 2, this._debugCV.height - this._frequencyData[i] / 2);
