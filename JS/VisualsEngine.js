@@ -130,6 +130,7 @@
 
     VisualsEngine.prototype.gotFrequency = function(freq) {
       this._frequency = freq;
+      this.updateBackgroundColour();
       return this.updateColourBucket();
     };
 
@@ -151,7 +152,7 @@
         _results1 = [];
         for (i = _j = 0, _ref1 = this._colourBucket.fg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
           sOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [60, 600], [-50, 15])));
-          vOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [-15, 15]));
+          vOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [15, -15]));
           this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
           this._colourBucket.fg[i].s = this._colourBucket.fg[i].s + sOffset;
           if (this._colourBucket.fg[i].s < 30) {
@@ -165,7 +166,7 @@
 
     VisualsEngine.prototype.updateBackgroundColour = function() {
       var newCol;
-      newCol = Math.floor(this.convertToRange(this._frequency, [5, 60], [30, 190]));
+      newCol = Math.floor(this.convertToRange(this._frequency, [8, 60], [30, 190]));
       if (Math.abs(this._bgColFrom - newCol) < 10 || this._bgColLerp < 0.97) {
 
       } else {
@@ -181,22 +182,21 @@
       whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
       col = this._colourBucket.fg[whichCol];
       if (type === 'hard') {
-        this.updateBackgroundColour();
         col = this.HSVtoRGB(col.h, col.s, col.v);
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
       } else if (type === 'soft') {
         col = this.HSVtoRGB(col.h, col.s, col.v);
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
       } else if (type === 'hi') {
-        v = this.convertToRange(this._frequency, [5, 40], [80, 100]);
-        col = this.HSVtoRGB(col.h, 10, v);
+        v = this.convertToRange(this._frequency, [5, 60], [80, 100]);
+        col = this.HSVtoRGB(col.h, 7, v);
         circle = this._two.makeCircle(0, this._two.height / 4, this._two.height * 0.82);
       } else if (type === 'lo') {
-        v = this.convertToRange(this._frequency, [5, 40], [15, 33]);
+        v = this.convertToRange(this._frequency, [5, 60], [15, 33]);
         if (col.s < 8) {
           col.s = 8;
         }
-        col = this.HSVtoRGB(col.h, 20, v);
+        col = this.HSVtoRGB(col.h, 10, v);
         circle = this._two.makeCircle(this._two.width, this._two.height, this._two.height * 0.75);
       }
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";

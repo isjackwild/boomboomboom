@@ -147,12 +147,17 @@
 
     AudioAnalysisEngine.prototype.setupFilters = function() {
       this._dynamicsCompressor = this._context.createDynamicsCompressor();
-      this._dynamicsCompressor.threshold = -24;
+      this._dynamicsCompressor.threshold.value = -24;
       this._dynamicsCompressor.knee = 30;
       this._dynamicsCompressor.ratio = 12;
       this._dynamicsCompressor.reduction = 0;
       this._dynamicsCompressor.attack = 0.003;
-      return this._dynamicsCompressor.release = 0.250;
+      this._dynamicsCompressor.release = 0.250;
+      this._biquadFilter = this._context.createBiquadFilter();
+      this._biquadFilter.type = "lowshelf";
+      this._biquadFilter.frequency.value = 350;
+      this._biquadFilter.gain.value = 20;
+      return console.log(this._biquadFilter, this._dynamicsCompressor);
     };
 
     AudioAnalysisEngine.prototype.setupTestAudio = function() {
@@ -161,7 +166,8 @@
         return;
       }
       this._source = this._context.createMediaElementSource(this._testAudio);
-      this._source.connect(this._analyserNode);
+      this._source.connect(this._biquadFilter);
+      this._biquadFilter.connect(this._analyserNode);
       this._analyserNode.connect(this._context.destination);
       this._testAudio.play();
       this.startAnalysis();
@@ -175,7 +181,8 @@
       }
       this._source = this._context.createMediaStreamSource(stream);
       this._source.connect(this._dynamicsCompressor);
-      this._dynamicsCompressor.connect(this._analyserNode);
+      this._dynamicsCompressor.connect(this._biquadFilter);
+      this._biquadFilter.connect(this._analyserNode);
       this.startAnalysis();
       return this._alreadySetup = true;
     };

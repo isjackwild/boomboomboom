@@ -20,6 +20,7 @@ $ =>
 	gui.add(audioAnalysisEngine, '_averageVol').listen()
 
 
+
 class AudioAnalysisEngine
 	#some of these should probably be made as variables not properties. check which ones are only used in the functions and get rid of them
 	_context: null
@@ -97,19 +98,25 @@ class AudioAnalysisEngine
 	setupFilters: =>
 		#http://www.w3.org/TR/webaudio/#DynamicsCompressorNode
 		@_dynamicsCompressor = @_context.createDynamicsCompressor()
-		@_dynamicsCompressor.threshold = -24
+		@_dynamicsCompressor.threshold.value = -24
 		@_dynamicsCompressor.knee = 30
 		@_dynamicsCompressor.ratio = 12
 		@_dynamicsCompressor.reduction = 0
 		@_dynamicsCompressor.attack = 0.003
 		@_dynamicsCompressor.release = 0.250
+		@_biquadFilter = @_context.createBiquadFilter()
+		@_biquadFilter.type = "lowshelf"
+		@_biquadFilter.frequency.value = 350
+		@_biquadFilter.gain.value = 20
+		console.log @_biquadFilter, @_dynamicsCompressor
 		
 	setupTestAudio: =>
 		console.log 'setup test audio', @_testAudio
 		if (@_alreadySetup)
 			return
 		@_source = @_context.createMediaElementSource @_testAudio
-		@_source.connect @_analyserNode
+		@_source.connect @_biquadFilter
+		@_biquadFilter.connect @_analyserNode
 		@_analyserNode.connect @_context.destination
 		@_testAudio.play()
 		@startAnalysis()
@@ -121,7 +128,8 @@ class AudioAnalysisEngine
 			return
 		@_source = @_context.createMediaStreamSource stream
 		@_source.connect @_dynamicsCompressor
-		@_dynamicsCompressor.connect @_analyserNode
+		@_dynamicsCompressor.connect @_biquadFilter
+		@_biquadFilter.connect @_analyserNode
 		@startAnalysis()
 		@_alreadySetup = true
 

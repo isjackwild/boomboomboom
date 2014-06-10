@@ -78,6 +78,7 @@ class VisualsEngine
 
 	gotFrequency: (freq) =>
 		@_frequency = freq
+		@updateBackgroundColour()
 		@updateColourBucket()
 
 
@@ -95,7 +96,7 @@ class VisualsEngine
 			for i in [0...@_colourBucket.fg.length]
 				#maybe add in volume if / when can accuratly normalise mic volume
 				sOffset = Math.floor @convertToRange(@_frequency, [5,60], [10, -20]) + Math.floor @convertToRange(@_bpm, [60,600], [-50, 15])
-				vOffset = Math.floor @convertToRange(@_frequency, [5,60], [-15, 15])
+				vOffset = Math.floor @convertToRange(@_frequency, [5,60], [15, -15])
 				@_colourBucket.fg[i] = Object.create @_baseColours.fg[i]
 				@_colourBucket.fg[i].s = @_colourBucket.fg[i].s + sOffset
 				if @_colourBucket.fg[i].s < 30 then @_colourBucket.fg[i].s = 30
@@ -104,7 +105,7 @@ class VisualsEngine
 
 	updateBackgroundColour: =>
 		#lerp between background colours
-		newCol = Math.floor @convertToRange(@_frequency, [5,60], [30, 190])
+		newCol = Math.floor @convertToRange(@_frequency, [8,60], [30, 190])
 		
 		if Math.abs(@_bgColFrom - newCol) < 10 or @_bgColLerp < 0.97
 			return
@@ -121,20 +122,19 @@ class VisualsEngine
 		col = @_colourBucket.fg[whichCol]
 
 		if type is 'hard'
-			@updateBackgroundColour()
 			col = @HSVtoRGB col.h, col.s, col.v
 			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.43
 		else if type is 'soft'
 			col = @HSVtoRGB col.h, col.s, col.v
 			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.3
 		else if type is 'hi'
-			v = @convertToRange @_frequency, [5, 40], [80,100]
-			col = @HSVtoRGB col.h, 10, v
+			v = @convertToRange @_frequency, [5, 60], [80,100]
+			col = @HSVtoRGB col.h, 7, v
 			circle = @_two.makeCircle 0, @_two.height/4, @_two.height*0.82
 		else if type is 'lo'
-			v = @convertToRange @_frequency, [5, 40], [15,33]
+			v = @convertToRange @_frequency, [5, 60], [15,33]
 			if col.s < 8 then col.s = 8
-			col = @HSVtoRGB col.h, 20, v
+			col = @HSVtoRGB col.h, 10, v
 			circle = @_two.makeCircle @_two.width, @_two.height, @_two.height*0.75
 
 		col = "rgb("+col.r+","+col.g+","+col.b+")"

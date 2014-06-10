@@ -147,12 +147,17 @@
 
     AudioAnalysisEngine.prototype.setupFilters = function() {
       this._dynamicsCompressor = this._context.createDynamicsCompressor();
-      this._dynamicsCompressor.threshold = -24;
+      this._dynamicsCompressor.threshold.value = -24;
       this._dynamicsCompressor.knee = 30;
       this._dynamicsCompressor.ratio = 12;
       this._dynamicsCompressor.reduction = 0;
       this._dynamicsCompressor.attack = 0.003;
-      return this._dynamicsCompressor.release = 0.250;
+      this._dynamicsCompressor.release = 0.250;
+      this._biquadFilter = this._context.createBiquadFilter();
+      this._biquadFilter.type = "lowshelf";
+      this._biquadFilter.frequency.value = 350;
+      this._biquadFilter.gain.value = 20;
+      return console.log(this._biquadFilter, this._dynamicsCompressor);
     };
 
     AudioAnalysisEngine.prototype.setupTestAudio = function() {
@@ -161,7 +166,8 @@
         return;
       }
       this._source = this._context.createMediaElementSource(this._testAudio);
-      this._source.connect(this._analyserNode);
+      this._source.connect(this._biquadFilter);
+      this._biquadFilter.connect(this._analyserNode);
       this._analyserNode.connect(this._context.destination);
       this._testAudio.play();
       this.startAnalysis();
@@ -175,7 +181,8 @@
       }
       this._source = this._context.createMediaStreamSource(stream);
       this._source.connect(this._dynamicsCompressor);
-      this._dynamicsCompressor.connect(this._analyserNode);
+      this._dynamicsCompressor.connect(this._biquadFilter);
+      this._biquadFilter.connect(this._analyserNode);
       this.startAnalysis();
       return this._alreadySetup = true;
     };
@@ -603,6 +610,7 @@
 
     VisualsEngine.prototype.gotFrequency = function(freq) {
       this._frequency = freq;
+      this.updateBackgroundColour();
       return this.updateColourBucket();
     };
 
@@ -624,7 +632,7 @@
         _results1 = [];
         for (i = _j = 0, _ref1 = this._colourBucket.fg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
           sOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [60, 600], [-50, 15])));
-          vOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [-15, 15]));
+          vOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [15, -15]));
           this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
           this._colourBucket.fg[i].s = this._colourBucket.fg[i].s + sOffset;
           if (this._colourBucket.fg[i].s < 30) {
@@ -638,7 +646,7 @@
 
     VisualsEngine.prototype.updateBackgroundColour = function() {
       var newCol;
-      newCol = Math.floor(this.convertToRange(this._frequency, [5, 60], [30, 190]));
+      newCol = Math.floor(this.convertToRange(this._frequency, [8, 60], [30, 190]));
       if (Math.abs(this._bgColFrom - newCol) < 10 || this._bgColLerp < 0.97) {
 
       } else {
@@ -654,22 +662,21 @@
       whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
       col = this._colourBucket.fg[whichCol];
       if (type === 'hard') {
-        this.updateBackgroundColour();
         col = this.HSVtoRGB(col.h, col.s, col.v);
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
       } else if (type === 'soft') {
         col = this.HSVtoRGB(col.h, col.s, col.v);
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
       } else if (type === 'hi') {
-        v = this.convertToRange(this._frequency, [5, 40], [80, 100]);
-        col = this.HSVtoRGB(col.h, 10, v);
+        v = this.convertToRange(this._frequency, [5, 60], [80, 100]);
+        col = this.HSVtoRGB(col.h, 7, v);
         circle = this._two.makeCircle(0, this._two.height / 4, this._two.height * 0.82);
       } else if (type === 'lo') {
-        v = this.convertToRange(this._frequency, [5, 40], [15, 33]);
+        v = this.convertToRange(this._frequency, [5, 60], [15, 33]);
         if (col.s < 8) {
           col.s = 8;
         }
-        col = this.HSVtoRGB(col.h, 20, v);
+        col = this.HSVtoRGB(col.h, 10, v);
         circle = this._two.makeCircle(this._two.width, this._two.height, this._two.height * 0.75);
       }
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
