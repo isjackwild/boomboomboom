@@ -83,10 +83,10 @@ class AudioAnalysisEngine
 		document.getElementById('twoMagic').onclick = => @setupTestAudio()
 
 		#comment this out to disable mid and use audio insteaad
-		# document.getElementById('twoMagic').onclick = =>
-		# 	navigator.webkitGetUserMedia
-		# 		audio: true
-		# 	,@setupMic, @onError
+		document.getElementById('twoMagic').onclick = =>
+			navigator.webkitGetUserMedia
+				audio: true
+			,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()

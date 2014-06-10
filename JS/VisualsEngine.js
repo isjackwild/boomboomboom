@@ -35,47 +35,47 @@
           v: 95
         }, {
           h: 17,
-          s: 85,
+          s: 90,
           v: 97
         }, {
           h: 45,
-          s: 92,
+          s: 97,
           v: 97
         }, {
-          h: 1124,
-          s: 53,
+          h: 154,
+          s: 65,
           v: 92
         }, {
-          h: 142,
-          s: 80,
-          v: 84
+          h: 149,
+          s: 95,
+          v: 70
         }, {
           h: 196,
-          s: 82,
+          s: 87,
           v: 92
         }, {
-          h: 234,
-          s: 71,
+          h: 220,
+          s: 76,
           v: 80
         }, {
           h: 316,
-          s: 78,
-          v: 90
+          s: 40,
+          v: 95
         }
       ],
       bg: [
         {
           h: 0,
           s: 0,
-          v: 75
+          v: 40
         }, {
           h: 0,
           s: 0,
-          v: 65
+          v: 50
         }, {
           h: 0,
           s: 0,
-          v: 85
+          v: 60
         }
       ]
     };
@@ -149,8 +149,8 @@
       } else {
         _results1 = [];
         for (i = _k = 0, _ref2 = this._colourBucket.fg.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-          sOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [6, -6]));
-          vOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [-6, 6]));
+          sOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [10, -20]));
+          vOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [-15, 15]));
           this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
           this._colourBucket.fg[i].s -= sOffset;
           _results1.push(this._colourBucket.fg[i].v -= vOffset);
@@ -167,7 +167,11 @@
       }
       whichCol = Math.ceil(Math.random() * (this._baseColours.fg.length - 1));
       col = this._baseColours.fg[whichCol];
-      col = this.HSVtoRGB(col.h, col.s, col.v);
+      if (type === 'hi') {
+        col = this.HSVtoRGB(col.h, 40, 100);
+      } else {
+        col = this.HSVtoRGB(col.h, col.s, col.v);
+      }
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       if (this._peakCount % 3 === 0) {
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 300);
@@ -187,10 +191,9 @@
     };
 
     VisualsEngine.prototype.randomiseBackgroundColour = function() {
-      var col, whichCol;
-      whichCol = Math.ceil(Math.random() * (this._colourBucket.bg.length - 1));
-      col = this._baseColours.bg[0];
-      col = this.HSVtoRGB(col.h, col.s, col.v);
+      var col, v;
+      v = Math.floor(this.convertToRange(this._frequency, [0, 50], [20, 70]));
+      col = this.HSVtoRGB(0, 0, v);
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       return this._twoElem.style.background = col;
     };

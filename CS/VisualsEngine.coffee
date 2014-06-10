@@ -19,8 +19,8 @@ class VisualsEngine
 
 	_coloursSetup: false
 	_baseColours: {
-		fg: [{h: 346, s: 85, v: 95}, {h: 17, s: 85, v: 97}, {h: 45, s: 92, v: 97}, {h: 1124, s: 53, v: 92}, {h: 142, s: 80, v: 84}, {h: 196, s: 82, v: 92}, {h: 234, s: 71, v: 80}, {h: 316, s: 78, v: 90}]
-		bg: [{h: 0, s: 0, v: 75}, {h: 0, s: 0, v: 65}, {h: 0, s: 0, v: 85}]
+		fg: [{h: 346, s: 85, v: 95}, {h: 17, s: 90, v: 97}, {h: 45, s: 97, v: 97}, {h: 154, s: 65, v: 92}, {h: 149, s: 95, v: 70}, {h: 196, s: 87, v: 92}, {h: 220, s: 76, v: 80}, {h: 316, s: 40, v: 95}]
+		bg: [{h: 0, s: 0, v: 40}, {h: 0, s: 0, v: 50}, {h: 0, s: 0, v: 60}]
 	}
 	_colourBucket: {
 		fg: []
@@ -92,8 +92,8 @@ class VisualsEngine
 				@_colourBucket.bg[i] = Object.create @_baseColours.fg[i]
 		else
 			for i in [0...@_colourBucket.fg.length]
-				sOffset = Math.floor @convertToRange(@_frequency, [0,50], [6, -6])
-				vOffset = Math.floor @convertToRange(@_frequency, [0,50], [-6, 6])
+				sOffset = Math.floor @convertToRange(@_frequency, [0,50], [10, -20])
+				vOffset = Math.floor @convertToRange(@_frequency, [0,50], [-15, 15])
 				@_colourBucket.fg[i] = Object.create @_baseColours.fg[i]
 				@_colourBucket.fg[i].s -= sOffset
 				@_colourBucket.fg[i].v -= vOffset
@@ -110,15 +110,18 @@ class VisualsEngine
 
 
 	onPeak: (type) =>
-
-
 		if type is 'hard'
 			@randomiseBackgroundColour()
 			return
 
 		whichCol = Math.ceil Math.random()*(@_baseColours.fg.length-1)
 		col = @_baseColours.fg[whichCol]
-		col = @HSVtoRGB col.h, col.s, col.v
+
+		if type is 'hi'
+			col = @HSVtoRGB col.h, 40, 100
+		else
+			col = @HSVtoRGB col.h, col.s, col.v
+
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
 
 		##a quick test
@@ -137,9 +140,8 @@ class VisualsEngine
 
 
 	randomiseBackgroundColour: =>
-		whichCol = Math.ceil Math.random()*(@_colourBucket.bg.length-1)
-		col = @_baseColours.bg[0]
-		col = @HSVtoRGB col.h, col.s, col.v
+		v = Math.floor @convertToRange(@_frequency, [0,50], [20, 70])
+		col = @HSVtoRGB 0, 0, v
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
 		@_twoElem.style.background = col
 
