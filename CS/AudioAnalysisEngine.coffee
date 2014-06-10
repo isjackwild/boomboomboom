@@ -51,7 +51,7 @@ class AudioAnalysisEngine
 	_lastFrequencyVariation: null
 	_sensivitityForHighPeak: 33 #how much the peak has to be above average to be considered high
 	_sensivitityForLowPeak: 20 #how much the peak has to be above average to be considered low
-	_sensitivityForHighFrequencyVariation: 55 #how much the peaks have to differ from each other on average to trigger a hi freq variation zone
+	_sensitivityForHighFrequencyVariation: 12 #how much the peaks have to differ from each other on average to trigger a hi freq variation zone
 
 	_lastPeakTime: null
 	_thisPeakTime: null
@@ -83,10 +83,10 @@ class AudioAnalysisEngine
 		document.getElementById('twoMagic').onclick = => @setupTestAudio()
 
 		#comment this out to disable mid and use audio insteaad
-		document.getElementById('twoMagic').onclick = =>
-			navigator.webkitGetUserMedia
-				audio: true
-			,@setupMic, @onError
+		# document.getElementById('twoMagic').onclick = =>
+		# 	navigator.webkitGetUserMedia
+		# 		audio: true
+		# 	,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()

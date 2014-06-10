@@ -18,9 +18,13 @@ class VisualsEngine
 	_whichColour: 0
 
 	_coloursSetup: false
+	_baseColours: {
+		fg: [{h: 346, s: 85, v: 95}, {h: 17, s: 85, v: 97}, {h: 45, s: 92, v: 97}, {h: 1124, s: 53, v: 92}, {h: 142, s: 80, v: 84}, {h: 196, s: 82, v: 92}, {h: 234, s: 71, v: 80}, {h: 316, s: 78, v: 90}]
+		bg: [{h: 0, s: 0, v: 75}, {h: 0, s: 0, v: 65}, {h: 0, s: 0, v: 85}]
+	}
 	_colourBucket: {
-		fg: new Array 10
-		bg: new Array 5
+		fg: []
+		bg: []
 	}
 
 	#colours
@@ -81,75 +85,41 @@ class VisualsEngine
 
 	updateColourBucket: ->
 		if @_coloursSetup is false
-			console.log 'generate colours'
 			@_coloursSetup = true
-			for i in [0...@_colourBucket.fg.length]
-				tempCol = {
-					h: @filterOutGrossHues()
-					s: 70
-					v: 80
-				}
-				@_colourBucket.fg[i] = tempCol
+			for i in [0...@_baseColours.fg.length]
+				@_colourBucket.fg[i] = Object.create @_baseColours.fg[i]
 			for i in [0...@_colourBucket.bg.length]
-				tempCol = {
-					h: @filterOutGrossHues()
-					s: 20
-					v: 20
-				}
-				@_colourBucket.bg[i] = tempCol
+				@_colourBucket.bg[i] = Object.create @_baseColours.fg[i]
 		else
-			#this should take into account the vol, freq and bpm
-			#maybe this should be more subtle... things like bpm will also control the animations, so the colours don't have to vary hugely... just a little to add to the mood
-			console.log 'update colours'
-			contrast = @convertToRange @_bpm, [100,500], [20, 0]
-			console.log contrast, "contrast"
 			for i in [0...@_colourBucket.fg.length]
-				@_colourBucket.fg[i].s = @convertToRange @_frequency, [0,50], [20+contrast/2, 50+contrast/2]
-				@_colourBucket.fg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [40-contrast,100-contrast])
-				console.log @_colourBucket.fg[i].v, 'fg v'
-			for i in [0...@_colourBucket.bg.length]
-				@_colourBucket.bg[i].s = @convertToRange @_frequency, [0,50], [0, 50]
-				@_colourBucket.bg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [20,60])
-				console.log @_colourBucket.bg[i].v, 'bg v'
+				sOffset = Math.floor @convertToRange(@_frequency, [0,50], [6, -6])
+				vOffset = Math.floor @convertToRange(@_frequency, [0,50], [-6, 6])
+				@_colourBucket.fg[i] = Object.create @_baseColours.fg[i]
+				@_colourBucket.fg[i].s -= sOffset
+				@_colourBucket.fg[i].v -= vOffset
+			# for i in [0...@_colourBucket.bg.length]
+			# 	@_colourBucket.bg[i].v = Math.floor @convertToRange(@_frequency, [0,50], [20,75])
 
-	filterOutGrossHues: =>
-		tempH = Math.floor (Math.random()*200)+160
-		if tempH > 60 and tempH < 160 or tempH > 270
-			@filterOutGrossHues()
-		else
-			return tempH
+
+	# filterOutGrossHues: =>
+	# 	tempH = Math.floor (Math.random()*200)+160
+	# 	if tempH > 60 and tempH < 160 or tempH > 270
+	# 		@filterOutGrossHues()
+	# 	else
+	# 		return tempH
 
 
 	onPeak: (type) =>
+
 
 		if type is 'hard'
 			@randomiseBackgroundColour()
 			return
 
-		#hi peaks have lighter colours, lo peaks have darker colours
-		#take a colour from the bucket, and either add or minus from the viberance to get the colours for the high or low peaks
-		whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
-		col = @_colourBucket.fg[whichCol]
-		tempH = col.h
-		tempS = col.s
-		tempV = col.v
-
-		if type is "soft"
-			col = @HSVtoRGB tempH, tempS, tempV
-			col = "rgb("+col.r+","+col.g+","+col.b+")"
-		else if type is "hi"
-			tempS = tempS-30
-			tempV = 100
-			col = @HSVtoRGB tempH, tempS, tempV
-			col = "rgb("+col.r+","+col.g+","+col.b+")"
-		else if type is "lo"
-			tempS = 15
-			tempV = tempV-10
-			col = @HSVtoRGB tempH, tempS, tempV
-			col = "rgb("+col.r+","+col.g+","+col.b+")"
-
-		console.log col
-
+		whichCol = Math.ceil Math.random()*(@_baseColours.fg.length-1)
+		col = @_baseColours.fg[whichCol]
+		col = @HSVtoRGB col.h, col.s, col.v
+		col = "rgb("+col.r+","+col.g+","+col.b+")"
 
 		##a quick test
 		if @_peakCount % 3 is 0
@@ -168,19 +138,10 @@ class VisualsEngine
 
 	randomiseBackgroundColour: =>
 		whichCol = Math.ceil Math.random()*(@_colourBucket.bg.length-1)
-		col = @_colourBucket.bg[whichCol]
+		col = @_baseColours.bg[0]
 		col = @HSVtoRGB col.h, col.s, col.v
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
-
 		@_twoElem.style.background = col
-		# col1 = "rgb("+(10+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(10+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(10+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+")"
-		# col2 = "rgb("+(100+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(100+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+","+(100+Math.floor(window.audioAnalysisEngine._averageFrequency*4))+")"
-
-		# @_whichColour += 1
-		# if @_whichColour % 2 is 1
-		# 	@_twoElem.style.background = col1
-		# else
-		# 	@_twoElem.style.background = col2
 
 
 	#add this to my UTILS

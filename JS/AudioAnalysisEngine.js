@@ -72,7 +72,7 @@
 
     AudioAnalysisEngine.prototype._sensivitityForLowPeak = 20;
 
-    AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 55;
+    AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 12;
 
     AudioAnalysisEngine.prototype._lastPeakTime = null;
 
@@ -128,13 +128,6 @@
       document.getElementById('twoMagic').onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
-        };
-      })(this);
-      document.getElementById('twoMagic').onclick = (function(_this) {
-        return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
         };
       })(this);
     }

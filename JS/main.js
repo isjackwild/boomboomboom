@@ -72,7 +72,7 @@
 
     AudioAnalysisEngine.prototype._sensivitityForLowPeak = 20;
 
-    AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 55;
+    AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 12;
 
     AudioAnalysisEngine.prototype._lastPeakTime = null;
 
@@ -128,13 +128,6 @@
       document.getElementById('twoMagic').onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
-        };
-      })(this);
-      document.getElementById('twoMagic').onclick = (function(_this) {
-        return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
         };
       })(this);
     }
@@ -500,16 +493,68 @@
 
     VisualsEngine.prototype._coloursSetup = false;
 
+    VisualsEngine.prototype._baseColours = {
+      fg: [
+        {
+          h: 346,
+          s: 85,
+          v: 95
+        }, {
+          h: 17,
+          s: 85,
+          v: 97
+        }, {
+          h: 45,
+          s: 92,
+          v: 97
+        }, {
+          h: 1124,
+          s: 53,
+          v: 92
+        }, {
+          h: 142,
+          s: 80,
+          v: 84
+        }, {
+          h: 196,
+          s: 82,
+          v: 92
+        }, {
+          h: 234,
+          s: 71,
+          v: 80
+        }, {
+          h: 316,
+          s: 78,
+          v: 90
+        }
+      ],
+      bg: [
+        {
+          h: 0,
+          s: 0,
+          v: 75
+        }, {
+          h: 0,
+          s: 0,
+          v: 65
+        }, {
+          h: 0,
+          s: 0,
+          v: 85
+        }
+      ]
+    };
+
     VisualsEngine.prototype._colourBucket = {
-      fg: new Array(10),
-      bg: new Array(5)
+      fg: [],
+      bg: []
     };
 
     function VisualsEngine() {
       this.HSVtoRGB = __bind(this.HSVtoRGB, this);
       this.randomiseBackgroundColour = __bind(this.randomiseBackgroundColour, this);
       this.onPeak = __bind(this.onPeak, this);
-      this.filterOutGrossHues = __bind(this.filterOutGrossHues, this);
       this.gotVolume = __bind(this.gotVolume, this);
       this.gotFrequency = __bind(this.gotFrequency, this);
       this.gotBPM = __bind(this.gotBPM, this);
@@ -556,83 +601,40 @@
     };
 
     VisualsEngine.prototype.updateColourBucket = function() {
-      var contrast, i, tempCol, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3, _results, _results1;
+      var i, sOffset, vOffset, _i, _j, _k, _ref, _ref1, _ref2, _results, _results1;
       if (this._coloursSetup === false) {
-        console.log('generate colours');
         this._coloursSetup = true;
-        for (i = _i = 0, _ref = this._colourBucket.fg.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-          tempCol = {
-            h: this.filterOutGrossHues(),
-            s: 70,
-            v: 80
-          };
-          this._colourBucket.fg[i] = tempCol;
+        for (i = _i = 0, _ref = this._baseColours.fg.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+          this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
         }
         _results = [];
         for (i = _j = 0, _ref1 = this._colourBucket.bg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          tempCol = {
-            h: this.filterOutGrossHues(),
-            s: 20,
-            v: 20
-          };
-          _results.push(this._colourBucket.bg[i] = tempCol);
+          _results.push(this._colourBucket.bg[i] = Object.create(this._baseColours.fg[i]));
         }
         return _results;
       } else {
-        console.log('update colours');
-        contrast = this.convertToRange(this._bpm, [100, 500], [20, 0]);
-        console.log(contrast, "contrast");
-        for (i = _k = 0, _ref2 = this._colourBucket.fg.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-          this._colourBucket.fg[i].s = this.convertToRange(this._frequency, [0, 50], [20 + contrast / 2, 50 + contrast / 2]);
-          this._colourBucket.fg[i].v = Math.floor(this.convertToRange(this._frequency, [0, 50], [40 - contrast, 100 - contrast]));
-          console.log(this._colourBucket.fg[i].v, 'fg v');
-        }
         _results1 = [];
-        for (i = _l = 0, _ref3 = this._colourBucket.bg.length; 0 <= _ref3 ? _l < _ref3 : _l > _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
-          this._colourBucket.bg[i].s = this.convertToRange(this._frequency, [0, 50], [0, 50]);
-          this._colourBucket.bg[i].v = Math.floor(this.convertToRange(this._frequency, [0, 50], [20, 60]));
-          _results1.push(console.log(this._colourBucket.bg[i].v, 'bg v'));
+        for (i = _k = 0, _ref2 = this._colourBucket.fg.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+          sOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [6, -6]));
+          vOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [-6, 6]));
+          this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
+          this._colourBucket.fg[i].s -= sOffset;
+          _results1.push(this._colourBucket.fg[i].v -= vOffset);
         }
         return _results1;
       }
     };
 
-    VisualsEngine.prototype.filterOutGrossHues = function() {
-      var tempH;
-      tempH = Math.floor((Math.random() * 200) + 160);
-      if (tempH > 60 && tempH < 160 || tempH > 270) {
-        return this.filterOutGrossHues();
-      } else {
-        return tempH;
-      }
-    };
-
     VisualsEngine.prototype.onPeak = function(type) {
-      var circle, col, shape, tempH, tempS, tempV, whichCol, _i, _len, _ref;
+      var circle, col, shape, whichCol, _i, _len, _ref;
       if (type === 'hard') {
         this.randomiseBackgroundColour();
         return;
       }
-      whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
-      col = this._colourBucket.fg[whichCol];
-      tempH = col.h;
-      tempS = col.s;
-      tempV = col.v;
-      if (type === "soft") {
-        col = this.HSVtoRGB(tempH, tempS, tempV);
-        col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
-      } else if (type === "hi") {
-        tempS = tempS - 30;
-        tempV = 100;
-        col = this.HSVtoRGB(tempH, tempS, tempV);
-        col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
-      } else if (type === "lo") {
-        tempS = 15;
-        tempV = tempV - 10;
-        col = this.HSVtoRGB(tempH, tempS, tempV);
-        col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
-      }
-      console.log(col);
+      whichCol = Math.ceil(Math.random() * (this._baseColours.fg.length - 1));
+      col = this._baseColours.fg[whichCol];
+      col = this.HSVtoRGB(col.h, col.s, col.v);
+      col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       if (this._peakCount % 3 === 0) {
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 300);
         circle.fill = col;
@@ -653,7 +655,7 @@
     VisualsEngine.prototype.randomiseBackgroundColour = function() {
       var col, whichCol;
       whichCol = Math.ceil(Math.random() * (this._colourBucket.bg.length - 1));
-      col = this._colourBucket.bg[whichCol];
+      col = this._baseColours.bg[0];
       col = this.HSVtoRGB(col.h, col.s, col.v);
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       return this._twoElem.style.background = col;
