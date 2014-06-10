@@ -68,7 +68,7 @@
 
     AudioAnalysisEngine.prototype._lastFrequencyVariation = null;
 
-    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 33;
+    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 20;
 
     AudioAnalysisEngine.prototype._sensivitityForLowPeak = 20;
 

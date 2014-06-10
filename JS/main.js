@@ -68,7 +68,7 @@
 
     AudioAnalysisEngine.prototype._lastFrequencyVariation = null;
 
-    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 33;
+    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 20;
 
     AudioAnalysisEngine.prototype._sensivitityForLowPeak = 20;
 
@@ -528,6 +528,14 @@
           h: 316,
           s: 40,
           v: 95
+        }, {
+          h: 277,
+          s: 61,
+          v: 71
+        }, {
+          h: 261,
+          s: 46,
+          v: 84
         }
       ]
     };
@@ -541,6 +549,8 @@
     VisualsEngine.prototype._bgColTo = 130;
 
     VisualsEngine.prototype._bgColLerp = 1;
+
+    VisualsEngine.prototype._bgColLerpSpeed = 0.02;
 
     function VisualsEngine() {
       this.HSVtoRGB = __bind(this.HSVtoRGB, this);
@@ -580,6 +590,8 @@
 
     VisualsEngine.prototype.gotBPM = function(BPM) {
       this._bpm = BPM;
+      this._bgColLerpSpeed = this.convertToRange(this._bpm, [100, 500], [0.005, 0.15]);
+      this._bgColLerpSpeed = 0.005;
       return this.updateColourBucket();
     };
 
@@ -629,7 +641,7 @@
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
-      var circle, col, shape, whichCol, _i, _len, _ref;
+      var circle, col, whichCol;
       if (type === 'hard') {
         this.updateBackgroundColour();
         return;
@@ -637,37 +649,45 @@
       whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
       col = this._colourBucket.fg[whichCol];
       if (type === 'hi') {
-        col = this.HSVtoRGB(col.h, 40, 100);
+        col = this.HSVtoRGB(col.h, col.s - 40, 100);
+        circle = this._two.makeCircle(0, this._two.height / 4, 800);
+      } else if (type === 'lo') {
+        col = this.HSVtoRGB(col.h, col.s - 40, 20);
+        circle = this._two.makeCircle(this._two.width, this._two.height, 600);
       } else {
         col = this.HSVtoRGB(col.h, col.s, col.v);
+        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 300);
       }
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
-      if (this._peakCount % 3 === 0) {
-        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 300);
-        circle.fill = col;
-        circle.lifeSpan = 500;
-        circle.noStroke();
-        this._shapes.push(circle);
-      } else if (this._peakCount % 3 === 1) {
-        _ref = this._shapes;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          shape = _ref[_i];
-          shape.remove();
-          this._shapes.splice(shape.index, 1);
-        }
-      }
-      return this._peakCount += 1;
+      circle.fill = col;
+      circle.lifeSpan = 500;
+      circle.creationTime = new Date().getTime();
+      circle.noStroke();
+      return this._shapes.push(circle);
     };
 
     VisualsEngine.prototype.onTwoUpdate = function() {
-      var tempCol;
+      var shape, tempCol, time, _i, _len, _ref, _results;
       if (this._bgColLerp < 1) {
-        this._bgColLerp = this._bgColLerp + 0.01;
+        this._bgColLerp = this._bgColLerp + this._bgColLerpSpeed;
         tempCol = this.lerp(this._bgColFrom, this._bgColTo, this._bgColLerp);
         tempCol = Math.ceil(tempCol);
         tempCol = "rgb(" + tempCol + "," + tempCol + "," + tempCol + ")";
-        return this._twoElem.style.background = tempCol;
+        this._twoElem.style.background = tempCol;
       }
+      time = new Date().getTime();
+      _ref = this._shapes;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        shape = _ref[_i];
+        if (shape && time - shape.creationTime > shape.lifeSpan) {
+          shape.remove();
+          _results.push(this._shapes.splice(shape.index, 1));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
 
     VisualsEngine.prototype.lerp = function(from, to, control) {

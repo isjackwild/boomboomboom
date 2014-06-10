@@ -49,7 +49,7 @@ class AudioAnalysisEngine
 	_averageFrequency: 0
 	_frequencyVariationCheck: []
 	_lastFrequencyVariation: null
-	_sensivitityForHighPeak: 33 #how much the peak has to be above average to be considered high
+	_sensivitityForHighPeak: 20 #how much the peak has to be above average to be considered high
 	_sensivitityForLowPeak: 20 #how much the peak has to be above average to be considered low
 	_sensitivityForHighFrequencyVariation: 12 #how much the peaks have to differ from each other on average to trigger a hi freq variation zone
 
@@ -122,7 +122,6 @@ class AudioAnalysisEngine
 		@_source = @_context.createMediaStreamSource stream
 		@_source.connect @_dynamicsCompressor
 		@_dynamicsCompressor.connect @_analyserNode
-		# @_analyserNode.connect @_context.destination
 		@startAnalysis()
 		@_alreadySetup = true
 

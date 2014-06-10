@@ -19,7 +19,7 @@ class VisualsEngine
 
 	_coloursSetup: false
 	_baseColours: {
-		fg: [{h: 346, s: 85, v: 95}, {h: 17, s: 90, v: 97}, {h: 45, s: 97, v: 97}, {h: 154, s: 65, v: 92}, {h: 149, s: 95, v: 70}, {h: 196, s: 87, v: 92}, {h: 220, s: 76, v: 80}, {h: 316, s: 40, v: 95}]
+		fg: [{h: 346, s: 85, v: 95}, {h: 17, s: 90, v: 97}, {h: 45, s: 97, v: 97}, {h: 154, s: 65, v: 92}, {h: 149, s: 95, v: 70}, {h: 196, s: 87, v: 92}, {h: 220, s: 76, v: 80}, {h: 316, s: 40, v: 95}, {h: 277, s: 61, v: 71}, {h: 261, s: 46, v: 84}]
 	}
 	_colourBucket: {
 		fg: []
@@ -27,6 +27,7 @@ class VisualsEngine
 	_bgColFrom: 130
 	_bgColTo: 130
 	_bgColLerp: 1
+	_bgColLerpSpeed: 0.02
 
 	#colours
 		#bg = low sat and low bright
@@ -70,6 +71,8 @@ class VisualsEngine
 
 	gotBPM: (BPM) =>
 		@_bpm = BPM
+		@_bgColLerpSpeed = @convertToRange(@_bpm, [100,500], [0.005, 0.15])
+		@_bgColLerpSpeed = 0.005
 		@updateColourBucket()
 
 
@@ -120,35 +123,37 @@ class VisualsEngine
 		col = @_colourBucket.fg[whichCol]
 
 		if type is 'hi'
-			col = @HSVtoRGB col.h, 40, 100
+			col = @HSVtoRGB col.h, col.s-40, 100
+			circle = @_two.makeCircle 0, @_two.height/4, 800
+		else if type is 'lo'
+			col = @HSVtoRGB col.h, col.s-40, 20
+			circle = @_two.makeCircle @_two.width, @_two.height, 600
 		else
 			col = @HSVtoRGB col.h, col.s, col.v
+			circle = @_two.makeCircle @_two.width/2, @_two.height/2, 300
 
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
-
-		##a quick test
-		if @_peakCount % 3 is 0
-			circle = @_two.makeCircle @_two.width/2, @_two.height/2, 300
-			circle.fill = col
-			circle.lifeSpan = 500
-			circle.noStroke()
-			@_shapes.push circle
-		else if @_peakCount % 3 is 1
-			for shape in @_shapes
-				shape.remove()
-				@_shapes.splice shape.index, 1
-
-		@_peakCount += 1
+		circle.fill = col
+		circle.lifeSpan = 500
+		circle.creationTime = new Date().getTime()
+		circle.noStroke()
+		@_shapes.push circle
 
 
 	onTwoUpdate: () =>
 		# console.log "render"
 		if @_bgColLerp < 1
-			@_bgColLerp  = @_bgColLerp + 0.01
+			@_bgColLerp  = @_bgColLerp + @_bgColLerpSpeed
 			tempCol = @lerp @_bgColFrom, @_bgColTo, @_bgColLerp
 			tempCol = Math.ceil tempCol
 			tempCol = "rgb("+tempCol+","+tempCol+","+tempCol+")"
 			@_twoElem.style.background = tempCol
+
+		time = new Date().getTime()
+		for shape in @_shapes
+			if shape and time - shape.creationTime > shape.lifeSpan
+				shape.remove()
+				@_shapes.splice shape.index, 1
 
 
 	lerp: (from, to, control) =>
