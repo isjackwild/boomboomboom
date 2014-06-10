@@ -250,8 +250,9 @@
           this.eventLogger("loPeak");
           return window.events.peak.dispatch('lo');
         } else {
-          if (this._averageAmp + this._peakSensitivityOffset * 2.5 < this._lastAverageAmp) {
+          if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
             this.eventLogger('hardPeak');
+            this.calculateAverageBpm();
             return window.events.peak.dispatch('hard');
           } else {
             this.eventLogger("softPeak");

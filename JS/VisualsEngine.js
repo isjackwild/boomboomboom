@@ -135,7 +135,7 @@
       } else {
         _results1 = [];
         for (i = _k = 0, _ref2 = this._colourBucket.fg.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-          sOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [100, 300], [-50, 5])));
+          sOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [60, 600], [-50, 5])));
           vOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [-15, 15]));
           this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
           this._colourBucket.fg[i].s = this._colourBucket.fg[i].s + sOffset;
@@ -179,7 +179,8 @@
 
     VisualsEngine.prototype.randomiseBackgroundColour = function() {
       var col, v;
-      v = Math.floor(this.convertToRange(this._frequency, [0, 50], [20, 70]));
+      v = Math.floor(this.convertToRange(this._frequency, [0, 40], [20, 70]));
+      v = Math.floor(Math.random() * 8 + v);
       col = this.HSVtoRGB(0, 0, v);
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       return this._twoElem.style.background = col;

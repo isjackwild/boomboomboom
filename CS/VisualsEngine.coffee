@@ -91,7 +91,7 @@ class VisualsEngine
 				@_colourBucket.bg[i] = Object.create @_baseColours.fg[i]
 		else
 			for i in [0...@_colourBucket.fg.length]
-				sOffset = Math.floor @convertToRange(@_frequency, [0,50], [10, -20]) + Math.floor @convertToRange(@_bpm, [100,300], [-50, 5])
+				sOffset = Math.floor @convertToRange(@_frequency, [0,50], [10, -20]) + Math.floor @convertToRange(@_bpm, [60,600], [-50, 5])
 				vOffset = Math.floor @convertToRange(@_frequency, [0,50], [-15, 15])
 				@_colourBucket.fg[i] = Object.create @_baseColours.fg[i]
 				@_colourBucket.fg[i].s = @_colourBucket.fg[i].s + sOffset
@@ -130,7 +130,9 @@ class VisualsEngine
 
 
 	randomiseBackgroundColour: =>
-		v = Math.floor @convertToRange(@_frequency, [0,50], [20, 70])
+		#lerp between background colours
+		v = Math.floor @convertToRange(@_frequency, [0,40], [20, 70])
+		v = Math.floor Math.random()*8 + v
 		col = @HSVtoRGB 0, 0, v
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
 		@_twoElem.style.background = col

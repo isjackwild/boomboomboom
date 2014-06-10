@@ -192,8 +192,9 @@ class AudioAnalysisEngine
 				@eventLogger "loPeak"
 				window.events.peak.dispatch 'lo'
 			else
-				if @_averageAmp+@_peakSensitivityOffset*2.5 < @_lastAverageAmp
+				if @_averageAmp+@_peakSensitivityOffset*2 < @_lastAverageAmp
 					@eventLogger 'hardPeak'
+					@calculateAverageBpm() #what is the bmp
 					window.events.peak.dispatch 'hard'
 				else
 					@eventLogger "softPeak"
