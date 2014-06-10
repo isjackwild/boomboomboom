@@ -536,21 +536,7 @@
           v: 95
         }
       ],
-      bg: [
-        {
-          h: 0,
-          s: 0,
-          v: 40
-        }, {
-          h: 0,
-          s: 0,
-          v: 50
-        }, {
-          h: 0,
-          s: 0,
-          v: 60
-        }
-      ]
+      bg: []
     };
 
     VisualsEngine.prototype._colourBucket = {
@@ -622,10 +608,10 @@
       } else {
         _results1 = [];
         for (i = _k = 0, _ref2 = this._colourBucket.fg.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-          sOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [10, -20]));
+          sOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [100, 300], [-50, 5])));
           vOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [-15, 15]));
           this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
-          this._colourBucket.fg[i].s -= sOffset;
+          this._colourBucket.fg[i].s = this._colourBucket.fg[i].s + sOffset;
           _results1.push(this._colourBucket.fg[i].v -= vOffset);
         }
         return _results1;
@@ -638,8 +624,9 @@
         this.randomiseBackgroundColour();
         return;
       }
-      whichCol = Math.ceil(Math.random() * (this._baseColours.fg.length - 1));
-      col = this._baseColours.fg[whichCol];
+      whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
+      col = this._colourBucket.fg[whichCol];
+      console.log(col, "<<<< col");
       if (type === 'hi') {
         col = this.HSVtoRGB(col.h, 40, 100);
       } else {
