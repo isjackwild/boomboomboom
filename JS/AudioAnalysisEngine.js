@@ -130,6 +130,13 @@
           return _this.setupTestAudio();
         };
       })(this);
+      document.getElementById('twoMagic').onclick = (function(_this) {
+        return function() {
+          return navigator.webkitGetUserMedia({
+            audio: true
+          }, _this.setupMic, _this.onError);
+        };
+      })(this);
     }
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
@@ -233,6 +240,7 @@
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
         this.calculateAveragePeakFrequency();
+        this.calculateAverageBpm();
         this.checkForBreak();
         this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
@@ -244,7 +252,6 @@
         } else {
           if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
             this.eventLogger('hardPeak');
-            this.calculateAverageBpm();
             return window.events.peak.dispatch('hard');
           } else {
             this.eventLogger("softPeak");

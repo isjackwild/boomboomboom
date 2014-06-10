@@ -83,10 +83,10 @@ class AudioAnalysisEngine
 		document.getElementById('twoMagic').onclick = => @setupTestAudio()
 
 		#comment this out to disable mid and use audio insteaad
-		# document.getElementById('twoMagic').onclick = =>
-		# 	navigator.webkitGetUserMedia
-		# 		audio: true
-		# 	,@setupMic, @onError
+		document.getElementById('twoMagic').onclick = =>
+			navigator.webkitGetUserMedia
+				audio: true
+			,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -179,7 +179,7 @@ class AudioAnalysisEngine
 		if @_averageAmp+@_peakSensitivityOffset < @_lastAverageAmp and @_waitingForPeak
 			@_waitingForPeak = false
 			@calculateAveragePeakFrequency() #what was the highest frequency at the time of the peak
-			# @calculateAverageBpm() #what is the bmp
+			@calculateAverageBpm() #what is the bmp
 			@checkForBreak()
 			@checkForFrequencyVariation()
 
@@ -193,7 +193,7 @@ class AudioAnalysisEngine
 			else
 				if @_averageAmp+@_peakSensitivityOffset*2 < @_lastAverageAmp
 					@eventLogger 'hardPeak'
-					@calculateAverageBpm() #what is the bmp
+					# @calculateAverageBpm() #what is the bmp
 					window.events.peak.dispatch 'hard'
 				else
 					@eventLogger "softPeak"

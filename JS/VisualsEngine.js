@@ -81,7 +81,7 @@
 
     VisualsEngine.prototype._bgColTo = 130;
 
-    VisualsEngine.prototype._bgColLerp = 1;
+    VisualsEngine.prototype._bgColLerp = 0;
 
     VisualsEngine.prototype._bgColLerpSpeed = 0.02;
 
@@ -150,10 +150,13 @@
       } else {
         _results1 = [];
         for (i = _j = 0, _ref1 = this._colourBucket.fg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          sOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [60, 600], [-50, 5])));
-          vOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [-15, 15]));
+          sOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [60, 600], [-50, 15])));
+          vOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [-15, 15]));
           this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
           this._colourBucket.fg[i].s = this._colourBucket.fg[i].s + sOffset;
+          if (this._colourBucket.fg[i].s < 30) {
+            this._colourBucket.fg[i].s = 30;
+          }
           _results1.push(this._colourBucket.fg[i].v -= vOffset);
         }
         return _results1;
@@ -162,7 +165,7 @@
 
     VisualsEngine.prototype.updateBackgroundColour = function() {
       var newCol;
-      newCol = Math.floor(this.convertToRange(this._frequency, [0, 40], [50, 240]));
+      newCol = Math.floor(this.convertToRange(this._frequency, [5, 60], [30, 190]));
       if (Math.abs(this._bgColFrom - newCol) < 10 || this._bgColLerp < 0.97) {
 
       } else {
@@ -174,22 +177,27 @@
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
-      var circle, col, whichCol;
+      var circle, col, v, whichCol;
       whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
       col = this._colourBucket.fg[whichCol];
       if (type === 'hard') {
         this.updateBackgroundColour();
         col = this.HSVtoRGB(col.h, col.s, col.v);
-        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 350);
+        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
       } else if (type === 'soft') {
         col = this.HSVtoRGB(col.h, col.s, col.v);
-        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 250);
+        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
       } else if (type === 'hi') {
-        col = this.HSVtoRGB(col.h, col.s - 40, 100);
-        circle = this._two.makeCircle(0, this._two.height / 4, 800);
+        v = this.convertToRange(this._frequency, [5, 40], [80, 100]);
+        col = this.HSVtoRGB(col.h, 10, v);
+        circle = this._two.makeCircle(0, this._two.height / 4, this._two.height * 0.82);
       } else if (type === 'lo') {
-        col = this.HSVtoRGB(col.h, col.s - 40, 20);
-        circle = this._two.makeCircle(this._two.width, this._two.height, 600);
+        v = this.convertToRange(this._frequency, [5, 40], [15, 33]);
+        if (col.s < 8) {
+          col.s = 8;
+        }
+        col = this.HSVtoRGB(col.h, 20, v);
+        circle = this._two.makeCircle(this._two.width, this._two.height, this._two.height * 0.75);
       }
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       circle.fill = col;
