@@ -135,7 +135,7 @@ class VisualsEngine
 
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
 		circle.fill = col
-		circle.lifeSpan = 500
+		circle.lifeSpan = Math.floor @convertToRange(@_bpm, [60,600], [1000, 400])
 		circle.creationTime = new Date().getTime()
 		circle.noStroke()
 		@_shapes.push circle
@@ -152,9 +152,11 @@ class VisualsEngine
 
 		time = new Date().getTime()
 		for shape in @_shapes
-			if shape and time - shape.creationTime > shape.lifeSpan
+			if shape and time - shape.creationTime >= shape.lifeSpan
+				#bug - sometimes shapes get stuck, removed from index but never removed
 				shape.remove()
 				@_shapes.splice shape.index, 1
+				console.log 'removed shape', @_shapes.length
 
 
 	lerp: (from, to, control) =>

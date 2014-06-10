@@ -68,9 +68,9 @@
 
     AudioAnalysisEngine.prototype._lastFrequencyVariation = null;
 
-    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 20;
+    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 12;
 
-    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 20;
+    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 12;
 
     AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 12;
 
@@ -233,7 +233,6 @@
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
         this.calculateAveragePeakFrequency();
-        this.calculateAverageBpm();
         this.checkForBreak();
         this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
@@ -660,7 +659,7 @@
       }
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       circle.fill = col;
-      circle.lifeSpan = 500;
+      circle.lifeSpan = Math.floor(this.convertToRange(this._bpm, [60, 600], [1000, 400]));
       circle.creationTime = new Date().getTime();
       circle.noStroke();
       return this._shapes.push(circle);
@@ -680,9 +679,10 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         shape = _ref[_i];
-        if (shape && time - shape.creationTime > shape.lifeSpan) {
+        if (shape && time - shape.creationTime >= shape.lifeSpan) {
           shape.remove();
-          _results.push(this._shapes.splice(shape.index, 1));
+          this._shapes.splice(shape.index, 1);
+          _results.push(console.log('removed shape', this._shapes.length));
         } else {
           _results.push(void 0);
         }

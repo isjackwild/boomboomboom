@@ -49,8 +49,8 @@ class AudioAnalysisEngine
 	_averageFrequency: 0
 	_frequencyVariationCheck: []
 	_lastFrequencyVariation: null
-	_sensivitityForHighPeak: 20 #how much the peak has to be above average to be considered high
-	_sensivitityForLowPeak: 20 #how much the peak has to be above average to be considered low
+	_sensivitityForHighPeak: 12 #how much the peak has to be above average to be considered high
+	_sensivitityForLowPeak: 12 #how much the peak has to be above average to be considered low
 	_sensitivityForHighFrequencyVariation: 12 #how much the peaks have to differ from each other on average to trigger a hi freq variation zone
 
 	_lastPeakTime: null
@@ -179,7 +179,7 @@ class AudioAnalysisEngine
 		if @_averageAmp+@_peakSensitivityOffset < @_lastAverageAmp and @_waitingForPeak
 			@_waitingForPeak = false
 			@calculateAveragePeakFrequency() #what was the highest frequency at the time of the peak
-			@calculateAverageBpm() #what is the bmp
+			# @calculateAverageBpm() #what is the bmp
 			@checkForBreak()
 			@checkForFrequencyVariation()
 

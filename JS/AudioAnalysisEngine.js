@@ -68,9 +68,9 @@
 
     AudioAnalysisEngine.prototype._lastFrequencyVariation = null;
 
-    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 20;
+    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 12;
 
-    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 20;
+    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 12;
 
     AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 12;
 
@@ -233,7 +233,6 @@
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
         this.calculateAveragePeakFrequency();
-        this.calculateAverageBpm();
         this.checkForBreak();
         this.checkForFrequencyVariation();
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
