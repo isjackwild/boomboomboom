@@ -130,13 +130,6 @@
           return _this.setupTestAudio();
         };
       })(this);
-      document.getElementById('twoMagic').onclick = (function(_this) {
-        return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
-        };
-      })(this);
     }
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
@@ -536,19 +529,25 @@
           s: 40,
           v: 95
         }
-      ],
-      bg: []
+      ]
     };
 
     VisualsEngine.prototype._colourBucket = {
-      fg: [],
-      bg: []
+      fg: []
     };
+
+    VisualsEngine.prototype._bgColFrom = 130;
+
+    VisualsEngine.prototype._bgColTo = 130;
+
+    VisualsEngine.prototype._bgColLerp = 1;
 
     function VisualsEngine() {
       this.HSVtoRGB = __bind(this.HSVtoRGB, this);
-      this.randomiseBackgroundColour = __bind(this.randomiseBackgroundColour, this);
+      this.lerp = __bind(this.lerp, this);
+      this.onTwoUpdate = __bind(this.onTwoUpdate, this);
       this.onPeak = __bind(this.onPeak, this);
+      this.updateBackgroundColour = __bind(this.updateBackgroundColour, this);
       this.gotVolume = __bind(this.gotVolume, this);
       this.gotFrequency = __bind(this.gotFrequency, this);
       this.gotBPM = __bind(this.gotBPM, this);
@@ -561,7 +560,6 @@
     }
 
     VisualsEngine.prototype.setupListeners = function() {
-      window.events.longBreak.add(this.randomiseBackgroundColour);
       window.events.peak.add(this.onPeak);
       window.events.BPM.add(this.gotBPM);
       window.events.volume.add(this.gotVolume);
@@ -576,7 +574,8 @@
         fullscreen: true,
         autostart: true
       };
-      return this._two = new Two(params).appendTo(this._twoElem);
+      this._two = new Two(params).appendTo(this._twoElem);
+      return this._two.bind('update', this.onTwoUpdate);
     };
 
     VisualsEngine.prototype.gotBPM = function(BPM) {
@@ -595,20 +594,17 @@
     };
 
     VisualsEngine.prototype.updateColourBucket = function() {
-      var i, sOffset, vOffset, _i, _j, _k, _ref, _ref1, _ref2, _results, _results1;
+      var i, sOffset, vOffset, _i, _j, _ref, _ref1, _results, _results1;
       if (this._coloursSetup === false) {
         this._coloursSetup = true;
-        for (i = _i = 0, _ref = this._baseColours.fg.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-          this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
-        }
         _results = [];
-        for (i = _j = 0, _ref1 = this._colourBucket.bg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          _results.push(this._colourBucket.bg[i] = Object.create(this._baseColours.fg[i]));
+        for (i = _i = 0, _ref = this._baseColours.fg.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+          _results.push(this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]));
         }
         return _results;
       } else {
         _results1 = [];
-        for (i = _k = 0, _ref2 = this._colourBucket.fg.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+        for (i = _j = 0, _ref1 = this._colourBucket.fg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
           sOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [60, 600], [-50, 5])));
           vOffset = Math.floor(this.convertToRange(this._frequency, [0, 50], [-15, 15]));
           this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
@@ -619,15 +615,27 @@
       }
     };
 
+    VisualsEngine.prototype.updateBackgroundColour = function() {
+      var newCol;
+      newCol = Math.floor(this.convertToRange(this._frequency, [0, 40], [50, 240]));
+      if (Math.abs(this._bgColFrom - newCol) < 10 || this._bgColLerp < 0.97) {
+
+      } else {
+        this._bgColFrom = this._bgColTo;
+        this._bgColTo = newCol;
+        this._bgColLerp = 0;
+        return console.log('update background colour');
+      }
+    };
+
     VisualsEngine.prototype.onPeak = function(type) {
       var circle, col, shape, whichCol, _i, _len, _ref;
       if (type === 'hard') {
-        this.randomiseBackgroundColour();
+        this.updateBackgroundColour();
         return;
       }
       whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
       col = this._colourBucket.fg[whichCol];
-      console.log(col, "<<<< col");
       if (type === 'hi') {
         col = this.HSVtoRGB(col.h, 40, 100);
       } else {
@@ -651,13 +659,19 @@
       return this._peakCount += 1;
     };
 
-    VisualsEngine.prototype.randomiseBackgroundColour = function() {
-      var col, v;
-      v = Math.floor(this.convertToRange(this._frequency, [0, 40], [20, 70]));
-      v = Math.floor(Math.random() * 8 + v);
-      col = this.HSVtoRGB(0, 0, v);
-      col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
-      return this._twoElem.style.background = col;
+    VisualsEngine.prototype.onTwoUpdate = function() {
+      var tempCol;
+      if (this._bgColLerp < 1) {
+        this._bgColLerp = this._bgColLerp + 0.01;
+        tempCol = this.lerp(this._bgColFrom, this._bgColTo, this._bgColLerp);
+        tempCol = Math.ceil(tempCol);
+        tempCol = "rgb(" + tempCol + "," + tempCol + "," + tempCol + ")";
+        return this._twoElem.style.background = tempCol;
+      }
+    };
+
+    VisualsEngine.prototype.lerp = function(from, to, control) {
+      return from + control * (to - from);
     };
 
     VisualsEngine.prototype.HSVtoRGB = function(h, s, v) {

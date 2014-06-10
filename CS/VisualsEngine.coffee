@@ -20,12 +20,13 @@ class VisualsEngine
 	_coloursSetup: false
 	_baseColours: {
 		fg: [{h: 346, s: 85, v: 95}, {h: 17, s: 90, v: 97}, {h: 45, s: 97, v: 97}, {h: 154, s: 65, v: 92}, {h: 149, s: 95, v: 70}, {h: 196, s: 87, v: 92}, {h: 220, s: 76, v: 80}, {h: 316, s: 40, v: 95}]
-		bg: []
 	}
 	_colourBucket: {
 		fg: []
-		bg: []
 	}
+	_bgColFrom: 130
+	_bgColTo: 130
+	_bgColLerp: 1
 
 	#colours
 		#bg = low sat and low bright
@@ -50,7 +51,6 @@ class VisualsEngine
 		
 
 	setupListeners: ->
-		window.events.longBreak.add @randomiseBackgroundColour
 		window.events.peak.add @onPeak
 		window.events.BPM.add @gotBPM
 		window.events.volume.add @gotVolume
@@ -65,6 +65,7 @@ class VisualsEngine
 			autostart: true
 		}
 		@_two = new Two(params).appendTo(@_twoElem)
+		@_two.bind 'update', @onTwoUpdate
 
 
 	gotBPM: (BPM) =>
@@ -87,10 +88,9 @@ class VisualsEngine
 			@_coloursSetup = true
 			for i in [0...@_baseColours.fg.length]
 				@_colourBucket.fg[i] = Object.create @_baseColours.fg[i]
-			for i in [0...@_colourBucket.bg.length]
-				@_colourBucket.bg[i] = Object.create @_baseColours.fg[i]
 		else
 			for i in [0...@_colourBucket.fg.length]
+				#maybe add in volume if / when can accuratly normalise mic volume
 				sOffset = Math.floor @convertToRange(@_frequency, [0,50], [10, -20]) + Math.floor @convertToRange(@_bpm, [60,600], [-50, 5])
 				vOffset = Math.floor @convertToRange(@_frequency, [0,50], [-15, 15])
 				@_colourBucket.fg[i] = Object.create @_baseColours.fg[i]
@@ -98,14 +98,26 @@ class VisualsEngine
 				@_colourBucket.fg[i].v -= vOffset
 
 
+	updateBackgroundColour: =>
+		#lerp between background colours
+		newCol = Math.floor @convertToRange(@_frequency, [0,40], [50, 240])
+		
+		if Math.abs(@_bgColFrom - newCol) < 10 or @_bgColLerp < 0.97
+			return
+		else
+			@_bgColFrom = @_bgColTo
+			@_bgColTo = newCol
+			@_bgColLerp = 0
+			console.log 'update background colour'
+	
+
 	onPeak: (type) =>
 		if type is 'hard'
-			@randomiseBackgroundColour()
+			@updateBackgroundColour()
 			return
 
 		whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
 		col = @_colourBucket.fg[whichCol]
-		console.log col, "<<<< col"
 
 		if type is 'hi'
 			col = @HSVtoRGB col.h, 40, 100
@@ -129,15 +141,18 @@ class VisualsEngine
 		@_peakCount += 1
 
 
-	randomiseBackgroundColour: =>
-		#lerp between background colours
-		v = Math.floor @convertToRange(@_frequency, [0,40], [20, 70])
-		v = Math.floor Math.random()*8 + v
-		col = @HSVtoRGB 0, 0, v
-		col = "rgb("+col.r+","+col.g+","+col.b+")"
-		@_twoElem.style.background = col
+	onTwoUpdate: () =>
+		# console.log "render"
+		if @_bgColLerp < 1
+			@_bgColLerp  = @_bgColLerp + 0.01
+			tempCol = @lerp @_bgColFrom, @_bgColTo, @_bgColLerp
+			tempCol = Math.ceil tempCol
+			tempCol = "rgb("+tempCol+","+tempCol+","+tempCol+")"
+			@_twoElem.style.background = tempCol
 
 
+	lerp: (from, to, control) =>
+		return from + control *	(to - from)
 	#add this to my UTILS
 	HSVtoRGB: (h,s,v) =>
 		if s is undefined
