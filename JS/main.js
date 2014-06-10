@@ -642,21 +642,21 @@
 
     VisualsEngine.prototype.onPeak = function(type) {
       var circle, col, whichCol;
-      if (type === 'hard') {
-        this.updateBackgroundColour();
-        return;
-      }
       whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
       col = this._colourBucket.fg[whichCol];
-      if (type === 'hi') {
+      if (type === 'hard') {
+        this.updateBackgroundColour();
+        col = this.HSVtoRGB(col.h, col.s, col.v);
+        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 350);
+      } else if (type === 'soft') {
+        col = this.HSVtoRGB(col.h, col.s, col.v);
+        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 250);
+      } else if (type === 'hi') {
         col = this.HSVtoRGB(col.h, col.s - 40, 100);
         circle = this._two.makeCircle(0, this._two.height / 4, 800);
       } else if (type === 'lo') {
         col = this.HSVtoRGB(col.h, col.s - 40, 20);
         circle = this._two.makeCircle(this._two.width, this._two.height, 600);
-      } else {
-        col = this.HSVtoRGB(col.h, col.s, col.v);
-        circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, 300);
       }
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       circle.fill = col;

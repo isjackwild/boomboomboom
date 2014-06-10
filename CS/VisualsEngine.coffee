@@ -115,22 +115,23 @@ class VisualsEngine
 	
 
 	onPeak: (type) =>
-		if type is 'hard'
-			@updateBackgroundColour()
-			return
 
 		whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
 		col = @_colourBucket.fg[whichCol]
 
-		if type is 'hi'
+		if type is 'hard'
+			@updateBackgroundColour()
+			col = @HSVtoRGB col.h, col.s, col.v
+			circle = @_two.makeCircle @_two.width/2, @_two.height/2, 350
+		else if type is 'soft'
+			col = @HSVtoRGB col.h, col.s, col.v
+			circle = @_two.makeCircle @_two.width/2, @_two.height/2, 250
+		else if type is 'hi'
 			col = @HSVtoRGB col.h, col.s-40, 100
 			circle = @_two.makeCircle 0, @_two.height/4, 800
 		else if type is 'lo'
 			col = @HSVtoRGB col.h, col.s-40, 20
 			circle = @_two.makeCircle @_two.width, @_two.height, 600
-		else
-			col = @HSVtoRGB col.h, col.s, col.v
-			circle = @_two.makeCircle @_two.width/2, @_two.height/2, 300
 
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
 		circle.fill = col
