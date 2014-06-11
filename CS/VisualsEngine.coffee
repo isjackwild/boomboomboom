@@ -15,7 +15,6 @@ class VisualsEngine
 	_frequency: 10
 	_bpm: 200
 
-	_whichColour: 0
 
 	_coloursSetup: false
 	_baseColours: {
@@ -71,8 +70,7 @@ class VisualsEngine
 
 	gotBPM: (BPM) =>
 		@_bpm = BPM
-		@_bgColLerpSpeed = @convertToRange(@_bpm, [100,500], [0.005, 0.15])
-		@_bgColLerpSpeed = 0.005
+		@_bgColLerpSpeed = @convertToRange(@_bpm, [100,500], [0.005, 0.009])
 		@updateColourBucket()
 
 
@@ -99,17 +97,14 @@ class VisualsEngine
 				vOffset = Math.floor @convertToRange(@_frequency, [5,60], [15, -15])
 				@_colourBucket.fg[i] = Object.create @_baseColours.fg[i]
 				@_colourBucket.fg[i].s = @_colourBucket.fg[i].s + sOffset
-				if @_colourBucket.fg[i].s < 30 then @_colourBucket.fg[i].s = 30
+				if @_colourBucket.fg[i].s < 25 then @_colourBucket.fg[i].s = 25
 				@_colourBucket.fg[i].v -= vOffset
 
 
 	updateBackgroundColour: =>
-		#lerp between background colours
 		newCol = Math.floor @convertToRange(@_frequency, [8,60], [30, 190])
 		
-		if Math.abs(@_bgColFrom - newCol) < 10 or @_bgColLerp < 0.97
-			return
-		else
+		if Math.abs(@_bgColFrom - newCol) > 10 or @_bgColLerp > 0.95
 			@_bgColFrom = @_bgColTo
 			@_bgColTo = newCol
 			@_bgColLerp = 0
@@ -148,19 +143,23 @@ class VisualsEngine
 	onTwoUpdate: () =>
 		# console.log "render"
 		if @_bgColLerp < 1
-			@_bgColLerp  = @_bgColLerp + @_bgColLerpSpeed
+			@_bgColLerp  += @_bgColLerpSpeed
 			tempCol = @lerp @_bgColFrom, @_bgColTo, @_bgColLerp
 			tempCol = Math.ceil tempCol
 			tempCol = "rgb("+tempCol+","+tempCol+","+tempCol+")"
 			@_twoElem.style.background = tempCol
 
+		if @_shapes.length >= 1
+			@removeShapes()	
+
+
+	removeShapes: () =>
 		time = new Date().getTime()
-		for shape in @_shapes
-			if shape and time - shape.creationTime >= shape.lifeSpan
-				#bug - sometimes shapes get stuck, removed from index but never removed
+		for shape, i in @_shapes by -1
+			if time - shape.creationTime >= shape.lifeSpan
 				shape.remove()
-				@_shapes.splice shape.index, 1
-				console.log 'removed shape', @_shapes.length
+				@_shapes.splice i, 1
+				console.log 'removed shape', i
 
 
 	lerp: (from, to, control) =>

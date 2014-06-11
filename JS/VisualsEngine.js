@@ -23,8 +23,6 @@
 
     VisualsEngine.prototype._bpm = 200;
 
-    VisualsEngine.prototype._whichColour = 0;
-
     VisualsEngine.prototype._coloursSetup = false;
 
     VisualsEngine.prototype._baseColours = {
@@ -88,6 +86,7 @@
     function VisualsEngine() {
       this.HSVtoRGB = __bind(this.HSVtoRGB, this);
       this.lerp = __bind(this.lerp, this);
+      this.removeShapes = __bind(this.removeShapes, this);
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
       this.onPeak = __bind(this.onPeak, this);
       this.updateBackgroundColour = __bind(this.updateBackgroundColour, this);
@@ -123,8 +122,7 @@
 
     VisualsEngine.prototype.gotBPM = function(BPM) {
       this._bpm = BPM;
-      this._bgColLerpSpeed = this.convertToRange(this._bpm, [100, 500], [0.005, 0.15]);
-      this._bgColLerpSpeed = 0.005;
+      this._bgColLerpSpeed = this.convertToRange(this._bpm, [100, 500], [0.005, 0.009]);
       return this.updateColourBucket();
     };
 
@@ -155,8 +153,8 @@
           vOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [15, -15]));
           this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
           this._colourBucket.fg[i].s = this._colourBucket.fg[i].s + sOffset;
-          if (this._colourBucket.fg[i].s < 30) {
-            this._colourBucket.fg[i].s = 30;
+          if (this._colourBucket.fg[i].s < 25) {
+            this._colourBucket.fg[i].s = 25;
           }
           _results1.push(this._colourBucket.fg[i].v -= vOffset);
         }
@@ -167,9 +165,7 @@
     VisualsEngine.prototype.updateBackgroundColour = function() {
       var newCol;
       newCol = Math.floor(this.convertToRange(this._frequency, [8, 60], [30, 190]));
-      if (Math.abs(this._bgColFrom - newCol) < 10 || this._bgColLerp < 0.97) {
-
-      } else {
+      if (Math.abs(this._bgColFrom - newCol) > 10 || this._bgColLerp > 0.95) {
         this._bgColFrom = this._bgColTo;
         this._bgColTo = newCol;
         this._bgColLerp = 0;
@@ -208,23 +204,30 @@
     };
 
     VisualsEngine.prototype.onTwoUpdate = function() {
-      var shape, tempCol, time, _i, _len, _ref, _results;
+      var tempCol;
       if (this._bgColLerp < 1) {
-        this._bgColLerp = this._bgColLerp + this._bgColLerpSpeed;
+        this._bgColLerp += this._bgColLerpSpeed;
         tempCol = this.lerp(this._bgColFrom, this._bgColTo, this._bgColLerp);
         tempCol = Math.ceil(tempCol);
         tempCol = "rgb(" + tempCol + "," + tempCol + "," + tempCol + ")";
         this._twoElem.style.background = tempCol;
       }
+      if (this._shapes.length >= 1) {
+        return this.removeShapes();
+      }
+    };
+
+    VisualsEngine.prototype.removeShapes = function() {
+      var i, shape, time, _i, _ref, _results;
       time = new Date().getTime();
       _ref = this._shapes;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        shape = _ref[_i];
-        if (shape && time - shape.creationTime >= shape.lifeSpan) {
+      for (i = _i = _ref.length - 1; _i >= 0; i = _i += -1) {
+        shape = _ref[i];
+        if (time - shape.creationTime >= shape.lifeSpan) {
           shape.remove();
-          this._shapes.splice(shape.index, 1);
-          _results.push(console.log('removed shape', this._shapes.length));
+          this._shapes.splice(i, 1);
+          _results.push(console.log('removed shape', i));
         } else {
           _results.push(void 0);
         }

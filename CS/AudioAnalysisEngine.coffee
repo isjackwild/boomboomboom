@@ -106,8 +106,8 @@ class AudioAnalysisEngine
 		@_dynamicsCompressor.release = 0.250
 		@_biquadFilter = @_context.createBiquadFilter()
 		@_biquadFilter.type = "lowshelf"
-		@_biquadFilter.frequency.value = 350
-		@_biquadFilter.gain.value = 20
+		@_biquadFilter.frequency.value = 320
+		@_biquadFilter.gain.value = 25
 		console.log @_biquadFilter, @_dynamicsCompressor
 		
 	setupTestAudio: =>

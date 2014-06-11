@@ -155,8 +155,8 @@
       this._dynamicsCompressor.release = 0.250;
       this._biquadFilter = this._context.createBiquadFilter();
       this._biquadFilter.type = "lowshelf";
-      this._biquadFilter.frequency.value = 350;
-      this._biquadFilter.gain.value = 20;
+      this._biquadFilter.frequency.value = 320;
+      this._biquadFilter.gain.value = 25;
       return console.log(this._biquadFilter, this._dynamicsCompressor);
     };
 
