@@ -116,8 +116,8 @@ class VisualsEngine
 		else
 			for i in [0...@_colourBucket.fg.length]
 				#maybe add in volume if / when can accuratly normalise mic volume
-				sOffset = Math.floor @convertToRange(@_frequency, [5,60], [10, -20]) + Math.floor @convertToRange(@_bpm, [60,600], [-50, 15])
-				vOffset = Math.floor @convertToRange(@_frequency, [5,60], [15, -15])
+				sOffset = Math.floor @convertToRange(@_frequency, [4,33], [10, -20]) + Math.floor @convertToRange(@_bpm, [60,600], [-50, 15])
+				vOffset = Math.floor @convertToRange(@_frequency, [4,33], [15, -15])
 				@_colourBucket.fg[i] = Object.create @_baseColours.fg[i]
 				@_colourBucket.fg[i].s = @_colourBucket.fg[i].s + sOffset
 				if @_colourBucket.fg[i].s < 25 then @_colourBucket.fg[i].s = 25
@@ -127,7 +127,7 @@ class VisualsEngine
 	updateBackgroundColour: =>
 		console.log 'updateBackgroundColour'
 		if @_negativeColours is false
-			col = Math.floor(@convertToRange(@_frequency, [8,60], [30, 190])+Math.random()*20)
+			col = Math.floor(@convertToRange(@_frequency, [4,33], [30, 190])+Math.random()*20)
 			col = {r: col, g: col, b: col}
 		else if @_negativeColours is true
 			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
@@ -147,8 +147,12 @@ class VisualsEngine
 			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.3
 		else if type is 'hi'
 			circle = @_two.makeCircle 0, @_two.height/4, @_two.height*0.82
+			circle.fadeOut = true
+			circle.fadeOutSpeed = @convertToRange(@_bpm, [60,500], [0.015, 0.1])
 		else if type is 'lo'
 			circle = @_two.makeCircle @_two.width, @_two.height, @_two.height*0.75
+			circle.fadeOut = true
+			circle.fadeOutSpeed = @convertToRange(@_bpm, [60,500], [0.1, 0.25])
 
 		if @_negativeColours is false
 			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
@@ -156,10 +160,10 @@ class VisualsEngine
 			if type is 'hard' or type is 'soft'
 				col = @HSVtoRGB col.h, col.s, col.v
 			else if type is 'hi'
-				v = @convertToRange @_frequency, [5, 60], [80,100]
+				v = @convertToRange @_frequency, [4, 33], [80,100]
 				col = @HSVtoRGB col.h, 7, v
 			else if type is 'lo'
-				v = @convertToRange @_frequency, [5, 60], [15,33]
+				v = @convertToRange @_frequency, [4, 33], [15,33]
 				if col.s < 8 then col.s = 8
 				col = @HSVtoRGB col.h, 10, v
 		else if @_negativeColours is true
@@ -186,10 +190,10 @@ class VisualsEngine
 		if @_pauseBgLerp is false
 			@_pauseBgLerp = true
 			if length is 'long'
-				offset = 200
+				offset = 150
 				hang = 500
 			else if length is 'short'
-				offset = 30
+				offset = 20
 				hang = 120
 			r = @_bgColCurrent.r + offset
 			g = @_bgColCurrent.g + offset
@@ -205,30 +209,35 @@ class VisualsEngine
 	onBass: () =>
 		if @_middleGround.isScaling is false
 			@_middleGround.isScaling = true
-			@_middleGround.targetScale = 1.1
+			@_middleGround.targetScale = 1.05
 
 
 	onTwoUpdate: () =>
-		# console.log "render"
 		if @_bgColLerp < 1 and @_pauseBgLerp is false
-			@_bgColLerp  += @_bgColLerpSpeed
-			@_bgColCurrent = @lerpColour @_bgColFrom, @_bgColTo, @_bgColLerp
-			col = "rgb("+@_bgColCurrent.r+","+@_bgColCurrent.g+","+@_bgColCurrent.b+")"
-			@_twoElem.style.background = col
-
+			@lerpBackground()
+		if @_middleGround.isScaling is true
+			@animateMiddleGroundFlux()
 		if @_shapes.length >= 1
 			@removeShapes()
 
 
+	lerpBackground: () =>
+		@_bgColLerp  += @_bgColLerpSpeed
+		@_bgColCurrent = @lerpColour @_bgColFrom, @_bgColTo, @_bgColLerp
+		col = "rgb("+@_bgColCurrent.r+","+@_bgColCurrent.g+","+@_bgColCurrent.b+")"
+		@_twoElem.style.background = col
+
+
+	animateMiddleGroundFlux: () =>
 		if @_middleGround.targetScale > @_middleGround.scale
-			@_middleGround.scale += 0.05
+			@_middleGround.scale += 0.03
 			xOffset = @convertToRange @_middleGround.scale, [0,2], [@_two.width/2, -@_two.width/2]
 			yOffset = @convertToRange @_middleGround.scale, [0,2], [@_two.height/2, -@_two.height/2]
 			@_middleGround.translation.set xOffset, yOffset
 			if @_middleGround.scale >= @_middleGround.targetScale
 				@_middleGround.targetScale = 1
 		else if @_middleGround.targetScale < @_middleGround.scale
-			@_middleGround.scale -= 0.05
+			@_middleGround.scale -= 0.03
 			xOffset = @convertToRange @_middleGround.scale, [0,2], [@_two.width/2, -@_two.width/2]
 			yOffset = @convertToRange @_middleGround.scale, [0,2], [@_two.height/2, -@_two.height/2]
 			@_middleGround.translation.set xOffset, yOffset
@@ -242,8 +251,14 @@ class VisualsEngine
 		time = new Date().getTime()
 		for shape, i in @_shapes by -1
 			if time - shape.creationTime >= shape.lifeSpan
-				shape.remove()
-				@_shapes.splice i, 1
+				if shape.fadeOut is true
+					shape.opacity -= 0.01
+					if shape.opacity < 0
+						shape.remove()
+						@_shapes.splice i, 1
+				else
+					shape.remove()
+					@_shapes.splice i, 1
 
 
 	#add this to my UTILS

@@ -156,7 +156,7 @@
       this._biquadFilter = this._context.createBiquadFilter();
       this._biquadFilter.type = "lowshelf";
       this._biquadFilter.frequency.value = 300;
-      this._biquadFilter.gain.value = 15;
+      this._biquadFilter.gain.value = 5;
       return console.log(this._biquadFilter, this._dynamicsCompressor);
     };
 
@@ -294,7 +294,7 @@
             this._averageFrequency = tempAvFreq;
             window.events.frequency.dispatch(this._averageFrequency);
             this._averageFreqCalcArray = [];
-            _results.push(this._bassCutoff = this._averageFrequency + 100);
+            _results.push(this._bassCutoff = this._averageFrequency + 40);
           } else {
             _results.push(void 0);
           }
@@ -588,6 +588,8 @@
       this.HSVtoRGB = __bind(this.HSVtoRGB, this);
       this.lerp = __bind(this.lerp, this);
       this.removeShapes = __bind(this.removeShapes, this);
+      this.animateMiddleGroundFlux = __bind(this.animateMiddleGroundFlux, this);
+      this.lerpBackground = __bind(this.lerpBackground, this);
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
       this.onBass = __bind(this.onBass, this);
       this.onBreak = __bind(this.onBreak, this);
@@ -672,8 +674,8 @@
       } else {
         _results1 = [];
         for (i = _j = 0, _ref1 = this._colourBucket.fg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          sOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [60, 600], [-50, 15])));
-          vOffset = Math.floor(this.convertToRange(this._frequency, [5, 60], [15, -15]));
+          sOffset = Math.floor(this.convertToRange(this._frequency, [4, 33], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [60, 600], [-50, 15])));
+          vOffset = Math.floor(this.convertToRange(this._frequency, [4, 33], [15, -15]));
           this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
           this._colourBucket.fg[i].s = this._colourBucket.fg[i].s + sOffset;
           if (this._colourBucket.fg[i].s < 25) {
@@ -689,7 +691,7 @@
       var col, whichCol;
       console.log('updateBackgroundColour');
       if (this._negativeColours === false) {
-        col = Math.floor(this.convertToRange(this._frequency, [8, 60], [30, 190]) + Math.random() * 20);
+        col = Math.floor(this.convertToRange(this._frequency, [4, 33], [30, 190]) + Math.random() * 20);
         col = {
           r: col,
           g: col,
@@ -715,8 +717,12 @@
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
       } else if (type === 'hi') {
         circle = this._two.makeCircle(0, this._two.height / 4, this._two.height * 0.82);
+        circle.fadeOut = true;
+        circle.fadeOutSpeed = this.convertToRange(this._bpm, [60, 500], [0.015, 0.1]);
       } else if (type === 'lo') {
         circle = this._two.makeCircle(this._two.width, this._two.height, this._two.height * 0.75);
+        circle.fadeOut = true;
+        circle.fadeOutSpeed = this.convertToRange(this._bpm, [60, 500], [0.1, 0.25]);
       }
       if (this._negativeColours === false) {
         whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
@@ -724,10 +730,10 @@
         if (type === 'hard' || type === 'soft') {
           col = this.HSVtoRGB(col.h, col.s, col.v);
         } else if (type === 'hi') {
-          v = this.convertToRange(this._frequency, [5, 60], [80, 100]);
+          v = this.convertToRange(this._frequency, [4, 33], [80, 100]);
           col = this.HSVtoRGB(col.h, 7, v);
         } else if (type === 'lo') {
-          v = this.convertToRange(this._frequency, [5, 60], [15, 33]);
+          v = this.convertToRange(this._frequency, [4, 33], [15, 33]);
           if (col.s < 8) {
             col.s = 8;
           }
@@ -774,10 +780,10 @@
       if (this._pauseBgLerp === false) {
         this._pauseBgLerp = true;
         if (length === 'long') {
-          offset = 200;
+          offset = 150;
           hang = 500;
         } else if (length === 'short') {
-          offset = 30;
+          offset = 20;
           hang = 120;
         }
         r = this._bgColCurrent.r + offset;
@@ -798,23 +804,34 @@
     VisualsEngine.prototype.onBass = function() {
       if (this._middleGround.isScaling === false) {
         this._middleGround.isScaling = true;
-        return this._middleGround.targetScale = 1.1;
+        return this._middleGround.targetScale = 1.05;
       }
     };
 
     VisualsEngine.prototype.onTwoUpdate = function() {
-      var col, xOffset, yOffset;
       if (this._bgColLerp < 1 && this._pauseBgLerp === false) {
-        this._bgColLerp += this._bgColLerpSpeed;
-        this._bgColCurrent = this.lerpColour(this._bgColFrom, this._bgColTo, this._bgColLerp);
-        col = "rgb(" + this._bgColCurrent.r + "," + this._bgColCurrent.g + "," + this._bgColCurrent.b + ")";
-        this._twoElem.style.background = col;
+        this.lerpBackground();
+      }
+      if (this._middleGround.isScaling === true) {
+        this.animateMiddleGroundFlux();
       }
       if (this._shapes.length >= 1) {
-        this.removeShapes();
+        return this.removeShapes();
       }
+    };
+
+    VisualsEngine.prototype.lerpBackground = function() {
+      var col;
+      this._bgColLerp += this._bgColLerpSpeed;
+      this._bgColCurrent = this.lerpColour(this._bgColFrom, this._bgColTo, this._bgColLerp);
+      col = "rgb(" + this._bgColCurrent.r + "," + this._bgColCurrent.g + "," + this._bgColCurrent.b + ")";
+      return this._twoElem.style.background = col;
+    };
+
+    VisualsEngine.prototype.animateMiddleGroundFlux = function() {
+      var xOffset, yOffset;
       if (this._middleGround.targetScale > this._middleGround.scale) {
-        this._middleGround.scale += 0.05;
+        this._middleGround.scale += 0.03;
         xOffset = this.convertToRange(this._middleGround.scale, [0, 2], [this._two.width / 2, -this._two.width / 2]);
         yOffset = this.convertToRange(this._middleGround.scale, [0, 2], [this._two.height / 2, -this._two.height / 2]);
         this._middleGround.translation.set(xOffset, yOffset);
@@ -822,7 +839,7 @@
           return this._middleGround.targetScale = 1;
         }
       } else if (this._middleGround.targetScale < this._middleGround.scale) {
-        this._middleGround.scale -= 0.05;
+        this._middleGround.scale -= 0.03;
         xOffset = this.convertToRange(this._middleGround.scale, [0, 2], [this._two.width / 2, -this._two.width / 2]);
         yOffset = this.convertToRange(this._middleGround.scale, [0, 2], [this._two.height / 2, -this._two.height / 2]);
         this._middleGround.translation.set(xOffset, yOffset);
@@ -842,8 +859,18 @@
       for (i = _i = _ref.length - 1; _i >= 0; i = _i += -1) {
         shape = _ref[i];
         if (time - shape.creationTime >= shape.lifeSpan) {
-          shape.remove();
-          _results.push(this._shapes.splice(i, 1));
+          if (shape.fadeOut === true) {
+            shape.opacity -= 0.01;
+            if (shape.opacity < 0) {
+              shape.remove();
+              _results.push(this._shapes.splice(i, 1));
+            } else {
+              _results.push(void 0);
+            }
+          } else {
+            shape.remove();
+            _results.push(this._shapes.splice(i, 1));
+          }
         } else {
           _results.push(void 0);
         }

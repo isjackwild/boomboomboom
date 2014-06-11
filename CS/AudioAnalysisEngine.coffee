@@ -107,7 +107,7 @@ class AudioAnalysisEngine
 		@_biquadFilter = @_context.createBiquadFilter()
 		@_biquadFilter.type = "lowshelf"
 		@_biquadFilter.frequency.value = 300
-		@_biquadFilter.gain.value = 15
+		@_biquadFilter.gain.value = 5
 		console.log @_biquadFilter, @_dynamicsCompressor
 		
 	setupTestAudio: =>
@@ -232,7 +232,7 @@ class AudioAnalysisEngine
 					@_averageFrequency = tempAvFreq
 					window.events.frequency.dispatch @_averageFrequency
 					@_averageFreqCalcArray = []
-					@_bassCutoff = @_averageFrequency + 100
+					@_bassCutoff = @_averageFrequency + 40
 
 
 	#how much is the difference in frequency about the peaks, and when does the average difference in frequency change?

@@ -156,7 +156,7 @@
       this._biquadFilter = this._context.createBiquadFilter();
       this._biquadFilter.type = "lowshelf";
       this._biquadFilter.frequency.value = 300;
-      this._biquadFilter.gain.value = 15;
+      this._biquadFilter.gain.value = 5;
       return console.log(this._biquadFilter, this._dynamicsCompressor);
     };
 
@@ -294,7 +294,7 @@
             this._averageFrequency = tempAvFreq;
             window.events.frequency.dispatch(this._averageFrequency);
             this._averageFreqCalcArray = [];
-            _results.push(this._bassCutoff = this._averageFrequency + 100);
+            _results.push(this._bassCutoff = this._averageFrequency + 40);
           } else {
             _results.push(void 0);
           }
