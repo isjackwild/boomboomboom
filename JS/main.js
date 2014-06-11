@@ -627,12 +627,12 @@
       };
       this._two = new Two(params).appendTo(this._twoElem);
       this._two.bind('update', this.onTwoUpdate);
-      this._foreGround = this._two.makeGroup();
-      this._foreGround.id = 'foreground';
       this._middleGround = this._two.makeGroup();
       this._middleGround.id = 'middleground';
       this._middleGround.isScaling = false;
-      return this._middleGround.center();
+      this._middleGround.center();
+      this._foreGround = this._two.makeGroup();
+      return this._foreGround.id = 'foreground';
     };
 
     VisualsEngine.prototype.gotBPM = function(BPM) {
@@ -710,7 +710,8 @@
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
-      var circle, col, v, whichCol;
+      var circle, col, line, sectionX, sectionY, v, whichCol;
+      this._peakCount++;
       if (type === 'hard') {
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
       } else if (type === 'soft') {
@@ -772,7 +773,33 @@
       circle.lifeSpan = Math.floor(this.convertToRange(this._bpm, [60, 600], [1000, 400]));
       circle.creationTime = new Date().getTime();
       circle.noStroke();
-      return this._shapes.push(circle);
+      this._shapes.push(circle);
+      sectionX = this._two.width / 20;
+      sectionY = this._two.height / 20;
+      if (this._peakCount % 2 === 0 && this._bpm > 300) {
+        switch (Math.ceil(Math.random() * 4)) {
+          case 1:
+            line = this._two.makePolygon(0, 0, sectionX, sectionY, sectionX * 2, sectionY * 2, sectionX * 3, sectionY * 3, sectionX * 4, sectionY * 4, sectionX * 5, sectionY * 5, sectionX * 6, sectionY * 6, sectionX * 7, sectionY * 7, sectionX * 8, sectionY * 8, sectionX * 9, sectionY * 9, sectionX * 10, sectionY * 10, sectionX * 11, sectionY * 11, sectionX * 12, sectionY * 12, sectionX * 13, sectionY * 13, sectionX * 14, sectionY * 14, sectionX * 15, sectionY * 15, sectionX * 16, sectionY * 16, sectionX * 17, sectionY * 17, sectionX * 18, sectionY * 18, sectionX * 19, sectionY * 19, this._two.width, this._two.height);
+            break;
+          case 2:
+            line = this._two.makePolygon(this._two.width, this._two.height, sectionX * 19, sectionY * 19, sectionX * 18, sectionY * 18, sectionX * 17, sectionY * 17, sectionX * 16, sectionY * 16, sectionX * 15, sectionY * 15, sectionX * 14, sectionY * 14, sectionX * 13, sectionY * 13, sectionX * 12, sectionY * 12, sectionX * 11, sectionY * 11, sectionX * 10, sectionY * 10, sectionX * 9, sectionY * 9, sectionX * 8, sectionY * 8, sectionX * 7, sectionY * 7, sectionX * 6, sectionY * 6, sectionX * 5, sectionY * 5, sectionX * 4, sectionY * 4, sectionX * 3, sectionY * 3, sectionX * 2, sectionY * 2, sectionX, sectionY, 0, 0);
+            break;
+          case 3:
+            line = this._two.makePolygon(0, this._two.height, sectionX, this._two.height - sectionY, sectionX * 2, this._two.height - sectionY * 2, sectionX * 3, this._two.height - sectionY * 3, sectionX * 4, this._two.height - sectionY * 4, sectionX * 5, this._two.height - sectionY * 5, sectionX * 6, this._two.height - sectionY * 6, sectionX * 7, this._two.height - sectionY * 7, sectionX * 8, this._two.height - sectionY * 8, sectionX * 9, this._two.height - sectionY * 9, sectionX * 10, this._two.height - sectionY * 10, sectionX * 11, this._two.height - sectionY * 11, sectionX * 12, this._two.height - sectionY * 12, sectionX * 13, this._two.height - sectionY * 13, sectionX * 14, this._two.height - sectionY * 14, sectionX * 15, this._two.height - sectionY * 15, sectionX * 16, this._two.height - sectionY * 16, sectionX * 17, this._two.height - sectionY * 17, sectionX * 18, this._two.height - sectionY * 18, sectionX * 19, this._two.height - sectionY * 19, this._two.width, 0);
+            break;
+          case 4:
+            line = this._two.makePolygon(this._two.width, 0, this._two.width - sectionX, sectionY, this._two.width - sectionX * 2, sectionY * 2, this._two.width - sectionX * 3, sectionY * 3, this._two.width - sectionX * 4, sectionY * 4, this._two.width - sectionX * 5, sectionY * 5, this._two.width - sectionX * 6, sectionY * 6, this._two.width - sectionX * 7, sectionY * 7, this._two.width - sectionX * 8, sectionY * 8, this._two.width - sectionX * 9, sectionY * 9, this._two.width - sectionX * 10, sectionY * 10, this._two.width - sectionX * 11, sectionY * 11, this._two.width - sectionX * 12, sectionY * 12, this._two.width - sectionX * 13, sectionY * 13, this._two.width - sectionX * 14, sectionY * 14, this._two.width - sectionX * 15, sectionY * 15, this._two.width - sectionX * 16, sectionY * 16, this._two.width - sectionX * 17, sectionY * 17, this._two.width - sectionX * 18, sectionY * 18, this._two.width - sectionX * 19, sectionY * 19, 0, this._two.height);
+        }
+        this._foreGround.add(line);
+        line.noFill();
+        line.stroke = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
+        line.linewidth = 20;
+        line.cap = 'butt';
+        line.animationSpeed = this.convertToRange(this._bpm, [60, 600], [0.05, 0.12]);
+        line.beginning = 0;
+        line.ending = 0;
+        return this._shapes.push(line);
+      }
     };
 
     VisualsEngine.prototype.onBreak = function(length) {
@@ -780,7 +807,7 @@
       if (this._pauseBgLerp === false) {
         this._pauseBgLerp = true;
         if (length === 'long') {
-          offset = 150;
+          offset = 120;
           hang = 500;
         } else if (length === 'short') {
           offset = 20;
@@ -858,18 +885,34 @@
       _results = [];
       for (i = _i = _ref.length - 1; _i >= 0; i = _i += -1) {
         shape = _ref[i];
-        if (time - shape.creationTime >= shape.lifeSpan) {
-          if (shape.fadeOut === true) {
-            shape.opacity -= 0.01;
-            if (shape.opacity < 0) {
+        if (shape.lifeSpan) {
+          if (time - shape.creationTime >= shape.lifeSpan) {
+            if (shape.fadeOut === true) {
+              shape.opacity -= 0.01;
+              if (shape.opacity < 0) {
+                shape.remove();
+                _results.push(this._shapes.splice(i, 1));
+              } else {
+                _results.push(void 0);
+              }
+            } else {
+              shape.remove();
+              _results.push(this._shapes.splice(i, 1));
+            }
+          } else {
+            _results.push(void 0);
+          }
+        } else if (shape.animationSpeed) {
+          if (shape.ending < 1) {
+            _results.push(shape.ending += shape.animationSpeed);
+          } else {
+            shape.beginning += shape.animationSpeed;
+            if (shape.beginning > 1) {
               shape.remove();
               _results.push(this._shapes.splice(i, 1));
             } else {
               _results.push(void 0);
             }
-          } else {
-            shape.remove();
-            _results.push(this._shapes.splice(i, 1));
           }
         } else {
           _results.push(void 0);

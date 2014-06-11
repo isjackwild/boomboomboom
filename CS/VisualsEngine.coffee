@@ -74,12 +74,12 @@ class VisualsEngine
 		}
 		@_two = new Two(params).appendTo(@_twoElem)
 		@_two.bind 'update', @onTwoUpdate
-		@_foreGround = @_two.makeGroup()
-		@_foreGround.id = 'foreground'
 		@_middleGround = @_two.makeGroup()
 		@_middleGround.id = 'middleground'
 		@_middleGround.isScaling = false
 		@_middleGround.center()
+		@_foreGround = @_two.makeGroup()
+		@_foreGround.id = 'foreground'
 
 
 	gotBPM: (BPM) =>
@@ -141,6 +141,8 @@ class VisualsEngine
 	
 
 	onPeak: (type) =>
+		@_peakCount++
+
 		if type is 'hard'
 			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.43
 		else if type is 'soft'
@@ -185,12 +187,37 @@ class VisualsEngine
 		circle.noStroke()
 		@_shapes.push circle
 
+		sectionX = @_two.width/20
+		sectionY = @_two.height/20
+
+
+		if @_peakCount % 2 is 0 and @_bpm > 300
+			switch Math.ceil Math.random()*4
+				when 1
+					line = @_two.makePolygon 0, 0, sectionX, sectionY, sectionX*2, sectionY*2, sectionX*3, sectionY*3, sectionX*4, sectionY*4, sectionX*5, sectionY*5, sectionX*6, sectionY*6, sectionX*7, sectionY*7, sectionX*8, sectionY*8, sectionX*9, sectionY*9, sectionX*10, sectionY*10,  sectionX*11, sectionY*11, sectionX*12, sectionY*12, sectionX*13, sectionY*13, sectionX*14, sectionY*14, sectionX*15, sectionY*15, sectionX*16, sectionY*16, sectionX*17, sectionY*17, sectionX*18, sectionY*18, sectionX*19, sectionY*19, @_two.width, @_two.height 
+				when 2
+					line = @_two.makePolygon @_two.width, @_two.height, sectionX*19, sectionY*19, sectionX*18, sectionY*18, sectionX*17, sectionY*17, sectionX*16, sectionY*16, sectionX*15, sectionY*15, sectionX*14, sectionY*14, sectionX*13, sectionY*13, sectionX*12, sectionY*12, sectionX*11, sectionY*11, sectionX*10, sectionY*10,  sectionX*9, sectionY*9, sectionX*8, sectionY*8, sectionX*7, sectionY*7, sectionX*6, sectionY*6, sectionX*5, sectionY*5, sectionX*4, sectionY*4, sectionX*3, sectionY*3, sectionX*2, sectionY*2, sectionX, sectionY, 0, 0
+				when 3
+					line = @_two.makePolygon 0, @_two.height, sectionX, @_two.height-sectionY, sectionX*2, @_two.height-sectionY*2, sectionX*3, @_two.height-sectionY*3, sectionX*4, @_two.height-sectionY*4, sectionX*5, @_two.height-sectionY*5, sectionX*6, @_two.height-sectionY*6, sectionX*7, @_two.height-sectionY*7, sectionX*8, @_two.height-sectionY*8, sectionX*9, @_two.height-sectionY*9, sectionX*10, @_two.height-sectionY*10,  sectionX*11, @_two.height-sectionY*11, sectionX*12, @_two.height-sectionY*12, sectionX*13, @_two.height-sectionY*13, sectionX*14, @_two.height-sectionY*14, sectionX*15, @_two.height-sectionY*15, sectionX*16, @_two.height-sectionY*16, sectionX*17, @_two.height-sectionY*17, sectionX*18, @_two.height-sectionY*18, sectionX*19, @_two.height-sectionY*19, @_two.width, 0
+				when 4
+					line = @_two.makePolygon @_two.width, 0, @_two.width-sectionX, sectionY, @_two.width-sectionX*2, sectionY*2, @_two.width-sectionX*3, sectionY*3,  @_two.width-sectionX*4, sectionY*4, @_two.width-sectionX*5, sectionY*5, @_two.width-sectionX*6, sectionY*6, @_two.width-sectionX*7, sectionY*7, @_two.width-sectionX*8, sectionY*8, @_two.width-sectionX*9, sectionY*9, @_two.width-sectionX*10, sectionY*10, @_two.width-sectionX*11, sectionY*11, @_two.width-sectionX*12, sectionY*12, @_two.width-sectionX*13, sectionY*13, @_two.width-sectionX*14, sectionY*14, @_two.width-sectionX*15, sectionY*15, @_two.width-sectionX*16, sectionY*16, @_two.width-sectionX*17, sectionY*17, @_two.width-sectionX*18, sectionY*18, @_two.width-sectionX*19, sectionY*19, 0, @_two.height 
+			@_foreGround.add line
+			line.noFill()
+			line.stroke = "rgb("+0+","+0+","+0+")"
+			line.linewidth = 20
+			line.cap = 'butt'
+			line.animationSpeed = @convertToRange(@_bpm, [60,600], [0.05, 0.12])
+			line.beginning = 0
+			line.ending = 0
+			@_shapes.push line
+
+
 
 	onBreak: (length) =>
 		if @_pauseBgLerp is false
 			@_pauseBgLerp = true
 			if length is 'long'
-				offset = 150
+				offset = 120
 				hang = 500
 			else if length is 'short'
 				offset = 20
@@ -250,15 +277,24 @@ class VisualsEngine
 	removeShapes: () =>
 		time = new Date().getTime()
 		for shape, i in @_shapes by -1
-			if time - shape.creationTime >= shape.lifeSpan
-				if shape.fadeOut is true
-					shape.opacity -= 0.01
-					if shape.opacity < 0
+			if shape.lifeSpan
+				if time - shape.creationTime >= shape.lifeSpan
+					if shape.fadeOut is true
+						shape.opacity -= 0.01
+						if shape.opacity < 0
+							shape.remove()
+							@_shapes.splice i, 1
+					else
 						shape.remove()
 						@_shapes.splice i, 1
+			else if shape.animationSpeed
+				if shape.ending < 1
+					shape.ending += shape.animationSpeed
 				else
-					shape.remove()
-					@_shapes.splice i, 1
+					shape.beginning += shape.animationSpeed
+					if shape.beginning > 1
+						shape.remove()
+						@_shapes.splice i, 1
 
 
 	#add this to my UTILS
