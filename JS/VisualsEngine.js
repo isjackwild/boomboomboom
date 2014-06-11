@@ -25,6 +25,8 @@
 
     VisualsEngine.prototype._coloursSetup = false;
 
+    VisualsEngine.prototype._negativeColours = false;
+
     VisualsEngine.prototype._baseColours = {
       fg: [
         {
@@ -75,22 +77,40 @@
       fg: []
     };
 
-    VisualsEngine.prototype._bgColFrom = 130;
+    VisualsEngine.prototype._bgColFrom = {
+      r: 130,
+      g: 130,
+      b: 130
+    };
 
-    VisualsEngine.prototype._bgColTo = 130;
+    VisualsEngine.prototype._bgColTo = {
+      r: 150,
+      g: 150,
+      b: 150
+    };
+
+    VisualsEngine.prototype._bgColCurrent = {
+      r: 130,
+      g: 130,
+      b: 130
+    };
 
     VisualsEngine.prototype._bgColLerp = 0;
 
-    VisualsEngine.prototype._bgColLerpSpeed = 0.02;
+    VisualsEngine.prototype._bgColLerpSpeed = 0.005;
+
+    VisualsEngine.prototype._pauseBgLerp = false;
 
     function VisualsEngine() {
       this.HSVtoRGB = __bind(this.HSVtoRGB, this);
       this.lerp = __bind(this.lerp, this);
       this.removeShapes = __bind(this.removeShapes, this);
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
+      this.onBreak = __bind(this.onBreak, this);
       this.onPeak = __bind(this.onPeak, this);
       this.updateBackgroundColour = __bind(this.updateBackgroundColour, this);
       this.gotVolume = __bind(this.gotVolume, this);
+      this.onChangeFrequencyVariation = __bind(this.onChangeFrequencyVariation, this);
       this.gotFrequency = __bind(this.gotFrequency, this);
       this.gotBPM = __bind(this.gotBPM, this);
       console.log('setup background generation');
@@ -103,9 +123,11 @@
 
     VisualsEngine.prototype.setupListeners = function() {
       window.events.peak.add(this.onPeak);
+      window.events["break"].add(this.onBreak);
       window.events.BPM.add(this.gotBPM);
       window.events.volume.add(this.gotVolume);
-      return window.events.frequency.add(this.gotFrequency);
+      window.events.frequency.add(this.gotFrequency);
+      return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
     };
 
     VisualsEngine.prototype.setupTwoJs = function() {
@@ -130,6 +152,15 @@
       this._frequency = freq;
       this.updateBackgroundColour();
       return this.updateColourBucket();
+    };
+
+    VisualsEngine.prototype.onChangeFrequencyVariation = function(currentVar) {
+      if (currentVar === 'high') {
+        this._negativeColours = true;
+      } else if (currentVar === 'low') {
+        this._negativeColours = false;
+      }
+      return this.updateBackgroundColour();
     };
 
     VisualsEngine.prototype.gotVolume = function(vol) {
@@ -163,11 +194,22 @@
     };
 
     VisualsEngine.prototype.updateBackgroundColour = function() {
-      var newCol;
-      newCol = Math.floor(this.convertToRange(this._frequency, [8, 60], [30, 190]));
-      if (Math.abs(this._bgColFrom - newCol) > 10 || this._bgColLerp > 0.95) {
+      var col, whichCol;
+      if (this._negativeColours === false) {
+        col = Math.floor(this.convertToRange(this._frequency, [8, 60], [30, 190]) + Math.random() * 20);
+        col = {
+          r: col,
+          g: col,
+          b: col
+        };
+      } else if (this._negativeColours === true) {
+        whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
+        col = this._colourBucket.fg[whichCol];
+        col = this.HSVtoRGB(col.h, col.s, col.v);
+      }
+      if (Math.abs(this._bgColFrom - col) > 10 || this._bgColLerp > 0.95) {
         this._bgColFrom = this._bgColTo;
-        this._bgColTo = newCol;
+        this._bgColTo = col;
         this._bgColLerp = 0;
         return console.log('update background colour');
       }
@@ -175,25 +217,56 @@
 
     VisualsEngine.prototype.onPeak = function(type) {
       var circle, col, v, whichCol;
-      whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
-      col = this._colourBucket.fg[whichCol];
       if (type === 'hard') {
-        col = this.HSVtoRGB(col.h, col.s, col.v);
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
       } else if (type === 'soft') {
-        col = this.HSVtoRGB(col.h, col.s, col.v);
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
       } else if (type === 'hi') {
-        v = this.convertToRange(this._frequency, [5, 60], [80, 100]);
-        col = this.HSVtoRGB(col.h, 7, v);
         circle = this._two.makeCircle(0, this._two.height / 4, this._two.height * 0.82);
       } else if (type === 'lo') {
-        v = this.convertToRange(this._frequency, [5, 60], [15, 33]);
-        if (col.s < 8) {
-          col.s = 8;
-        }
-        col = this.HSVtoRGB(col.h, 10, v);
         circle = this._two.makeCircle(this._two.width, this._two.height, this._two.height * 0.75);
+      }
+      if (this._negativeColours === false) {
+        whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
+        col = this._colourBucket.fg[whichCol];
+        if (type === 'hard' || type === 'soft') {
+          col = this.HSVtoRGB(col.h, col.s, col.v);
+        } else if (type === 'hi') {
+          v = this.convertToRange(this._frequency, [5, 60], [80, 100]);
+          col = this.HSVtoRGB(col.h, 7, v);
+        } else if (type === 'lo') {
+          v = this.convertToRange(this._frequency, [5, 60], [15, 33]);
+          if (col.s < 8) {
+            col.s = 8;
+          }
+          col = this.HSVtoRGB(col.h, 10, v);
+        }
+      } else if (this._negativeColours === true) {
+        if (type === 'hard') {
+          col = {
+            r: 170,
+            g: 170,
+            b: 170
+          };
+        } else if (type === 'soft') {
+          col = {
+            r: 210,
+            g: 210,
+            b: 210
+          };
+        } else if (type === 'hi') {
+          col = {
+            r: 255,
+            g: 255,
+            b: 255
+          };
+        } else if (type === 'lo') {
+          col = {
+            r: 50,
+            g: 50,
+            b: 50
+          };
+        }
       }
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       circle.fill = col;
@@ -203,14 +276,38 @@
       return this._shapes.push(circle);
     };
 
+    VisualsEngine.prototype.onBreak = function(length) {
+      var b, breakTimer, col, g, hang, offset, r;
+      if (this._pauseBgLerp === false) {
+        this._pauseBgLerp = true;
+        if (length === 'long') {
+          offset = 200;
+          hang = 500;
+        } else if (length === 'short') {
+          offset = 80;
+        }
+        r = this._bgColCurrent.r + offset;
+        g = this._bgColCurrent.g + offset;
+        b = this._bgColCurrent.b + offset;
+        col = "rgb(" + r + "," + g + "," + b + ")";
+        this._twoElem.style.background = col;
+        clearTimeout(breakTimer);
+        return breakTimer = setTimeout((function(_this) {
+          return function() {
+            _this._twoElem.style.background = "rgb(" + _this._bgColCurrent.r + "," + _this._bgColCurrent.g + "," + _this._bgColCurrent.b + ")";
+            return _this._pauseBgLerp = false;
+          };
+        })(this), hang);
+      }
+    };
+
     VisualsEngine.prototype.onTwoUpdate = function() {
-      var tempCol;
-      if (this._bgColLerp < 1) {
+      var col;
+      if (this._bgColLerp < 1 && this._pauseBgLerp === false) {
         this._bgColLerp += this._bgColLerpSpeed;
-        tempCol = this.lerp(this._bgColFrom, this._bgColTo, this._bgColLerp);
-        tempCol = Math.ceil(tempCol);
-        tempCol = "rgb(" + tempCol + "," + tempCol + "," + tempCol + ")";
-        this._twoElem.style.background = tempCol;
+        this._bgColCurrent = this.lerpColour(this._bgColFrom, this._bgColTo, this._bgColLerp);
+        col = "rgb(" + this._bgColCurrent.r + "," + this._bgColCurrent.g + "," + this._bgColCurrent.b + ")";
+        this._twoElem.style.background = col;
       }
       if (this._shapes.length >= 1) {
         return this.removeShapes();
@@ -226,13 +323,25 @@
         shape = _ref[i];
         if (time - shape.creationTime >= shape.lifeSpan) {
           shape.remove();
-          this._shapes.splice(i, 1);
-          _results.push(console.log('removed shape', i));
+          _results.push(this._shapes.splice(i, 1));
         } else {
           _results.push(void 0);
         }
       }
       return _results;
+    };
+
+    VisualsEngine.prototype.lerpColour = function(from, to, control) {
+      var result, resultB, resultG, resultR;
+      resultR = Math.ceil(from.r + (to.r - from.r) * control);
+      resultG = Math.ceil(from.g + (to.g - from.g) * control);
+      resultB = Math.ceil(from.b + (to.b - from.b) * control);
+      result = {
+        r: resultR,
+        g: resultG,
+        b: resultB
+      };
+      return result;
     };
 
     VisualsEngine.prototype.lerp = function(from, to, control) {

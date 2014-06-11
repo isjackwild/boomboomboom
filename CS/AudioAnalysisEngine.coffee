@@ -57,8 +57,8 @@ class AudioAnalysisEngine
 	_lastPeakTime: null
 	_thisPeakTime: null
 	_timeSinceLastPeak: null
-	_shortBreakLength: 1000
-	_longBreakLength: 2500
+	_shortBreakLength: 750
+	_longBreakLength: 2000
 	_breakSensitivity: 2
 
 	#move things such as volume and approx BPM into the Events.coffee file — send them out as events and listen / store in an object in there. Keep it clean.
@@ -106,8 +106,8 @@ class AudioAnalysisEngine
 		@_dynamicsCompressor.release = 0.250
 		@_biquadFilter = @_context.createBiquadFilter()
 		@_biquadFilter.type = "lowshelf"
-		@_biquadFilter.frequency.value = 320
-		@_biquadFilter.gain.value = 25
+		@_biquadFilter.frequency.value = 380
+		@_biquadFilter.gain.value = 5
 		console.log @_biquadFilter, @_dynamicsCompressor
 		
 	setupTestAudio: =>
@@ -271,10 +271,10 @@ class AudioAnalysisEngine
 			@_lastPeakTime = @_thisPeakTime
 			if @_timeSinceLastPeak > @_longBreakLength #if it's been a while since the last peak with a big difference in amplitude
 				@eventLogger "longBreak"
-				window.events.longBreak.dispatch()
+				window.events.break.dispatch 'long'
 			else if @_timeSinceLastPeak > @_shortBreakLength #if it's been a while since the last peak with a big difference in amplitude
-				window.events.shortBreak.dispatch()
 				@eventLogger "shortBreak"
+				window.events.break.dispatch 'short'
 
 
 	#Do logic which detects when there has been a significant change in the averages over the last few averages

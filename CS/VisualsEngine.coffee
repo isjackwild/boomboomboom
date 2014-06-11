@@ -17,16 +17,19 @@ class VisualsEngine
 
 
 	_coloursSetup: false
+	_negativeColours: false
 	_baseColours: {
 		fg: [{h: 346, s: 85, v: 95}, {h: 17, s: 90, v: 97}, {h: 45, s: 97, v: 97}, {h: 154, s: 65, v: 92}, {h: 149, s: 95, v: 70}, {h: 196, s: 87, v: 92}, {h: 220, s: 76, v: 80}, {h: 316, s: 40, v: 95}, {h: 277, s: 61, v: 71}, {h: 261, s: 46, v: 84}]
 	}
 	_colourBucket: {
 		fg: []
 	}
-	_bgColFrom: 130
-	_bgColTo: 130
+	_bgColFrom: {r: 130, g: 130, b: 130}
+	_bgColTo: {r: 150, g: 150, b: 150}
+	_bgColCurrent: {r: 130, g: 130, b: 130}
 	_bgColLerp: 0
-	_bgColLerpSpeed: 0.02
+	_bgColLerpSpeed: 0.005
+	_pauseBgLerp: false
 
 	#colours
 		#bg = low sat and low bright
@@ -52,9 +55,11 @@ class VisualsEngine
 
 	setupListeners: ->
 		window.events.peak.add @onPeak
+		window.events.break.add @onBreak
 		window.events.BPM.add @gotBPM
 		window.events.volume.add @gotVolume
 		window.events.frequency.add @gotFrequency
+		window.events.changeFreqVar.add @onChangeFrequencyVariation
 
 
 	setupTwoJs: ->
@@ -79,6 +84,13 @@ class VisualsEngine
 		@updateBackgroundColour()
 		@updateColourBucket()
 
+	onChangeFrequencyVariation: (currentVar) =>
+		if currentVar is 'high'
+			@_negativeColours = true
+		else if currentVar is 'low'
+			@_negativeColours = false
+		@updateBackgroundColour()
+
 
 	gotVolume: (vol) =>
 		@_volume = vol
@@ -102,36 +114,56 @@ class VisualsEngine
 
 
 	updateBackgroundColour: =>
-		newCol = Math.floor @convertToRange(@_frequency, [8,60], [30, 190])
-		
-		if Math.abs(@_bgColFrom - newCol) > 10 or @_bgColLerp > 0.95
+
+		if @_negativeColours is false
+			col = Math.floor(@convertToRange(@_frequency, [8,60], [30, 190])+Math.random()*20)
+			col = {r: col, g: col, b: col}
+		else if @_negativeColours is true
+			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
+			col = @_colourBucket.fg[whichCol]
+			col = @HSVtoRGB col.h, col.s, col.v
+
+		if Math.abs(@_bgColFrom - col) > 10 or @_bgColLerp > 0.95
 			@_bgColFrom = @_bgColTo
-			@_bgColTo = newCol
+			@_bgColTo = col
 			@_bgColLerp = 0
 			console.log 'update background colour'
 	
 
 	onPeak: (type) =>
 
-		whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
-		col = @_colourBucket.fg[whichCol]
-
 		if type is 'hard'
-			col = @HSVtoRGB col.h, col.s, col.v
 			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.43
 		else if type is 'soft'
-			col = @HSVtoRGB col.h, col.s, col.v
 			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.3
 		else if type is 'hi'
-			v = @convertToRange @_frequency, [5, 60], [80,100]
-			col = @HSVtoRGB col.h, 7, v
 			circle = @_two.makeCircle 0, @_two.height/4, @_two.height*0.82
 		else if type is 'lo'
-			v = @convertToRange @_frequency, [5, 60], [15,33]
-			if col.s < 8 then col.s = 8
-			col = @HSVtoRGB col.h, 10, v
 			circle = @_two.makeCircle @_two.width, @_two.height, @_two.height*0.75
 
+		if @_negativeColours is false
+			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
+			col = @_colourBucket.fg[whichCol]
+			if type is 'hard' or type is 'soft'
+				col = @HSVtoRGB col.h, col.s, col.v
+			else if type is 'hi'
+				v = @convertToRange @_frequency, [5, 60], [80,100]
+				col = @HSVtoRGB col.h, 7, v
+			else if type is 'lo'
+				v = @convertToRange @_frequency, [5, 60], [15,33]
+				if col.s < 8 then col.s = 8
+				col = @HSVtoRGB col.h, 10, v
+		else if @_negativeColours is true
+			if type is 'hard'
+				col = {r: 170, g: 170, b: 170}
+			else if type is 'soft'
+				col = {r: 210, g: 210, b: 210}
+			else if type is 'hi'
+				col = {r: 255, g: 255, b: 255}
+			else if type is 'lo'
+				col = {r: 50, g: 50, b: 50}
+
+		#write code to use #ffffff colours
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
 		circle.fill = col
 		circle.lifeSpan = Math.floor @convertToRange(@_bpm, [60,600], [1000, 400])
@@ -140,14 +172,34 @@ class VisualsEngine
 		@_shapes.push circle
 
 
+	onBreak: (length) =>
+		if @_pauseBgLerp is false
+			@_pauseBgLerp = true
+			if length is 'long'
+				offset = 200
+				hang = 500
+			else if length is 'short'
+				offset = 80
+			r = @_bgColCurrent.r + offset
+			g = @_bgColCurrent.g + offset
+			b = @_bgColCurrent.b + offset
+			col = "rgb("+r+","+g+","+b+")"
+			@_twoElem.style.background = col
+			clearTimeout breakTimer
+			breakTimer = setTimeout =>
+				@_twoElem.style.background = "rgb("+@_bgColCurrent.r+","+@_bgColCurrent.g+","+@_bgColCurrent.b+")"
+				@_pauseBgLerp = false
+			, hang
+
+
+
 	onTwoUpdate: () =>
 		# console.log "render"
-		if @_bgColLerp < 1
+		if @_bgColLerp < 1 and @_pauseBgLerp is false
 			@_bgColLerp  += @_bgColLerpSpeed
-			tempCol = @lerp @_bgColFrom, @_bgColTo, @_bgColLerp
-			tempCol = Math.ceil tempCol
-			tempCol = "rgb("+tempCol+","+tempCol+","+tempCol+")"
-			@_twoElem.style.background = tempCol
+			@_bgColCurrent = @lerpColour @_bgColFrom, @_bgColTo, @_bgColLerp
+			col = "rgb("+@_bgColCurrent.r+","+@_bgColCurrent.g+","+@_bgColCurrent.b+")"
+			@_twoElem.style.background = col
 
 		if @_shapes.length >= 1
 			@removeShapes()	
@@ -159,9 +211,17 @@ class VisualsEngine
 			if time - shape.creationTime >= shape.lifeSpan
 				shape.remove()
 				@_shapes.splice i, 1
-				console.log 'removed shape', i
 
 
+	#add this to my UTILS
+	lerpColour: (from, to, control) ->
+		resultR = Math.ceil from.r + (to.r - from.r) * control
+		resultG = Math.ceil from.g + (to.g - from.g) * control
+		resultB = Math.ceil from.b + (to.b - from.b) * control
+
+		result = {r:resultR, g:resultG, b:resultB}
+		return result
+	#add this to my UTILS
 	lerp: (from, to, control) =>
 		return from + control *	(to - from)
 	#add this to my UTILS

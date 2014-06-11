@@ -4,8 +4,7 @@ Signal = signals.Signal
 window.events = {
 	peak: new Signal()
 	bass: new Signal()
-	shortBreak: new Signal()
-	longBreak: new Signal()
+	break: new Signal()
 	BPM: new Signal()
 	BPMDrop: new Signal()
 	BPMJump: new Signal()

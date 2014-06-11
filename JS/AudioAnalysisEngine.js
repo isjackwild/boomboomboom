@@ -80,9 +80,9 @@
 
     AudioAnalysisEngine.prototype._timeSinceLastPeak = null;
 
-    AudioAnalysisEngine.prototype._shortBreakLength = 1000;
+    AudioAnalysisEngine.prototype._shortBreakLength = 750;
 
-    AudioAnalysisEngine.prototype._longBreakLength = 2500;
+    AudioAnalysisEngine.prototype._longBreakLength = 2000;
 
     AudioAnalysisEngine.prototype._breakSensitivity = 2;
 
@@ -155,8 +155,8 @@
       this._dynamicsCompressor.release = 0.250;
       this._biquadFilter = this._context.createBiquadFilter();
       this._biquadFilter.type = "lowshelf";
-      this._biquadFilter.frequency.value = 320;
-      this._biquadFilter.gain.value = 25;
+      this._biquadFilter.frequency.value = 380;
+      this._biquadFilter.gain.value = 5;
       return console.log(this._biquadFilter, this._dynamicsCompressor);
     };
 
@@ -351,10 +351,10 @@
         this._lastPeakTime = this._thisPeakTime;
         if (this._timeSinceLastPeak > this._longBreakLength) {
           this.eventLogger("longBreak");
-          return window.events.longBreak.dispatch();
+          return window.events["break"].dispatch('long');
         } else if (this._timeSinceLastPeak > this._shortBreakLength) {
-          window.events.shortBreak.dispatch();
-          return this.eventLogger("shortBreak");
+          this.eventLogger("shortBreak");
+          return window.events["break"].dispatch('short');
         }
       }
     };
