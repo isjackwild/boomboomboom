@@ -639,6 +639,7 @@
       } else if (currentVar === 'low') {
         this._negativeColours = false;
       }
+      this._bgColLerp = 1;
       return this.updateBackgroundColour();
     };
 
@@ -674,6 +675,7 @@
 
     VisualsEngine.prototype.updateBackgroundColour = function() {
       var col, whichCol;
+      console.log('updateBackgroundColour');
       if (this._negativeColours === false) {
         col = Math.floor(this.convertToRange(this._frequency, [8, 60], [30, 190]) + Math.random() * 20);
         col = {
@@ -686,11 +688,10 @@
         col = this._colourBucket.fg[whichCol];
         col = this.HSVtoRGB(col.h, col.s, col.v);
       }
-      if (Math.abs(this._bgColFrom - col) > 10 || this._bgColLerp > 0.95) {
+      if (this._bgColLerp > 0.95) {
         this._bgColFrom = this._bgColTo;
         this._bgColTo = col;
-        this._bgColLerp = 0;
-        return console.log('update background colour');
+        return this._bgColLerp = 0;
       }
     };
 
@@ -763,7 +764,8 @@
           offset = 200;
           hang = 500;
         } else if (length === 'short') {
-          offset = 80;
+          offset = 30;
+          hang = 120;
         }
         r = this._bgColCurrent.r + offset;
         g = this._bgColCurrent.g + offset;

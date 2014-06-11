@@ -84,11 +84,13 @@ class VisualsEngine
 		@updateBackgroundColour()
 		@updateColourBucket()
 
+
 	onChangeFrequencyVariation: (currentVar) =>
 		if currentVar is 'high'
 			@_negativeColours = true
 		else if currentVar is 'low'
 			@_negativeColours = false
+		@_bgColLerp = 1
 		@updateBackgroundColour()
 
 
@@ -114,7 +116,7 @@ class VisualsEngine
 
 
 	updateBackgroundColour: =>
-
+		console.log 'updateBackgroundColour'
 		if @_negativeColours is false
 			col = Math.floor(@convertToRange(@_frequency, [8,60], [30, 190])+Math.random()*20)
 			col = {r: col, g: col, b: col}
@@ -123,11 +125,10 @@ class VisualsEngine
 			col = @_colourBucket.fg[whichCol]
 			col = @HSVtoRGB col.h, col.s, col.v
 
-		if Math.abs(@_bgColFrom - col) > 10 or @_bgColLerp > 0.95
+		if @_bgColLerp > 0.95
 			@_bgColFrom = @_bgColTo
 			@_bgColTo = col
 			@_bgColLerp = 0
-			console.log 'update background colour'
 	
 
 	onPeak: (type) =>
@@ -179,7 +180,8 @@ class VisualsEngine
 				offset = 200
 				hang = 500
 			else if length is 'short'
-				offset = 80
+				offset = 30
+				hang = 120
 			r = @_bgColCurrent.r + offset
 			g = @_bgColCurrent.g + offset
 			b = @_bgColCurrent.b + offset
