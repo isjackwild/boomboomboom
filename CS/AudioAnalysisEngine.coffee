@@ -65,7 +65,7 @@ class AudioAnalysisEngine
 	_bpmCalcArray: []
 	_approxBPM: 0
 	_lastBPM: null
-	_dropJumpBPMSensitivity: 150 #how much the bpm has to drop by on each sample to registera drop / jump
+	_dropJumpBPMSensitivity: 75 #how much the bpm has to drop by on each sample to registera drop / jump
 
 	_volCalcArray: []
 	_averageVol: 0

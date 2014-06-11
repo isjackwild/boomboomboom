@@ -16,6 +16,7 @@ class VisualsEngine
 	_volume: 20
 	_frequency: 10
 	_bpm: 200
+	_bpmJumpTime: new Date().getTime()
 
 
 	_coloursSetup: false
@@ -60,6 +61,7 @@ class VisualsEngine
 		window.events.bass.add @onBass
 		window.events.break.add @onBreak
 		window.events.BPM.add @gotBPM
+		window.events.BPMJump.add @onBPMJump
 		window.events.volume.add @gotVolume
 		window.events.frequency.add @gotFrequency
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
@@ -86,6 +88,10 @@ class VisualsEngine
 		@_bpm = BPM
 		@_bgColLerpSpeed = @convertToRange(@_bpm, [100,500], [0.005, 0.009])
 		@updateColourBucket()
+
+
+	onBPMJump: () =>
+		@_bpmJumpTime = new Date().getTime()
 
 
 	gotFrequency: (freq) =>
@@ -162,12 +168,11 @@ class VisualsEngine
 			if type is 'hard' or type is 'soft'
 				col = @HSVtoRGB col.h, col.s, col.v
 			else if type is 'hi'
-				v = @convertToRange @_frequency, [4, 33], [80,100]
-				col = @HSVtoRGB col.h, 7, v
+				v = @convertToRange @_frequency, [4, 33], [80,90]
+				col = @HSVtoRGB col.h, 15, v
 			else if type is 'lo'
 				v = @convertToRange @_frequency, [4, 33], [15,33]
-				if col.s < 8 then col.s = 8
-				col = @HSVtoRGB col.h, 10, v
+				col = @HSVtoRGB col.h, 15, v
 		else if @_negativeColours is true
 			if type is 'hard'
 				col = {r: 170, g: 170, b: 170}
@@ -190,8 +195,9 @@ class VisualsEngine
 		sectionX = @_two.width/20
 		sectionY = @_two.height/20
 
-
-		if @_peakCount % 2 is 0 and @_bpm > 300
+		peakTime = new Date().getTime()
+		stripeDuration = Math.floor @convertToRange(@_bpm, [250,600], [2500, 5000])
+		if @_peakCount % 2 is 0 and peakTime - @_bpmJumpTime < 3000 and @_bpm > 200
 			switch Math.ceil Math.random()*4
 				when 1
 					line = @_two.makePolygon 0, 0, sectionX, sectionY, sectionX*2, sectionY*2, sectionX*3, sectionY*3, sectionX*4, sectionY*4, sectionX*5, sectionY*5, sectionX*6, sectionY*6, sectionX*7, sectionY*7, sectionX*8, sectionY*8, sectionX*9, sectionY*9, sectionX*10, sectionY*10,  sectionX*11, sectionY*11, sectionX*12, sectionY*12, sectionX*13, sectionY*13, sectionX*14, sectionY*14, sectionX*15, sectionY*15, sectionX*16, sectionY*16, sectionX*17, sectionY*17, sectionX*18, sectionY*18, sectionX*19, sectionY*19, @_two.width, @_two.height 
@@ -217,7 +223,7 @@ class VisualsEngine
 		if @_pauseBgLerp is false
 			@_pauseBgLerp = true
 			if length is 'long'
-				offset = 120
+				offset = 75
 				hang = 500
 			else if length is 'short'
 				offset = 20

@@ -92,7 +92,7 @@
 
     AudioAnalysisEngine.prototype._lastBPM = null;
 
-    AudioAnalysisEngine.prototype._dropJumpBPMSensitivity = 150;
+    AudioAnalysisEngine.prototype._dropJumpBPMSensitivity = 75;
 
     AudioAnalysisEngine.prototype._volCalcArray = [];
 

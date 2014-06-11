@@ -92,7 +92,7 @@
 
     AudioAnalysisEngine.prototype._lastBPM = null;
 
-    AudioAnalysisEngine.prototype._dropJumpBPMSensitivity = 150;
+    AudioAnalysisEngine.prototype._dropJumpBPMSensitivity = 75;
 
     AudioAnalysisEngine.prototype._volCalcArray = [];
 
@@ -506,6 +506,8 @@
 
     VisualsEngine.prototype._bpm = 200;
 
+    VisualsEngine.prototype._bpmJumpTime = new Date().getTime();
+
     VisualsEngine.prototype._coloursSetup = false;
 
     VisualsEngine.prototype._negativeColours = false;
@@ -598,6 +600,7 @@
       this.gotVolume = __bind(this.gotVolume, this);
       this.onChangeFrequencyVariation = __bind(this.onChangeFrequencyVariation, this);
       this.gotFrequency = __bind(this.gotFrequency, this);
+      this.onBPMJump = __bind(this.onBPMJump, this);
       this.gotBPM = __bind(this.gotBPM, this);
       console.log('setup background generation');
       this._cv = document.getElementById("magic");
@@ -612,6 +615,7 @@
       window.events.bass.add(this.onBass);
       window.events["break"].add(this.onBreak);
       window.events.BPM.add(this.gotBPM);
+      window.events.BPMJump.add(this.onBPMJump);
       window.events.volume.add(this.gotVolume);
       window.events.frequency.add(this.gotFrequency);
       return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
@@ -639,6 +643,10 @@
       this._bpm = BPM;
       this._bgColLerpSpeed = this.convertToRange(this._bpm, [100, 500], [0.005, 0.009]);
       return this.updateColourBucket();
+    };
+
+    VisualsEngine.prototype.onBPMJump = function() {
+      return this._bpmJumpTime = new Date().getTime();
     };
 
     VisualsEngine.prototype.gotFrequency = function(freq) {
@@ -710,7 +718,7 @@
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
-      var circle, col, line, sectionX, sectionY, v, whichCol;
+      var circle, col, line, peakTime, sectionX, sectionY, stripeDuration, v, whichCol;
       this._peakCount++;
       if (type === 'hard') {
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
@@ -731,14 +739,11 @@
         if (type === 'hard' || type === 'soft') {
           col = this.HSVtoRGB(col.h, col.s, col.v);
         } else if (type === 'hi') {
-          v = this.convertToRange(this._frequency, [4, 33], [80, 100]);
-          col = this.HSVtoRGB(col.h, 7, v);
+          v = this.convertToRange(this._frequency, [4, 33], [80, 90]);
+          col = this.HSVtoRGB(col.h, 15, v);
         } else if (type === 'lo') {
           v = this.convertToRange(this._frequency, [4, 33], [15, 33]);
-          if (col.s < 8) {
-            col.s = 8;
-          }
-          col = this.HSVtoRGB(col.h, 10, v);
+          col = this.HSVtoRGB(col.h, 15, v);
         }
       } else if (this._negativeColours === true) {
         if (type === 'hard') {
@@ -776,7 +781,9 @@
       this._shapes.push(circle);
       sectionX = this._two.width / 20;
       sectionY = this._two.height / 20;
-      if (this._peakCount % 2 === 0 && this._bpm > 300) {
+      peakTime = new Date().getTime();
+      stripeDuration = Math.floor(this.convertToRange(this._bpm, [250, 600], [2500, 5000]));
+      if (this._peakCount % 2 === 0 && peakTime - this._bpmJumpTime < 3000 && this._bpm > 200) {
         switch (Math.ceil(Math.random() * 4)) {
           case 1:
             line = this._two.makePolygon(0, 0, sectionX, sectionY, sectionX * 2, sectionY * 2, sectionX * 3, sectionY * 3, sectionX * 4, sectionY * 4, sectionX * 5, sectionY * 5, sectionX * 6, sectionY * 6, sectionX * 7, sectionY * 7, sectionX * 8, sectionY * 8, sectionX * 9, sectionY * 9, sectionX * 10, sectionY * 10, sectionX * 11, sectionY * 11, sectionX * 12, sectionY * 12, sectionX * 13, sectionY * 13, sectionX * 14, sectionY * 14, sectionX * 15, sectionY * 15, sectionX * 16, sectionY * 16, sectionX * 17, sectionY * 17, sectionX * 18, sectionY * 18, sectionX * 19, sectionY * 19, this._two.width, this._two.height);
@@ -807,7 +814,7 @@
       if (this._pauseBgLerp === false) {
         this._pauseBgLerp = true;
         if (length === 'long') {
-          offset = 120;
+          offset = 75;
           hang = 500;
         } else if (length === 'short') {
           offset = 20;
