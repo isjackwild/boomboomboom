@@ -147,7 +147,7 @@
 
     AudioAnalysisEngine.prototype.setupFilters = function() {
       this._dynamicsCompressor = this._context.createDynamicsCompressor();
-      this._dynamicsCompressor.threshold.value = -24;
+      this._dynamicsCompressor.threshold.value = -33;
       this._dynamicsCompressor.knee = 30;
       this._dynamicsCompressor.ratio = 12;
       this._dynamicsCompressor.reduction = 0;
@@ -155,8 +155,8 @@
       this._dynamicsCompressor.release = 0.250;
       this._biquadFilter = this._context.createBiquadFilter();
       this._biquadFilter.type = "lowshelf";
-      this._biquadFilter.frequency.value = 380;
-      this._biquadFilter.gain.value = 5;
+      this._biquadFilter.frequency.value = 300;
+      this._biquadFilter.gain.value = 15;
       return console.log(this._biquadFilter, this._dynamicsCompressor);
     };
 
@@ -294,7 +294,7 @@
             this._averageFrequency = tempAvFreq;
             window.events.frequency.dispatch(this._averageFrequency);
             this._averageFreqCalcArray = [];
-            _results.push(this._bassCutoff = this._averageFrequency + 500);
+            _results.push(this._bassCutoff = this._averageFrequency + 100);
           } else {
             _results.push(void 0);
           }

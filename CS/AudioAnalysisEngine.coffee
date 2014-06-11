@@ -98,7 +98,7 @@ class AudioAnalysisEngine
 	setupFilters: =>
 		#http://www.w3.org/TR/webaudio/#DynamicsCompressorNode
 		@_dynamicsCompressor = @_context.createDynamicsCompressor()
-		@_dynamicsCompressor.threshold.value = -24
+		@_dynamicsCompressor.threshold.value = -33
 		@_dynamicsCompressor.knee = 30
 		@_dynamicsCompressor.ratio = 12
 		@_dynamicsCompressor.reduction = 0
@@ -106,8 +106,8 @@ class AudioAnalysisEngine
 		@_dynamicsCompressor.release = 0.250
 		@_biquadFilter = @_context.createBiquadFilter()
 		@_biquadFilter.type = "lowshelf"
-		@_biquadFilter.frequency.value = 380
-		@_biquadFilter.gain.value = 5
+		@_biquadFilter.frequency.value = 300
+		@_biquadFilter.gain.value = 15
 		console.log @_biquadFilter, @_dynamicsCompressor
 		
 	setupTestAudio: =>
@@ -130,6 +130,7 @@ class AudioAnalysisEngine
 		@_source.connect @_dynamicsCompressor
 		@_dynamicsCompressor.connect @_biquadFilter
 		@_biquadFilter.connect @_analyserNode
+		# @_analyserNode.connect @_context.destination
 		@startAnalysis()
 		@_alreadySetup = true
 
@@ -231,7 +232,7 @@ class AudioAnalysisEngine
 					@_averageFrequency = tempAvFreq
 					window.events.frequency.dispatch @_averageFrequency
 					@_averageFreqCalcArray = []
-					@_bassCutoff = @_averageFrequency + 500
+					@_bassCutoff = @_averageFrequency + 100
 
 
 	#how much is the difference in frequency about the peaks, and when does the average difference in frequency change?

@@ -10,6 +10,8 @@ class VisualsEngine
 
 	_two: null
 	_twoElem: null
+	_middleGround: null
+	_foreGround: null
 
 	_volume: 20
 	_frequency: 10
@@ -55,6 +57,7 @@ class VisualsEngine
 
 	setupListeners: ->
 		window.events.peak.add @onPeak
+		window.events.bass.add @onBass
 		window.events.break.add @onBreak
 		window.events.BPM.add @gotBPM
 		window.events.volume.add @gotVolume
@@ -71,6 +74,12 @@ class VisualsEngine
 		}
 		@_two = new Two(params).appendTo(@_twoElem)
 		@_two.bind 'update', @onTwoUpdate
+		@_foreGround = @_two.makeGroup()
+		@_foreGround.id = 'foreground'
+		@_middleGround = @_two.makeGroup()
+		@_middleGround.id = 'middleground'
+		@_middleGround.isScaling = false
+		@_middleGround.center()
 
 
 	gotBPM: (BPM) =>
@@ -132,7 +141,6 @@ class VisualsEngine
 	
 
 	onPeak: (type) =>
-
 		if type is 'hard'
 			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.43
 		else if type is 'soft'
@@ -166,6 +174,7 @@ class VisualsEngine
 
 		#write code to use #ffffff colours
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
+		@_middleGround.add circle
 		circle.fill = col
 		circle.lifeSpan = Math.floor @convertToRange(@_bpm, [60,600], [1000, 400])
 		circle.creationTime = new Date().getTime()
@@ -193,6 +202,10 @@ class VisualsEngine
 				@_pauseBgLerp = false
 			, hang
 
+	onBass: () =>
+		if @_middleGround.isScaling is false
+			@_middleGround.isScaling = true
+			@_middleGround.targetScale = 1.1
 
 
 	onTwoUpdate: () =>
@@ -204,7 +217,25 @@ class VisualsEngine
 			@_twoElem.style.background = col
 
 		if @_shapes.length >= 1
-			@removeShapes()	
+			@removeShapes()
+
+
+		if @_middleGround.targetScale > @_middleGround.scale
+			@_middleGround.scale += 0.05
+			xOffset = @convertToRange @_middleGround.scale, [0,2], [@_two.width/2, -@_two.width/2]
+			yOffset = @convertToRange @_middleGround.scale, [0,2], [@_two.height/2, -@_two.height/2]
+			@_middleGround.translation.set xOffset, yOffset
+			if @_middleGround.scale >= @_middleGround.targetScale
+				@_middleGround.targetScale = 1
+		else if @_middleGround.targetScale < @_middleGround.scale
+			@_middleGround.scale -= 0.05
+			xOffset = @convertToRange @_middleGround.scale, [0,2], [@_two.width/2, -@_two.width/2]
+			yOffset = @convertToRange @_middleGround.scale, [0,2], [@_two.height/2, -@_two.height/2]
+			@_middleGround.translation.set xOffset, yOffset
+			if @_middleGround.scale <= @_middleGround.targetScale
+				@_middleGround.scale = 1
+				@_middleGround.targetScale = 1
+				@_middleGround.isScaling = false
 
 
 	removeShapes: () =>

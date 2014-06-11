@@ -17,6 +17,10 @@
 
     VisualsEngine.prototype._twoElem = null;
 
+    VisualsEngine.prototype._middleGround = null;
+
+    VisualsEngine.prototype._foreGround = null;
+
     VisualsEngine.prototype._volume = 20;
 
     VisualsEngine.prototype._frequency = 10;
@@ -106,6 +110,7 @@
       this.lerp = __bind(this.lerp, this);
       this.removeShapes = __bind(this.removeShapes, this);
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
+      this.onBass = __bind(this.onBass, this);
       this.onBreak = __bind(this.onBreak, this);
       this.onPeak = __bind(this.onPeak, this);
       this.updateBackgroundColour = __bind(this.updateBackgroundColour, this);
@@ -123,6 +128,7 @@
 
     VisualsEngine.prototype.setupListeners = function() {
       window.events.peak.add(this.onPeak);
+      window.events.bass.add(this.onBass);
       window.events["break"].add(this.onBreak);
       window.events.BPM.add(this.gotBPM);
       window.events.volume.add(this.gotVolume);
@@ -139,7 +145,13 @@
         autostart: true
       };
       this._two = new Two(params).appendTo(this._twoElem);
-      return this._two.bind('update', this.onTwoUpdate);
+      this._two.bind('update', this.onTwoUpdate);
+      this._foreGround = this._two.makeGroup();
+      this._foreGround.id = 'foreground';
+      this._middleGround = this._two.makeGroup();
+      this._middleGround.id = 'middleground';
+      this._middleGround.isScaling = false;
+      return this._middleGround.center();
     };
 
     VisualsEngine.prototype.gotBPM = function(BPM) {
@@ -270,6 +282,7 @@
         }
       }
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
+      this._middleGround.add(circle);
       circle.fill = col;
       circle.lifeSpan = Math.floor(this.convertToRange(this._bpm, [60, 600], [1000, 400]));
       circle.creationTime = new Date().getTime();
@@ -303,8 +316,15 @@
       }
     };
 
+    VisualsEngine.prototype.onBass = function() {
+      if (this._middleGround.isScaling === false) {
+        this._middleGround.isScaling = true;
+        return this._middleGround.targetScale = 1.1;
+      }
+    };
+
     VisualsEngine.prototype.onTwoUpdate = function() {
-      var col;
+      var col, xOffset, yOffset;
       if (this._bgColLerp < 1 && this._pauseBgLerp === false) {
         this._bgColLerp += this._bgColLerpSpeed;
         this._bgColCurrent = this.lerpColour(this._bgColFrom, this._bgColTo, this._bgColLerp);
@@ -312,7 +332,26 @@
         this._twoElem.style.background = col;
       }
       if (this._shapes.length >= 1) {
-        return this.removeShapes();
+        this.removeShapes();
+      }
+      if (this._middleGround.targetScale > this._middleGround.scale) {
+        this._middleGround.scale += 0.05;
+        xOffset = this.convertToRange(this._middleGround.scale, [0, 2], [this._two.width / 2, -this._two.width / 2]);
+        yOffset = this.convertToRange(this._middleGround.scale, [0, 2], [this._two.height / 2, -this._two.height / 2]);
+        this._middleGround.translation.set(xOffset, yOffset);
+        if (this._middleGround.scale >= this._middleGround.targetScale) {
+          return this._middleGround.targetScale = 1;
+        }
+      } else if (this._middleGround.targetScale < this._middleGround.scale) {
+        this._middleGround.scale -= 0.05;
+        xOffset = this.convertToRange(this._middleGround.scale, [0, 2], [this._two.width / 2, -this._two.width / 2]);
+        yOffset = this.convertToRange(this._middleGround.scale, [0, 2], [this._two.height / 2, -this._two.height / 2]);
+        this._middleGround.translation.set(xOffset, yOffset);
+        if (this._middleGround.scale <= this._middleGround.targetScale) {
+          this._middleGround.scale = 1;
+          this._middleGround.targetScale = 1;
+          return this._middleGround.isScaling = false;
+        }
       }
     };
 
