@@ -12,7 +12,8 @@ class KeyboardController
 
 	keydown: (e) =>
 		console.log e.keyCode
-		e.preventDefault()
+		if e.keyCode is not 91 or e.keyCode is not 82
+			e.preventDefault()
 		switch e.keyCode
 			#inverse colours with 0
 			when 48 then window.events.inverseCols.dispatch()
@@ -33,6 +34,14 @@ class KeyboardController
 			#breaks with < (short) and > (long)
 			when 188 then window.events.break.dispatch 'short'
 			when 190 then window.events.break.dispatch 'long'
+			#peaks with up (high) down (low) left (soft) right (hard)
+			when 38 then window.events.peak.dispatch 'hi'
+			when 40 then window.events.peak.dispatch 'lo'
+			when 37 then window.events.peak.dispatch 'soft'
+			when 39 then window.events.peak.dispatch 'hard'
+			#stripeX
+			when 88 then window.events.makeSpecial.dispatch 'stripeX'
+
 
 	getBPM: () =>
 		console.log 'bpm'

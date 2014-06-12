@@ -116,6 +116,7 @@
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
       this.onBass = __bind(this.onBass, this);
       this.onBreak = __bind(this.onBreak, this);
+      this.makeSpecial = __bind(this.makeSpecial, this);
       this.onPeak = __bind(this.onPeak, this);
       this.updateBackgroundColour = __bind(this.updateBackgroundColour, this);
       this.gotVolume = __bind(this.gotVolume, this);
@@ -141,6 +142,7 @@
       window.events.volume.add(this.gotVolume);
       window.events.frequency.add(this.gotFrequency);
       window.events.inverseCols.add(this.inverseCols);
+      window.events.makeSpecial.add(this.makeSpecial);
       return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
     };
 
@@ -251,8 +253,10 @@
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
-      var circle, col, line, peakTime, sectionX, sectionY, stripeDuration, v, whichCol;
+      var circle, col, duration, peakTime, v, whichCol;
+      console.log('peak');
       this._peakCount++;
+      peakTime = new Date().getTime();
       if (type === 'hard') {
         this.updateBackgroundColour();
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
@@ -313,11 +317,17 @@
       circle.creationTime = new Date().getTime();
       circle.noStroke();
       this._shapes.push(circle);
-      sectionX = this._two.width / 20;
-      sectionY = this._two.height / 20;
-      peakTime = new Date().getTime();
-      stripeDuration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
-      if (this._peakCount % 2 === 0 && peakTime - this._bpmJumpTime < 3000 && this._bpm > 150) {
+      duration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
+      if (this._peakCount % 2 === 0 && peakTime - this._bpmJumpTime < duration && this._bpm > 150) {
+        return this.makeSpecial('stripeX');
+      }
+    };
+
+    VisualsEngine.prototype.makeSpecial = function(which) {
+      var line, sectionX, sectionY;
+      if (which === 'stripeX') {
+        sectionX = this._two.width / 20;
+        sectionY = this._two.height / 20;
         switch (Math.ceil(Math.random() * 4)) {
           case 1:
             line = this._two.makePolygon(0, 0, sectionX, sectionY, sectionX * 2, sectionY * 2, sectionX * 3, sectionY * 3, sectionX * 4, sectionY * 4, sectionX * 5, sectionY * 5, sectionX * 6, sectionY * 6, sectionX * 7, sectionY * 7, sectionX * 8, sectionY * 8, sectionX * 9, sectionY * 9, sectionX * 10, sectionY * 10, sectionX * 11, sectionY * 11, sectionX * 12, sectionY * 12, sectionX * 13, sectionY * 13, sectionX * 14, sectionY * 14, sectionX * 15, sectionY * 15, sectionX * 16, sectionY * 16, sectionX * 17, sectionY * 17, sectionX * 18, sectionY * 18, sectionX * 19, sectionY * 19, this._two.width, this._two.height);

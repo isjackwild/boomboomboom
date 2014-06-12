@@ -65,6 +65,7 @@ class VisualsEngine
 		window.events.volume.add @gotVolume
 		window.events.frequency.add @gotFrequency
 		window.events.inverseCols.add @inverseCols
+		window.events.makeSpecial.add @makeSpecial
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
 
 
@@ -155,7 +156,9 @@ class VisualsEngine
 	
 
 	onPeak: (type) =>
+		console.log 'peak'
 		@_peakCount++
+		peakTime = new Date().getTime()
 
 		if type is 'hard'
 			@updateBackgroundColour()
@@ -201,12 +204,17 @@ class VisualsEngine
 		circle.noStroke()
 		@_shapes.push circle
 
-		sectionX = @_two.width/20
-		sectionY = @_two.height/20
 
-		peakTime = new Date().getTime()
-		stripeDuration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
-		if @_peakCount % 2 is 0 and peakTime - @_bpmJumpTime < 3000 and @_bpm > 150
+		
+		duration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
+		if @_peakCount % 2 is 0 and peakTime - @_bpmJumpTime < duration and @_bpm > 150
+			@makeSpecial 'stripeX'
+
+
+	makeSpecial: (which) =>
+		if which is 'stripeX'
+			sectionX = @_two.width/20
+			sectionY = @_two.height/20
 			switch Math.ceil Math.random()*4
 				when 1
 					line = @_two.makePolygon 0, 0, sectionX, sectionY, sectionX*2, sectionY*2, sectionX*3, sectionY*3, sectionX*4, sectionY*4, sectionX*5, sectionY*5, sectionX*6, sectionY*6, sectionX*7, sectionY*7, sectionX*8, sectionY*8, sectionX*9, sectionY*9, sectionX*10, sectionY*10,  sectionX*11, sectionY*11, sectionX*12, sectionY*12, sectionX*13, sectionY*13, sectionX*14, sectionY*14, sectionX*15, sectionY*15, sectionX*16, sectionY*16, sectionX*17, sectionY*17, sectionX*18, sectionY*18, sectionX*19, sectionY*19, @_two.width, @_two.height 
@@ -225,8 +233,7 @@ class VisualsEngine
 			line.beginning = 0
 			line.ending = 0
 			@_shapes.push line
-
-
+		
 
 	onBreak: (length) =>
 		if @_pauseBgLerp is false

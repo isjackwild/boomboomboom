@@ -22,7 +22,9 @@
 
     KeyboardController.prototype.keydown = function(e) {
       console.log(e.keyCode);
-      e.preventDefault();
+      if (e.keyCode === !91 || e.keyCode === !82) {
+        e.preventDefault();
+      }
       switch (e.keyCode) {
         case 48:
           return window.events.inverseCols.dispatch();
@@ -52,6 +54,16 @@
           return window.events["break"].dispatch('short');
         case 190:
           return window.events["break"].dispatch('long');
+        case 38:
+          return window.events.peak.dispatch('hi');
+        case 40:
+          return window.events.peak.dispatch('lo');
+        case 37:
+          return window.events.peak.dispatch('soft');
+        case 39:
+          return window.events.peak.dispatch('hard');
+        case 88:
+          return window.events.makeSpecial.dispatch('stripeX');
       }
     };
 

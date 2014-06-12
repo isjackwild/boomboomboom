@@ -13,7 +13,8 @@
     changeFreqVar: new Signal(),
     volume: new Signal(),
     frequency: new Signal(),
-    inverseCols: new Signal()
+    inverseCols: new Signal(),
+    makeSpecial: new Signal()
   };
 
 }).call(this);
