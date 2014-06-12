@@ -12,7 +12,7 @@ class KeyboardController
 
 	keydown: (e) =>
 		console.log e.keyCode
-		window.events.automatic.dispatch false
+		# window.events.automatic.dispatch false
 		#add turn auto on if no keystroke for > 20ish seconds
 
 		if e.keyCode is not 91 or e.keyCode is not 82
@@ -61,6 +61,11 @@ class KeyboardController
 			when 83 then window.events.showText.dispatch 'lin'
 			when 68 then window.events.showText.dispatch 'bisque'
 			when 70 then window.events.showText.dispatch 'rage'
+			#illustrations
+			when 71 then window.events.showIllustration.dispatch 'bear'
+			when 72 then window.events.showIllustration.dispatch 'ample'
+			when 74 then window.events.showIllustration.dispatch 'pretzel'
+			when 75 then window.events.showIllustration.dispatch 'currywurst'
 			#filters
 			when 77 then window.events.filter.dispatch 'blur'
 			when 67 then window.events.filter.dispatch 'invert'

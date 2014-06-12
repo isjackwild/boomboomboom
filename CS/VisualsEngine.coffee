@@ -70,6 +70,7 @@ class VisualsEngine
 		window.events.inverseCols.add @inverseCols
 		window.events.makeSpecial.add @makeSpecial
 		window.events.showText.add @showText
+		window.events.showIllustration.add @showIllustration
 		window.events.filter.add @addFilter
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
 
@@ -89,6 +90,7 @@ class VisualsEngine
 		@_middleGround.center()
 		@_foreGround = @_two.makeGroup()
 		@_foreGround.id = 'foreground'
+		
 
 
 	gotBPM: (BPM) =>
@@ -227,7 +229,6 @@ class VisualsEngine
 
 
 	makeSpecial: (which) =>
-
 		switch which
 			when 1
 				sectionX = @_two.width/20
@@ -269,8 +270,6 @@ class VisualsEngine
 				line = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.43
 			when 0
 				line = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.3
-
-
 		animationSpeed = @convertToRange(@_bpm, [60,600], [0.05, 0.12])
 		if which >= 1 and which <= 4
 			line.type = 'stripeX'
@@ -296,10 +295,11 @@ class VisualsEngine
 		@_foreGround.add line
 		@_shapes.push line
 	
+
 	showText: (which) =>
 		if @_textTimer
 			clearTimeout @_textTimer
-		hang = @convertToRange(@_bpm, [60,600], [1500, 500])
+		hang = @convertToRange(@_bpm, [60,600], [1500, 800])
 		switch which
 			when 'ber'
 				elem = "#ber"
@@ -319,6 +319,19 @@ class VisualsEngine
 			$(".show").removeClass 'show'
 		, hang
 
+	showIllustration: (which) =>
+		for shape, i in @_shapes
+			if shape.isIllustration
+				return
+		illustration = @_two.interpret document.getElementById which
+
+		illustration.center().translation.set @_two.width / 2, @_two.height / 2
+		@_foreGround.add illustration
+		illustration.lifeSpan = 100
+		illustration.creationTime = new Date().getTime()
+		illustration.isIllustration = true
+		@_shapes.push illustration
+		console.log illustration, "<<"
 
 	onBreak: (length) =>
 		if @_pauseBgLerp is false

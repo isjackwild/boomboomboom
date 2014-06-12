@@ -22,7 +22,6 @@
 
     KeyboardController.prototype.keydown = function(e) {
       console.log(e.keyCode);
-      window.events.automatic.dispatch(false);
       if (e.keyCode === !91 || e.keyCode === !82) {
         e.preventDefault();
       }
@@ -97,6 +96,14 @@
           return window.events.showText.dispatch('bisque');
         case 70:
           return window.events.showText.dispatch('rage');
+        case 71:
+          return window.events.showIllustration.dispatch('bear');
+        case 72:
+          return window.events.showIllustration.dispatch('ample');
+        case 74:
+          return window.events.showIllustration.dispatch('pretzel');
+        case 75:
+          return window.events.showIllustration.dispatch('currywurst');
         case 77:
           return window.events.filter.dispatch('blur');
         case 67:

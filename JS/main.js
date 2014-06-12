@@ -486,6 +486,7 @@
     inverseCols: new Signal(),
     makeSpecial: new Signal(),
     showText: new Signal(),
+    showIllustration: new Signal(),
     filter: new Signal()
   };
 
@@ -515,7 +516,6 @@
 
     KeyboardController.prototype.keydown = function(e) {
       console.log(e.keyCode);
-      window.events.automatic.dispatch(false);
       if (e.keyCode === !91 || e.keyCode === !82) {
         e.preventDefault();
       }
@@ -590,6 +590,14 @@
           return window.events.showText.dispatch('bisque');
         case 70:
           return window.events.showText.dispatch('rage');
+        case 71:
+          return window.events.showIllustration.dispatch('bear');
+        case 72:
+          return window.events.showIllustration.dispatch('ample');
+        case 74:
+          return window.events.showIllustration.dispatch('pretzel');
+        case 75:
+          return window.events.showIllustration.dispatch('currywurst');
         case 77:
           return window.events.filter.dispatch('blur');
         case 67:
@@ -757,6 +765,7 @@
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
       this.onBass = __bind(this.onBass, this);
       this.onBreak = __bind(this.onBreak, this);
+      this.showIllustration = __bind(this.showIllustration, this);
       this.showText = __bind(this.showText, this);
       this.makeSpecial = __bind(this.makeSpecial, this);
       this.onPeak = __bind(this.onPeak, this);
@@ -787,6 +796,7 @@
       window.events.inverseCols.add(this.inverseCols);
       window.events.makeSpecial.add(this.makeSpecial);
       window.events.showText.add(this.showText);
+      window.events.showIllustration.add(this.showIllustration);
       window.events.filter.add(this.addFilter);
       return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
     };
@@ -1064,7 +1074,7 @@
       if (this._textTimer) {
         clearTimeout(this._textTimer);
       }
-      hang = this.convertToRange(this._bpm, [60, 600], [1500, 500]);
+      hang = this.convertToRange(this._bpm, [60, 600], [1500, 800]);
       switch (which) {
         case 'ber':
           elem = "#ber";
@@ -1088,6 +1098,25 @@
           return $(".show").removeClass('show');
         };
       })(this), hang);
+    };
+
+    VisualsEngine.prototype.showIllustration = function(which) {
+      var i, illustration, shape, _i, _len, _ref;
+      _ref = this._shapes;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        shape = _ref[i];
+        if (shape.isIllustration) {
+          return;
+        }
+      }
+      illustration = this._two.interpret(document.getElementById(which));
+      illustration.center().translation.set(this._two.width / 2, this._two.height / 2);
+      this._foreGround.add(illustration);
+      illustration.lifeSpan = 100;
+      illustration.creationTime = new Date().getTime();
+      illustration.isIllustration = true;
+      this._shapes.push(illustration);
+      return console.log(illustration, "<<");
     };
 
     VisualsEngine.prototype.onBreak = function(length) {
