@@ -50,9 +50,9 @@
           return this.getBPM();
         case 66:
           return window.events.bass.dispatch();
-        case 188:
+        case 90:
           return window.events["break"].dispatch('short');
-        case 190:
+        case 88:
           return window.events["break"].dispatch('long');
         case 38:
           return window.events.peak.dispatch('hi');
@@ -63,11 +63,25 @@
         case 39:
           return window.events.peak.dispatch('hard');
         case 81:
-          return window.events.makeSpecial.dispatch('stripeX');
+          return window.events.makeSpecial.dispatch(1);
         case 87:
-          return window.events.makeSpecial.dispatch('stripe+');
+          return window.events.makeSpecial.dispatch(2);
         case 69:
-          return window.events.makeSpecial.dispatch('circleLarge');
+          return window.events.makeSpecial.dispatch(3);
+        case 82:
+          return window.events.makeSpecial.dispatch(4);
+        case 84:
+          return window.events.makeSpecial.dispatch(5);
+        case 89:
+          return window.events.makeSpecial.dispatch(6);
+        case 85:
+          return window.events.makeSpecial.dispatch(7);
+        case 73:
+          return window.events.makeSpecial.dispatch(8);
+        case 79:
+          return window.events.makeSpecial.dispatch(9);
+        case 80:
+          return window.events.makeSpecial.dispatch(0);
       }
     };
 

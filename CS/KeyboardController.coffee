@@ -32,17 +32,24 @@ class KeyboardController
 			#bass with B
 			when 66 then window.events.bass.dispatch()
 			#breaks with < (short) and > (long)
-			when 188 then window.events.break.dispatch 'short'
-			when 190 then window.events.break.dispatch 'long'
+			when 90 then window.events.break.dispatch 'short'
+			when 88 then window.events.break.dispatch 'long'
 			#peaks with up (high) down (low) left (soft) right (hard)
 			when 38 then window.events.peak.dispatch 'hi'
 			when 40 then window.events.peak.dispatch 'lo'
 			when 37 then window.events.peak.dispatch 'soft'
 			when 39 then window.events.peak.dispatch 'hard'
-			#stripeX
-			when 81 then window.events.makeSpecial.dispatch 'stripeX'
-			when 87 then window.events.makeSpecial.dispatch 'stripe+'
-			when 69 then window.events.makeSpecial.dispatch 'circleLarge'
+			#stripes
+			when 81 then window.events.makeSpecial.dispatch 1
+			when 87 then window.events.makeSpecial.dispatch 2
+			when 69 then window.events.makeSpecial.dispatch 3
+			when 82 then window.events.makeSpecial.dispatch 4
+			when 84 then window.events.makeSpecial.dispatch 5
+			when 89 then window.events.makeSpecial.dispatch 6
+			when 85 then window.events.makeSpecial.dispatch 7
+			when 73 then window.events.makeSpecial.dispatch 8
+			when 79 then window.events.makeSpecial.dispatch 9
+			when 80 then window.events.makeSpecial.dispatch 0
 
 
 	getBPM: () =>

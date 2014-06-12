@@ -4,24 +4,7 @@
 
   $((function(_this) {
     return function() {
-      var gui;
-      window.audioAnalysisEngine = new AudioAnalysisEngine();
-      gui = new dat.GUI();
-      gui.add(audioAnalysisEngine, '_samplesPerSecond');
-      gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
-      gui.add(audioAnalysisEngine, '_sensivitityForHighPeak');
-      gui.add(audioAnalysisEngine, '_sensivitityForLowPeak');
-      gui.add(audioAnalysisEngine, '_longBreakLength');
-      gui.add(audioAnalysisEngine, '_shortBreakLength');
-      gui.add(audioAnalysisEngine, '_breakSensitivity');
-      gui.add(audioAnalysisEngine, '_dropJumpBPMSensitivity');
-      gui.add(audioAnalysisEngine, '_sensitivityForHighFrequencyVariation');
-      gui.add(audioAnalysisEngine._analyserNode, 'smoothingTimeConstant');
-      gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
-      gui.add(audioAnalysisEngine, '_bassCutoff').listen();
-      gui.add(audioAnalysisEngine, '_approxBPM').listen();
-      gui.add(audioAnalysisEngine, '_averageFrequency').listen();
-      return gui.add(audioAnalysisEngine, '_averageVol').listen();
+      return window.audioAnalysisEngine = new AudioAnalysisEngine();
     };
   })(this));
 
@@ -536,9 +519,9 @@
           return this.getBPM();
         case 66:
           return window.events.bass.dispatch();
-        case 188:
+        case 90:
           return window.events["break"].dispatch('short');
-        case 190:
+        case 88:
           return window.events["break"].dispatch('long');
         case 38:
           return window.events.peak.dispatch('hi');
@@ -549,11 +532,25 @@
         case 39:
           return window.events.peak.dispatch('hard');
         case 81:
-          return window.events.makeSpecial.dispatch('stripeX');
+          return window.events.makeSpecial.dispatch(1);
         case 87:
-          return window.events.makeSpecial.dispatch('stripe+');
+          return window.events.makeSpecial.dispatch(2);
         case 69:
-          return window.events.makeSpecial.dispatch('circleLarge');
+          return window.events.makeSpecial.dispatch(3);
+        case 82:
+          return window.events.makeSpecial.dispatch(4);
+        case 84:
+          return window.events.makeSpecial.dispatch(5);
+        case 89:
+          return window.events.makeSpecial.dispatch(6);
+        case 85:
+          return window.events.makeSpecial.dispatch(7);
+        case 73:
+          return window.events.makeSpecial.dispatch(8);
+        case 79:
+          return window.events.makeSpecial.dispatch(9);
+        case 80:
+          return window.events.makeSpecial.dispatch(0);
       }
     };
 
@@ -914,82 +911,86 @@
       this._shapes.push(circle);
       duration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
       if (this._peakCount % 2 === 0 && peakTime - this._bpmJumpTime < duration && this._bpm > 150) {
-        return this.makeSpecial('stripeX');
+        return this.makeSpecial(Math.floor(Math.random() * 10));
       }
     };
 
     VisualsEngine.prototype.makeSpecial = function(which) {
-      var line, section, sectionX, sectionY;
+      var animationSpeed, line, section, sectionX, sectionY;
       switch (which) {
-        case 'stripeX':
+        case 1:
           sectionX = this._two.width / 20;
           sectionY = this._two.height / 20;
-          switch (Math.ceil(Math.random() * 4)) {
-            case 1:
-              line = this._two.makePolygon(0, 0, sectionX, sectionY, sectionX * 2, sectionY * 2, sectionX * 3, sectionY * 3, sectionX * 4, sectionY * 4, sectionX * 5, sectionY * 5, sectionX * 6, sectionY * 6, sectionX * 7, sectionY * 7, sectionX * 8, sectionY * 8, sectionX * 9, sectionY * 9, sectionX * 10, sectionY * 10, sectionX * 11, sectionY * 11, sectionX * 12, sectionY * 12, sectionX * 13, sectionY * 13, sectionX * 14, sectionY * 14, sectionX * 15, sectionY * 15, sectionX * 16, sectionY * 16, sectionX * 17, sectionY * 17, sectionX * 18, sectionY * 18, sectionX * 19, sectionY * 19, this._two.width, this._two.height);
-              break;
-            case 2:
-              line = this._two.makePolygon(this._two.width, this._two.height, sectionX * 19, sectionY * 19, sectionX * 18, sectionY * 18, sectionX * 17, sectionY * 17, sectionX * 16, sectionY * 16, sectionX * 15, sectionY * 15, sectionX * 14, sectionY * 14, sectionX * 13, sectionY * 13, sectionX * 12, sectionY * 12, sectionX * 11, sectionY * 11, sectionX * 10, sectionY * 10, sectionX * 9, sectionY * 9, sectionX * 8, sectionY * 8, sectionX * 7, sectionY * 7, sectionX * 6, sectionY * 6, sectionX * 5, sectionY * 5, sectionX * 4, sectionY * 4, sectionX * 3, sectionY * 3, sectionX * 2, sectionY * 2, sectionX, sectionY, 0, 0);
-              break;
-            case 3:
-              line = this._two.makePolygon(0, this._two.height, sectionX, this._two.height - sectionY, sectionX * 2, this._two.height - sectionY * 2, sectionX * 3, this._two.height - sectionY * 3, sectionX * 4, this._two.height - sectionY * 4, sectionX * 5, this._two.height - sectionY * 5, sectionX * 6, this._two.height - sectionY * 6, sectionX * 7, this._two.height - sectionY * 7, sectionX * 8, this._two.height - sectionY * 8, sectionX * 9, this._two.height - sectionY * 9, sectionX * 10, this._two.height - sectionY * 10, sectionX * 11, this._two.height - sectionY * 11, sectionX * 12, this._two.height - sectionY * 12, sectionX * 13, this._two.height - sectionY * 13, sectionX * 14, this._two.height - sectionY * 14, sectionX * 15, this._two.height - sectionY * 15, sectionX * 16, this._two.height - sectionY * 16, sectionX * 17, this._two.height - sectionY * 17, sectionX * 18, this._two.height - sectionY * 18, sectionX * 19, this._two.height - sectionY * 19, this._two.width, 0);
-              break;
-            case 4:
-              line = this._two.makePolygon(this._two.width, 0, this._two.width - sectionX, sectionY, this._two.width - sectionX * 2, sectionY * 2, this._two.width - sectionX * 3, sectionY * 3, this._two.width - sectionX * 4, sectionY * 4, this._two.width - sectionX * 5, sectionY * 5, this._two.width - sectionX * 6, sectionY * 6, this._two.width - sectionX * 7, sectionY * 7, this._two.width - sectionX * 8, sectionY * 8, this._two.width - sectionX * 9, sectionY * 9, this._two.width - sectionX * 10, sectionY * 10, this._two.width - sectionX * 11, sectionY * 11, this._two.width - sectionX * 12, sectionY * 12, this._two.width - sectionX * 13, sectionY * 13, this._two.width - sectionX * 14, sectionY * 14, this._two.width - sectionX * 15, sectionY * 15, this._two.width - sectionX * 16, sectionY * 16, this._two.width - sectionX * 17, sectionY * 17, this._two.width - sectionX * 18, sectionY * 18, this._two.width - sectionX * 19, sectionY * 19, 0, this._two.height);
-          }
-          line.type = 'stripeX';
-          line.beginning = 0;
-          line.ending = 0;
-          line.closed = false;
+          line = this._two.makePolygon(0, 0, sectionX, sectionY, sectionX * 2, sectionY * 2, sectionX * 3, sectionY * 3, sectionX * 4, sectionY * 4, sectionX * 5, sectionY * 5, sectionX * 6, sectionY * 6, sectionX * 7, sectionY * 7, sectionX * 8, sectionY * 8, sectionX * 9, sectionY * 9, sectionX * 10, sectionY * 10, sectionX * 11, sectionY * 11, sectionX * 12, sectionY * 12, sectionX * 13, sectionY * 13, sectionX * 14, sectionY * 14, sectionX * 15, sectionY * 15, sectionX * 16, sectionY * 16, sectionX * 17, sectionY * 17, sectionX * 18, sectionY * 18, sectionX * 19, sectionY * 19, this._two.width, this._two.height);
           break;
-        case 'stripe+':
-          switch (Math.ceil(Math.random() * 4)) {
-            case 1:
-              section = this._two.width / 20;
-              line = this._two.makePolygon(0, this._two.height / 2, section, this._two.height / 2, section * 2, this._two.height / 2, section * 3, this._two.height / 2, section * 4, this._two.height / 2, section * 5, this._two.height / 2, section * 6, this._two.height / 2, section * 7, this._two.height / 2, section * 8, this._two.height / 2, section * 9, this._two.height / 2, section * 10, this._two.height / 2, section * 11, this._two.height / 2, section * 12, this._two.height / 2, section * 13, this._two.height / 2, section * 14, this._two.height / 2, section * 15, this._two.height / 2, section * 16, this._two.height / 2, section * 17, this._two.height / 2, section * 18, this._two.height / 2, section * 19, this._two.height / 2, this._two.width, this._two.height / 2);
-              line.beginning = 0.5;
-              line.ending = 0.5;
-              line.type = 'stripe+';
-              break;
-            case 2:
-              section = this._two.height / 15;
-              line = this._two.makePolygon(this._two.width / 2, 0, this._two.width / 2, section, this._two.width / 2, section * 2, this._two.width / 2, section * 3, this._two.width / 2, section * 4, this._two.width / 2, section * 5, this._two.width / 2, section * 6, this._two.width / 2, section * 7, this._two.width / 2, section * 8, this._two.width / 2, section * 9, this._two.width / 2, section * 10, this._two.width / 2, section * 11, this._two.width / 2, section * 12, this._two.width / 2, section * 13, this._two.width / 2, section * 14, this._two.width / 2, this._two.height);
-              line.beginning = 0.5;
-              line.ending = 0.5;
-              line.type = 'stripe+';
-              break;
-            case 3:
-              section = this._two.width / 20;
-              line = this._two.makePolygon(0, this._two.height / 2, section, this._two.height / 2, section * 2, this._two.height / 2, section * 3, this._two.height / 2, section * 4, this._two.height / 2, section * 5, this._two.height / 2, section * 6, this._two.height / 2, section * 7, this._two.height / 2, section * 8, this._two.height / 2, section * 9, this._two.height / 2, section * 10, this._two.height / 2, section * 11, this._two.height / 2, section * 12, this._two.height / 2, section * 13, this._two.height / 2, section * 14, this._two.height / 2, section * 15, this._two.height / 2, section * 16, this._two.height / 2, section * 17, this._two.height / 2, section * 18, this._two.height / 2, section * 19, this._two.height / 2, this._two.width, this._two.height / 2);
-              line.type = 'stripe+Reverse';
-              break;
-            case 4:
-              section = this._two.height / 15;
-              line = this._two.makePolygon(this._two.width / 2, 0, this._two.width / 2, section, this._two.width / 2, section * 2, this._two.width / 2, section * 3, this._two.width / 2, section * 4, this._two.width / 2, section * 5, this._two.width / 2, section * 6, this._two.width / 2, section * 7, this._two.width / 2, section * 8, this._two.width / 2, section * 9, this._two.width / 2, section * 10, this._two.width / 2, section * 11, this._two.width / 2, section * 12, this._two.width / 2, section * 13, this._two.width / 2, section * 14, this._two.width / 2, this._two.height);
-              line.type = 'stripe+Reverse';
-          }
-          line.closed = false;
+        case 2:
+          sectionX = this._two.width / 20;
+          sectionY = this._two.height / 20;
+          line = this._two.makePolygon(this._two.width, this._two.height, sectionX * 19, sectionY * 19, sectionX * 18, sectionY * 18, sectionX * 17, sectionY * 17, sectionX * 16, sectionY * 16, sectionX * 15, sectionY * 15, sectionX * 14, sectionY * 14, sectionX * 13, sectionY * 13, sectionX * 12, sectionY * 12, sectionX * 11, sectionY * 11, sectionX * 10, sectionY * 10, sectionX * 9, sectionY * 9, sectionX * 8, sectionY * 8, sectionX * 7, sectionY * 7, sectionX * 6, sectionY * 6, sectionX * 5, sectionY * 5, sectionX * 4, sectionY * 4, sectionX * 3, sectionY * 3, sectionX * 2, sectionY * 2, sectionX, sectionY, 0, 0);
           break;
-        case 'circleLarge':
-          switch (Math.ceil(Math.random() * 2)) {
-            case 1:
-              line = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
-              break;
-            case 2:
-              line = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
-          }
-          line.type = "circle";
+        case 3:
+          sectionX = this._two.width / 20;
+          sectionY = this._two.height / 20;
+          line = this._two.makePolygon(0, this._two.height, sectionX, this._two.height - sectionY, sectionX * 2, this._two.height - sectionY * 2, sectionX * 3, this._two.height - sectionY * 3, sectionX * 4, this._two.height - sectionY * 4, sectionX * 5, this._two.height - sectionY * 5, sectionX * 6, this._two.height - sectionY * 6, sectionX * 7, this._two.height - sectionY * 7, sectionX * 8, this._two.height - sectionY * 8, sectionX * 9, this._two.height - sectionY * 9, sectionX * 10, this._two.height - sectionY * 10, sectionX * 11, this._two.height - sectionY * 11, sectionX * 12, this._two.height - sectionY * 12, sectionX * 13, this._two.height - sectionY * 13, sectionX * 14, this._two.height - sectionY * 14, sectionX * 15, this._two.height - sectionY * 15, sectionX * 16, this._two.height - sectionY * 16, sectionX * 17, this._two.height - sectionY * 17, sectionX * 18, this._two.height - sectionY * 18, sectionX * 19, this._two.height - sectionY * 19, this._two.width, 0);
+          break;
+        case 4:
+          sectionX = this._two.width / 20;
+          sectionY = this._two.height / 20;
+          line = this._two.makePolygon(this._two.width, 0, this._two.width - sectionX, sectionY, this._two.width - sectionX * 2, sectionY * 2, this._two.width - sectionX * 3, sectionY * 3, this._two.width - sectionX * 4, sectionY * 4, this._two.width - sectionX * 5, sectionY * 5, this._two.width - sectionX * 6, sectionY * 6, this._two.width - sectionX * 7, sectionY * 7, this._two.width - sectionX * 8, sectionY * 8, this._two.width - sectionX * 9, sectionY * 9, this._two.width - sectionX * 10, sectionY * 10, this._two.width - sectionX * 11, sectionY * 11, this._two.width - sectionX * 12, sectionY * 12, this._two.width - sectionX * 13, sectionY * 13, this._two.width - sectionX * 14, sectionY * 14, this._two.width - sectionX * 15, sectionY * 15, this._two.width - sectionX * 16, sectionY * 16, this._two.width - sectionX * 17, sectionY * 17, this._two.width - sectionX * 18, sectionY * 18, this._two.width - sectionX * 19, sectionY * 19, 0, this._two.height);
+          break;
+        case 5:
+          section = this._two.width / 20;
+          line = this._two.makePolygon(0, this._two.height / 2, section, this._two.height / 2, section * 2, this._two.height / 2, section * 3, this._two.height / 2, section * 4, this._two.height / 2, section * 5, this._two.height / 2, section * 6, this._two.height / 2, section * 7, this._two.height / 2, section * 8, this._two.height / 2, section * 9, this._two.height / 2, section * 10, this._two.height / 2, section * 11, this._two.height / 2, section * 12, this._two.height / 2, section * 13, this._two.height / 2, section * 14, this._two.height / 2, section * 15, this._two.height / 2, section * 16, this._two.height / 2, section * 17, this._two.height / 2, section * 18, this._two.height / 2, section * 19, this._two.height / 2, this._two.width, this._two.height / 2);
+          line.beginning = 0.5;
+          line.ending = 0.5;
+          line.type = 'stripe+';
+          break;
+        case 6:
+          section = this._two.height / 15;
+          line = this._two.makePolygon(this._two.width / 2, 0, this._two.width / 2, section, this._two.width / 2, section * 2, this._two.width / 2, section * 3, this._two.width / 2, section * 4, this._two.width / 2, section * 5, this._two.width / 2, section * 6, this._two.width / 2, section * 7, this._two.width / 2, section * 8, this._two.width / 2, section * 9, this._two.width / 2, section * 10, this._two.width / 2, section * 11, this._two.width / 2, section * 12, this._two.width / 2, section * 13, this._two.width / 2, section * 14, this._two.width / 2, this._two.height);
+          line.beginning = 0.5;
+          line.ending = 0.5;
+          line.type = 'stripe+';
+          break;
+        case 7:
+          section = this._two.width / 20;
+          line = this._two.makePolygon(0, this._two.height / 2, section, this._two.height / 2, section * 2, this._two.height / 2, section * 3, this._two.height / 2, section * 4, this._two.height / 2, section * 5, this._two.height / 2, section * 6, this._two.height / 2, section * 7, this._two.height / 2, section * 8, this._two.height / 2, section * 9, this._two.height / 2, section * 10, this._two.height / 2, section * 11, this._two.height / 2, section * 12, this._two.height / 2, section * 13, this._two.height / 2, section * 14, this._two.height / 2, section * 15, this._two.height / 2, section * 16, this._two.height / 2, section * 17, this._two.height / 2, section * 18, this._two.height / 2, section * 19, this._two.height / 2, this._two.width, this._two.height / 2);
+          line.type = 'stripe+Reverse';
+          break;
+        case 8:
+          section = this._two.height / 15;
+          line = this._two.makePolygon(this._two.width / 2, 0, this._two.width / 2, section, this._two.width / 2, section * 2, this._two.width / 2, section * 3, this._two.width / 2, section * 4, this._two.width / 2, section * 5, this._two.width / 2, section * 6, this._two.width / 2, section * 7, this._two.width / 2, section * 8, this._two.width / 2, section * 9, this._two.width / 2, section * 10, this._two.width / 2, section * 11, this._two.width / 2, section * 12, this._two.width / 2, section * 13, this._two.width / 2, section * 14, this._two.width / 2, this._two.height);
+          line.type = 'stripe+Reverse';
+          break;
+        case 9:
+          line = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
+          break;
+        case 0:
+          line = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
       }
-      line.linewidth = 20;
-      this._foreGround.add(line);
-      line.noFill();
+      animationSpeed = this.convertToRange(this._bpm, [60, 600], [0.05, 0.12]);
+      if (which >= 1 && which <= 4) {
+        line.type = 'stripeX';
+        line.beginning = 0;
+        line.ending = 0;
+        line.closed = false;
+        line.animationSpeed = animationSpeed;
+      } else if (which >= 5 && which <= 8) {
+        line.closed = false;
+        line.animationSpeed = animationSpeed / 1.3;
+      } else if (which === 9 || which === 0) {
+        line.type = 'circle';
+        line.animationSpeed = animationSpeed * 20;
+      }
       if (this._frequency <= 4) {
         line.stroke = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
       } else {
         line.stroke = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
       }
-      line.cap = 'butt';
-      line.animationSpeed = this.convertToRange(this._bpm, [60, 600], [0.05, 0.12]);
+      line.noFill();
+      line.linewidth = 20;
+      line.cap = "butt";
+      this._foreGround.add(line);
       return this._shapes.push(line);
     };
 
@@ -1122,7 +1123,7 @@
             }
           }
           if (shape.type === 'circle') {
-            shape.linewidth -= shape.animationSpeed * 20;
+            shape.linewidth -= shape.animationSpeed;
             if (shape.linewidth <= 0) {
               shape.remove();
               _results.push(this._shapes.splice(i, 1));

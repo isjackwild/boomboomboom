@@ -4,24 +4,7 @@
 
   $((function(_this) {
     return function() {
-      var gui;
-      window.audioAnalysisEngine = new AudioAnalysisEngine();
-      gui = new dat.GUI();
-      gui.add(audioAnalysisEngine, '_samplesPerSecond');
-      gui.add(audioAnalysisEngine, '_peakSensitivityOffset');
-      gui.add(audioAnalysisEngine, '_sensivitityForHighPeak');
-      gui.add(audioAnalysisEngine, '_sensivitityForLowPeak');
-      gui.add(audioAnalysisEngine, '_longBreakLength');
-      gui.add(audioAnalysisEngine, '_shortBreakLength');
-      gui.add(audioAnalysisEngine, '_breakSensitivity');
-      gui.add(audioAnalysisEngine, '_dropJumpBPMSensitivity');
-      gui.add(audioAnalysisEngine, '_sensitivityForHighFrequencyVariation');
-      gui.add(audioAnalysisEngine._analyserNode, 'smoothingTimeConstant');
-      gui.add(audioAnalysisEngine._analyserNode, 'fftSize');
-      gui.add(audioAnalysisEngine, '_bassCutoff').listen();
-      gui.add(audioAnalysisEngine, '_approxBPM').listen();
-      gui.add(audioAnalysisEngine, '_averageFrequency').listen();
-      return gui.add(audioAnalysisEngine, '_averageVol').listen();
+      return window.audioAnalysisEngine = new AudioAnalysisEngine();
     };
   })(this));
 
