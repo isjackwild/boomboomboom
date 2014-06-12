@@ -62,8 +62,10 @@
           return window.events.peak.dispatch('soft');
         case 39:
           return window.events.peak.dispatch('hard');
-        case 88:
+        case 81:
           return window.events.makeSpecial.dispatch('stripeX');
+        case 87:
+          return window.events.makeSpecial.dispatch('stripe+');
       }
     };
 

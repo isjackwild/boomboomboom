@@ -212,27 +212,60 @@ class VisualsEngine
 
 
 	makeSpecial: (which) =>
-		if which is 'stripeX'
-			sectionX = @_two.width/20
-			sectionY = @_two.height/20
-			switch Math.ceil Math.random()*4
-				when 1
-					line = @_two.makePolygon 0, 0, sectionX, sectionY, sectionX*2, sectionY*2, sectionX*3, sectionY*3, sectionX*4, sectionY*4, sectionX*5, sectionY*5, sectionX*6, sectionY*6, sectionX*7, sectionY*7, sectionX*8, sectionY*8, sectionX*9, sectionY*9, sectionX*10, sectionY*10,  sectionX*11, sectionY*11, sectionX*12, sectionY*12, sectionX*13, sectionY*13, sectionX*14, sectionY*14, sectionX*15, sectionY*15, sectionX*16, sectionY*16, sectionX*17, sectionY*17, sectionX*18, sectionY*18, sectionX*19, sectionY*19, @_two.width, @_two.height 
-				when 2
-					line = @_two.makePolygon @_two.width, @_two.height, sectionX*19, sectionY*19, sectionX*18, sectionY*18, sectionX*17, sectionY*17, sectionX*16, sectionY*16, sectionX*15, sectionY*15, sectionX*14, sectionY*14, sectionX*13, sectionY*13, sectionX*12, sectionY*12, sectionX*11, sectionY*11, sectionX*10, sectionY*10,  sectionX*9, sectionY*9, sectionX*8, sectionY*8, sectionX*7, sectionY*7, sectionX*6, sectionY*6, sectionX*5, sectionY*5, sectionX*4, sectionY*4, sectionX*3, sectionY*3, sectionX*2, sectionY*2, sectionX, sectionY, 0, 0
-				when 3
-					line = @_two.makePolygon 0, @_two.height, sectionX, @_two.height-sectionY, sectionX*2, @_two.height-sectionY*2, sectionX*3, @_two.height-sectionY*3, sectionX*4, @_two.height-sectionY*4, sectionX*5, @_two.height-sectionY*5, sectionX*6, @_two.height-sectionY*6, sectionX*7, @_two.height-sectionY*7, sectionX*8, @_two.height-sectionY*8, sectionX*9, @_two.height-sectionY*9, sectionX*10, @_two.height-sectionY*10,  sectionX*11, @_two.height-sectionY*11, sectionX*12, @_two.height-sectionY*12, sectionX*13, @_two.height-sectionY*13, sectionX*14, @_two.height-sectionY*14, sectionX*15, @_two.height-sectionY*15, sectionX*16, @_two.height-sectionY*16, sectionX*17, @_two.height-sectionY*17, sectionX*18, @_two.height-sectionY*18, sectionX*19, @_two.height-sectionY*19, @_two.width, 0
-				when 4
-					line = @_two.makePolygon @_two.width, 0, @_two.width-sectionX, sectionY, @_two.width-sectionX*2, sectionY*2, @_two.width-sectionX*3, sectionY*3,  @_two.width-sectionX*4, sectionY*4, @_two.width-sectionX*5, sectionY*5, @_two.width-sectionX*6, sectionY*6, @_two.width-sectionX*7, sectionY*7, @_two.width-sectionX*8, sectionY*8, @_two.width-sectionX*9, sectionY*9, @_two.width-sectionX*10, sectionY*10, @_two.width-sectionX*11, sectionY*11, @_two.width-sectionX*12, sectionY*12, @_two.width-sectionX*13, sectionY*13, @_two.width-sectionX*14, sectionY*14, @_two.width-sectionX*15, sectionY*15, @_two.width-sectionX*16, sectionY*16, @_two.width-sectionX*17, sectionY*17, @_two.width-sectionX*18, sectionY*18, @_two.width-sectionX*19, sectionY*19, 0, @_two.height 
-			@_foreGround.add line
-			line.noFill()
-			line.stroke = "rgb("+0+","+0+","+0+")"
-			line.linewidth = 20
-			line.cap = 'butt'
-			line.animationSpeed = @convertToRange(@_bpm, [60,600], [0.05, 0.12])
-			line.beginning = 0
-			line.ending = 0
-			@_shapes.push line
+		switch which
+			when 'stripeX'
+				sectionX = @_two.width/20
+				sectionY = @_two.height/20
+				switch Math.ceil Math.random()*4
+					when 1
+						line = @_two.makePolygon 0, 0, sectionX, sectionY, sectionX*2, sectionY*2, sectionX*3, sectionY*3, sectionX*4, sectionY*4, sectionX*5, sectionY*5, sectionX*6, sectionY*6, sectionX*7, sectionY*7, sectionX*8, sectionY*8, sectionX*9, sectionY*9, sectionX*10, sectionY*10,  sectionX*11, sectionY*11, sectionX*12, sectionY*12, sectionX*13, sectionY*13, sectionX*14, sectionY*14, sectionX*15, sectionY*15, sectionX*16, sectionY*16, sectionX*17, sectionY*17, sectionX*18, sectionY*18, sectionX*19, sectionY*19, @_two.width, @_two.height 
+					when 2
+						line = @_two.makePolygon @_two.width, @_two.height, sectionX*19, sectionY*19, sectionX*18, sectionY*18, sectionX*17, sectionY*17, sectionX*16, sectionY*16, sectionX*15, sectionY*15, sectionX*14, sectionY*14, sectionX*13, sectionY*13, sectionX*12, sectionY*12, sectionX*11, sectionY*11, sectionX*10, sectionY*10,  sectionX*9, sectionY*9, sectionX*8, sectionY*8, sectionX*7, sectionY*7, sectionX*6, sectionY*6, sectionX*5, sectionY*5, sectionX*4, sectionY*4, sectionX*3, sectionY*3, sectionX*2, sectionY*2, sectionX, sectionY, 0, 0
+					when 3
+						line = @_two.makePolygon 0, @_two.height, sectionX, @_two.height-sectionY, sectionX*2, @_two.height-sectionY*2, sectionX*3, @_two.height-sectionY*3, sectionX*4, @_two.height-sectionY*4, sectionX*5, @_two.height-sectionY*5, sectionX*6, @_two.height-sectionY*6, sectionX*7, @_two.height-sectionY*7, sectionX*8, @_two.height-sectionY*8, sectionX*9, @_two.height-sectionY*9, sectionX*10, @_two.height-sectionY*10,  sectionX*11, @_two.height-sectionY*11, sectionX*12, @_two.height-sectionY*12, sectionX*13, @_two.height-sectionY*13, sectionX*14, @_two.height-sectionY*14, sectionX*15, @_two.height-sectionY*15, sectionX*16, @_two.height-sectionY*16, sectionX*17, @_two.height-sectionY*17, sectionX*18, @_two.height-sectionY*18, sectionX*19, @_two.height-sectionY*19, @_two.width, 0
+					when 4
+						line = @_two.makePolygon @_two.width, 0, @_two.width-sectionX, sectionY, @_two.width-sectionX*2, sectionY*2, @_two.width-sectionX*3, sectionY*3,  @_two.width-sectionX*4, sectionY*4, @_two.width-sectionX*5, sectionY*5, @_two.width-sectionX*6, sectionY*6, @_two.width-sectionX*7, sectionY*7, @_two.width-sectionX*8, sectionY*8, @_two.width-sectionX*9, sectionY*9, @_two.width-sectionX*10, sectionY*10, @_two.width-sectionX*11, sectionY*11, @_two.width-sectionX*12, sectionY*12, @_two.width-sectionX*13, sectionY*13, @_two.width-sectionX*14, sectionY*14, @_two.width-sectionX*15, sectionY*15, @_two.width-sectionX*16, sectionY*16, @_two.width-sectionX*17, sectionY*17, @_two.width-sectionX*18, sectionY*18, @_two.width-sectionX*19, sectionY*19, 0, @_two.height 
+				line.type = 'stripeX'
+				line.beginning = 0
+				line.ending = 0
+				@_shapes.push line
+			when 'stripe+'
+				console.log "...."
+				switch Math.ceil Math.random()*4
+					when 1
+						section = @_two.width/20
+						line = @_two.makePolygon 0, @_two.height/2, section, @_two.height/2, section*2, @_two.height/2, section*3, @_two.height/2, section*4, @_two.height/2, section*5, @_two.height/2, section*6, @_two.height/2, section*7, @_two.height/2, section*8, @_two.height/2, section*9, @_two.height/2, section*10, @_two.height/2,  section*11, @_two.height/2, section*12, @_two.height/2, section*13, @_two.height/2, section*14, @_two.height/2, section*15, @_two.height/2, section*16, @_two.height/2, section*17, @_two.height/2, section*18, @_two.height/2, section*19, @_two.height/2, @_two.width, @_two.height/2 
+						line.beginning = 0.5
+						line.ending = 0.5
+						line.type = 'stripe+'
+					when 2
+						section = @_two.height/15
+						line = @_two.makePolygon @_two.width/2, 0, @_two.width/2, section, @_two.width/2, section*2, @_two.width/2, section*3, @_two.width/2, section*4, @_two.width/2, section*5, @_two.width/2, section*6, @_two.width/2, section*7, @_two.width/2, section*8, @_two.width/2, section*9, @_two.width/2, section*10, @_two.width/2, section*11, @_two.width/2, section*12, @_two.width/2, section*13, @_two.width/2, section*14, @_two.width/2, @_two.height
+						line.beginning = 0.5
+						line.ending = 0.5
+						line.type = 'stripe+'
+					when 3
+						section = @_two.width/20
+						line = @_two.makePolygon 0, @_two.height/2, section, @_two.height/2, section*2, @_two.height/2, section*3, @_two.height/2, section*4, @_two.height/2, section*5, @_two.height/2, section*6, @_two.height/2, section*7, @_two.height/2, section*8, @_two.height/2, section*9, @_two.height/2, section*10, @_two.height/2,  section*11, @_two.height/2, section*12, @_two.height/2, section*13, @_two.height/2, section*14, @_two.height/2, section*15, @_two.height/2, section*16, @_two.height/2, section*17, @_two.height/2, section*18, @_two.height/2, section*19, @_two.height/2, @_two.width, @_two.height/2 
+						line.beginning = 0
+						line.ending = 1
+						line.type = 'stripe+Reverse'
+					when 4
+						section = @_two.height/15
+						line = @_two.makePolygon @_two.width/2, 0, @_two.width/2, section, @_two.width/2, section*2, @_two.width/2, section*3, @_two.width/2, section*4, @_two.width/2, section*5, @_two.width/2, section*6, @_two.width/2, section*7, @_two.width/2, section*8, @_two.width/2, section*9, @_two.width/2, section*10, @_two.width/2, section*11, @_two.width/2, section*12, @_two.width/2, section*13, @_two.width/2, section*14, @_two.width/2, @_two.height
+						line.beginning = 0
+						line.ending = 1
+						line.type = 'stripe+Reverse'
+
+		@_foreGround.add line
+		line.noFill()
+		line.stroke = "rgb("+0+","+0+","+0+")"
+		line.linewidth = 20
+		line.cap = 'butt'
+		line.closed = false
+		line.animationSpeed = @convertToRange(@_bpm, [60,600], [0.05, 0.12])
+		@_shapes.push line
+
 		
 
 	onBreak: (length) =>
@@ -310,13 +343,27 @@ class VisualsEngine
 						shape.remove()
 						@_shapes.splice i, 1
 			else if shape.animationSpeed
-				if shape.ending < 1
+				if shape.type is 'stripeX'
+					if shape.ending < 1
+						shape.ending += shape.animationSpeed
+					else
+						shape.beginning += shape.animationSpeed
+						if shape.beginning >= 1
+							shape.remove()
+							@_shapes.splice i, 1
+				if shape.type is 'stripe+'
+					shape.beginning -= shape.animationSpeed
 					shape.ending += shape.animationSpeed
-				else
-					shape.beginning += shape.animationSpeed
-					if shape.beginning > 1
+					if shape.beginning <= 0 or shape.ending >= 1
 						shape.remove()
 						@_shapes.splice i, 1
+				if shape.type is 'stripe+Reverse'
+					shape.beginning += shape.animationSpeed
+					shape.ending -= shape.animationSpeed
+					if shape.beginning >= 0.5 or shape.ending <= 0.5
+						shape.remove()
+						@_shapes.splice i, 1
+
 
 
 	#add this to my UTILS

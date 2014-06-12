@@ -40,7 +40,8 @@ class KeyboardController
 			when 37 then window.events.peak.dispatch 'soft'
 			when 39 then window.events.peak.dispatch 'hard'
 			#stripeX
-			when 88 then window.events.makeSpecial.dispatch 'stripeX'
+			when 81 then window.events.makeSpecial.dispatch 'stripeX'
+			when 87 then window.events.makeSpecial.dispatch 'stripe+'
 
 
 	getBPM: () =>
