@@ -598,6 +598,8 @@
           return window.events.showIllustration.dispatch('pretzel');
         case 75:
           return window.events.showIllustration.dispatch('currywurst');
+        case 76:
+          return window.events.showIllustration.dispatch('tower');
         case 77:
           return window.events.filter.dispatch('blur');
         case 67:
@@ -1115,8 +1117,7 @@
       illustration.lifeSpan = 100;
       illustration.creationTime = new Date().getTime();
       illustration.isIllustration = true;
-      this._shapes.push(illustration);
-      return console.log(illustration, "<<");
+      return this._shapes.push(illustration);
     };
 
     VisualsEngine.prototype.onBreak = function(length) {

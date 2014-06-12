@@ -66,6 +66,7 @@ class KeyboardController
 			when 72 then window.events.showIllustration.dispatch 'ample'
 			when 74 then window.events.showIllustration.dispatch 'pretzel'
 			when 75 then window.events.showIllustration.dispatch 'currywurst'
+			when 76 then window.events.showIllustration.dispatch 'tower'
 			#filters
 			when 77 then window.events.filter.dispatch 'blur'
 			when 67 then window.events.filter.dispatch 'invert'

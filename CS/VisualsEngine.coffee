@@ -331,7 +331,6 @@ class VisualsEngine
 		illustration.creationTime = new Date().getTime()
 		illustration.isIllustration = true
 		@_shapes.push illustration
-		console.log illustration, "<<"
 
 	onBreak: (length) =>
 		if @_pauseBgLerp is false

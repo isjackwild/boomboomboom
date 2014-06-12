@@ -472,8 +472,7 @@
       illustration.lifeSpan = 100;
       illustration.creationTime = new Date().getTime();
       illustration.isIllustration = true;
-      this._shapes.push(illustration);
-      return console.log(illustration, "<<");
+      return this._shapes.push(illustration);
     };
 
     VisualsEngine.prototype.onBreak = function(length) {
