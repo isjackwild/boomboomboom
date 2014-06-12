@@ -12,7 +12,8 @@
     BPMJump: new Signal(),
     changeFreqVar: new Signal(),
     volume: new Signal(),
-    frequency: new Signal()
+    frequency: new Signal(),
+    inverseCols: new Signal()
   };
 
 }).call(this);

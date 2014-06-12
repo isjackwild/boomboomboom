@@ -25,7 +25,7 @@
 
     VisualsEngine.prototype._frequency = 5;
 
-    VisualsEngine.prototype._bpm = 200;
+    VisualsEngine.prototype._bpm = 100;
 
     VisualsEngine.prototype._bpmJumpTime = new Date().getTime();
 
@@ -119,6 +119,7 @@
       this.onPeak = __bind(this.onPeak, this);
       this.updateBackgroundColour = __bind(this.updateBackgroundColour, this);
       this.gotVolume = __bind(this.gotVolume, this);
+      this.inverseCols = __bind(this.inverseCols, this);
       this.onChangeFrequencyVariation = __bind(this.onChangeFrequencyVariation, this);
       this.gotFrequency = __bind(this.gotFrequency, this);
       this.onBPMJump = __bind(this.onBPMJump, this);
@@ -139,6 +140,7 @@
       window.events.BPMJump.add(this.onBPMJump);
       window.events.volume.add(this.gotVolume);
       window.events.frequency.add(this.gotFrequency);
+      window.events.inverseCols.add(this.inverseCols);
       return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
     };
 
@@ -162,7 +164,7 @@
 
     VisualsEngine.prototype.gotBPM = function(BPM) {
       this._bpm = BPM;
-      this._bgColLerpSpeed = this.convertToRange(this._bpm, [100, 500], [0.005, 0.009]);
+      this._bgColLerpSpeed = this.convertToRange(this._bpm, [50, 500], [0.005, 0.009]);
       return this.updateColourBucket();
     };
 
@@ -184,6 +186,16 @@
         this._negativeColours = false;
       }
       this._bgColLerp = 1;
+      return this.updateBackgroundColour();
+    };
+
+    VisualsEngine.prototype.inverseCols = function() {
+      console.log('inverseCols');
+      if (this._negativeColours === false) {
+        this._negativeColours = true;
+      } else {
+        this._negativeColours = false;
+      }
       return this.updateBackgroundColour();
     };
 
@@ -234,8 +246,7 @@
       if (this._bgColLerp > 0.95) {
         this._bgColFrom = this._bgColTo;
         this._bgColTo = col;
-        this._bgColLerp = 0;
-        return console.log('changing to new bg', this._bgColTo);
+        return this._bgColLerp = 0;
       }
     };
 
@@ -271,21 +282,21 @@
       } else if (this._negativeColours === true) {
         if (type === 'hard') {
           col = {
-            r: 170,
-            g: 170,
-            b: 170
+            r: 170 - this._frequency * 2,
+            g: 170 - this._frequency * 2,
+            b: 170 - this._frequency * 2
           };
         } else if (type === 'soft') {
           col = {
-            r: 210,
-            g: 210,
-            b: 210
+            r: 210 - this._frequency * 2,
+            g: 210 - this._frequency * 2,
+            b: 210 - this._frequency * 2
           };
         } else if (type === 'hi') {
           col = {
-            r: 255,
-            g: 255,
-            b: 255
+            r: 255 - this._frequency * 2,
+            g: 255 - this._frequency * 2,
+            b: 255 - this._frequency * 2
           };
         } else if (type === 'lo') {
           col = {
@@ -305,8 +316,8 @@
       sectionX = this._two.width / 20;
       sectionY = this._two.height / 20;
       peakTime = new Date().getTime();
-      stripeDuration = Math.floor(this.convertToRange(this._bpm, [250, 600], [2500, 5000]));
-      if (this._peakCount % 2 === 0 && peakTime - this._bpmJumpTime < 3000 && this._bpm > 200) {
+      stripeDuration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
+      if (this._peakCount % 2 === 0 && peakTime - this._bpmJumpTime < 3000 && this._bpm > 150) {
         switch (Math.ceil(Math.random() * 4)) {
           case 1:
             line = this._two.makePolygon(0, 0, sectionX, sectionY, sectionX * 2, sectionY * 2, sectionX * 3, sectionY * 3, sectionX * 4, sectionY * 4, sectionX * 5, sectionY * 5, sectionX * 6, sectionY * 6, sectionX * 7, sectionY * 7, sectionX * 8, sectionY * 8, sectionX * 9, sectionY * 9, sectionX * 10, sectionY * 10, sectionX * 11, sectionY * 11, sectionX * 12, sectionY * 12, sectionX * 13, sectionY * 13, sectionX * 14, sectionY * 14, sectionX * 15, sectionY * 15, sectionX * 16, sectionY * 16, sectionX * 17, sectionY * 17, sectionX * 18, sectionY * 18, sectionX * 19, sectionY * 19, this._two.width, this._two.height);

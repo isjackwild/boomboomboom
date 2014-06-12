@@ -401,6 +401,7 @@
     };
 
     AudioAnalysisEngine.prototype.eventLogger = function(event) {
+      return;
       switch (event) {
         case "hiPeak":
           return console.log('high peak');

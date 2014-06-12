@@ -11,6 +11,7 @@ window.events = {
 	changeFreqVar: new Signal()
 	volume: new Signal()
 	frequency: new Signal()
+	inverseCols: new Signal()
 }
 
 

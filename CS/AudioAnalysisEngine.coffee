@@ -317,6 +317,7 @@ class AudioAnalysisEngine
 
 	#replace this with the events signal system
 	eventLogger: (event) =>
+		return
 		switch event
 			when "hiPeak" then console.log 'high peak'
 			when "loPeak" then console.log 'low peak'

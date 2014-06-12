@@ -15,7 +15,7 @@ class VisualsEngine
 
 	_volume: 20
 	_frequency: 5
-	_bpm: 200
+	_bpm: 100
 	_bpmJumpTime: new Date().getTime()
 
 
@@ -64,6 +64,7 @@ class VisualsEngine
 		window.events.BPMJump.add @onBPMJump
 		window.events.volume.add @gotVolume
 		window.events.frequency.add @gotFrequency
+		window.events.inverseCols.add @inverseCols
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
 
 
@@ -86,7 +87,7 @@ class VisualsEngine
 
 	gotBPM: (BPM) =>
 		@_bpm = BPM
-		@_bgColLerpSpeed = @convertToRange(@_bpm, [100,500], [0.005, 0.009])
+		@_bgColLerpSpeed = @convertToRange(@_bpm, [50,500], [0.005, 0.009])
 		@updateColourBucket()
 
 
@@ -109,6 +110,13 @@ class VisualsEngine
 		@_bgColLerp = 1
 		@updateBackgroundColour()
 
+	inverseCols: () =>
+		console.log 'inverseCols'
+		if @_negativeColours is false
+			@_negativeColours = true
+		else
+			@_negativeColours = false
+		@updateBackgroundColour()
 
 	gotVolume: (vol) =>
 		@_volume = vol
@@ -144,7 +152,6 @@ class VisualsEngine
 			@_bgColFrom = @_bgColTo
 			@_bgColTo = col
 			@_bgColLerp = 0
-			console.log 'changing to new bg', @_bgColTo
 	
 
 	onPeak: (type) =>
@@ -177,11 +184,11 @@ class VisualsEngine
 				col = @HSVtoRGB col.h, 15, v
 		else if @_negativeColours is true
 			if type is 'hard'
-				col = {r: 170, g: 170, b: 170}
+				col = {r: 170-@_frequency*2, g: 170-@_frequency*2, b: 170-@_frequency*2}
 			else if type is 'soft'
-				col = {r: 210, g: 210, b: 210}
+				col = {r: 210-@_frequency*2, g: 210-@_frequency*2, b: 210-@_frequency*2}
 			else if type is 'hi'
-				col = {r: 255, g: 255, b: 255}
+				col = {r: 255-@_frequency*2, g: 255-@_frequency*2, b: 255-@_frequency*2}
 			else if type is 'lo'
 				col = {r: 50, g: 50, b: 50}
 
@@ -198,8 +205,8 @@ class VisualsEngine
 		sectionY = @_two.height/20
 
 		peakTime = new Date().getTime()
-		stripeDuration = Math.floor @convertToRange(@_bpm, [250,600], [2500, 5000])
-		if @_peakCount % 2 is 0 and peakTime - @_bpmJumpTime < 3000 and @_bpm > 200
+		stripeDuration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
+		if @_peakCount % 2 is 0 and peakTime - @_bpmJumpTime < 3000 and @_bpm > 150
 			switch Math.ceil Math.random()*4
 				when 1
 					line = @_two.makePolygon 0, 0, sectionX, sectionY, sectionX*2, sectionY*2, sectionX*3, sectionY*3, sectionX*4, sectionY*4, sectionX*5, sectionY*5, sectionX*6, sectionY*6, sectionX*7, sectionY*7, sectionX*8, sectionY*8, sectionX*9, sectionY*9, sectionX*10, sectionY*10,  sectionX*11, sectionY*11, sectionX*12, sectionY*12, sectionX*13, sectionY*13, sectionX*14, sectionY*14, sectionX*15, sectionY*15, sectionX*16, sectionY*16, sectionX*17, sectionY*17, sectionX*18, sectionY*18, sectionX*19, sectionY*19, @_two.width, @_two.height 
