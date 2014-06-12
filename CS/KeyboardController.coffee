@@ -30,7 +30,8 @@ class KeyboardController
 			#set BPM by tapping spacebar
 			when 32 then @getBPM()
 			#bass with B
-			when 78 then window.events.bass.dispatch()
+			when 78 then window.events.bass.dispatch 'small'
+			when 66 then window.events.bass.dispatch 'big'
 			#breaks with < (short) and > (long)
 			when 90 then window.events.break.dispatch 'short'
 			when 88 then window.events.break.dispatch 'long'

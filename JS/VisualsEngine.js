@@ -481,10 +481,17 @@
       }
     };
 
-    VisualsEngine.prototype.onBass = function() {
+    VisualsEngine.prototype.onBass = function(bigOrSmall) {
+      if (bigOrSmall == null) {
+        bigOrSmall = 'small';
+      }
       if (this._middleGround.isScaling === false) {
         this._middleGround.isScaling = true;
-        return this._middleGround.targetScale = 1.05;
+        if (bigOrSmall === 'big') {
+          return this._middleGround.targetScale = 1.2;
+        } else {
+          return this._middleGround.targetScale = 1.05;
+        }
       }
     };
 

@@ -340,10 +340,13 @@ class VisualsEngine
 				@_pauseBgLerp = false
 			, hang
 
-	onBass: () =>
+	onBass: (bigOrSmall = 'small') =>
 		if @_middleGround.isScaling is false
 			@_middleGround.isScaling = true
-			@_middleGround.targetScale = 1.05
+			if bigOrSmall is 'big'
+				@_middleGround.targetScale = 1.2
+			else
+				@_middleGround.targetScale = 1.05
 
 
 	onTwoUpdate: () =>

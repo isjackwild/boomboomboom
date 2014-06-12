@@ -49,7 +49,9 @@
         case 32:
           return this.getBPM();
         case 78:
-          return window.events.bass.dispatch();
+          return window.events.bass.dispatch('small');
+        case 66:
+          return window.events.bass.dispatch('big');
         case 90:
           return window.events["break"].dispatch('short');
         case 88:
