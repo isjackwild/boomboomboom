@@ -66,6 +66,8 @@
           return window.events.makeSpecial.dispatch('stripeX');
         case 87:
           return window.events.makeSpecial.dispatch('stripe+');
+        case 69:
+          return window.events.makeSpecial.dispatch('circleLarge');
       }
     };
 

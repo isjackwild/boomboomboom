@@ -345,10 +345,9 @@
           line.type = 'stripeX';
           line.beginning = 0;
           line.ending = 0;
-          this._shapes.push(line);
+          line.closed = false;
           break;
         case 'stripe+':
-          console.log("....");
           switch (Math.ceil(Math.random() * 4)) {
             case 1:
               section = this._two.width / 20;
@@ -367,24 +366,34 @@
             case 3:
               section = this._two.width / 20;
               line = this._two.makePolygon(0, this._two.height / 2, section, this._two.height / 2, section * 2, this._two.height / 2, section * 3, this._two.height / 2, section * 4, this._two.height / 2, section * 5, this._two.height / 2, section * 6, this._two.height / 2, section * 7, this._two.height / 2, section * 8, this._two.height / 2, section * 9, this._two.height / 2, section * 10, this._two.height / 2, section * 11, this._two.height / 2, section * 12, this._two.height / 2, section * 13, this._two.height / 2, section * 14, this._two.height / 2, section * 15, this._two.height / 2, section * 16, this._two.height / 2, section * 17, this._two.height / 2, section * 18, this._two.height / 2, section * 19, this._two.height / 2, this._two.width, this._two.height / 2);
-              line.beginning = 0;
-              line.ending = 1;
               line.type = 'stripe+Reverse';
               break;
             case 4:
               section = this._two.height / 15;
               line = this._two.makePolygon(this._two.width / 2, 0, this._two.width / 2, section, this._two.width / 2, section * 2, this._two.width / 2, section * 3, this._two.width / 2, section * 4, this._two.width / 2, section * 5, this._two.width / 2, section * 6, this._two.width / 2, section * 7, this._two.width / 2, section * 8, this._two.width / 2, section * 9, this._two.width / 2, section * 10, this._two.width / 2, section * 11, this._two.width / 2, section * 12, this._two.width / 2, section * 13, this._two.width / 2, section * 14, this._two.width / 2, this._two.height);
-              line.beginning = 0;
-              line.ending = 1;
               line.type = 'stripe+Reverse';
           }
+          line.closed = false;
+          break;
+        case 'circleLarge':
+          switch (Math.ceil(Math.random() * 2)) {
+            case 1:
+              line = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
+              break;
+            case 2:
+              line = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
+          }
+          line.type = "circle";
       }
+      line.linewidth = 20;
       this._foreGround.add(line);
       line.noFill();
-      line.stroke = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
-      line.linewidth = 20;
+      if (this._frequency <= 4) {
+        line.stroke = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
+      } else {
+        line.stroke = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
+      }
       line.cap = 'butt';
-      line.closed = false;
       line.animationSpeed = this.convertToRange(this._bpm, [60, 600], [0.05, 0.12]);
       return this._shapes.push(line);
     };
@@ -513,6 +522,13 @@
             shape.beginning += shape.animationSpeed;
             shape.ending -= shape.animationSpeed;
             if (shape.beginning >= 0.5 || shape.ending <= 0.5) {
+              shape.remove();
+              this._shapes.splice(i, 1);
+            }
+          }
+          if (shape.type === 'circle') {
+            shape.linewidth -= shape.animationSpeed * 20;
+            if (shape.linewidth <= 0) {
               shape.remove();
               _results.push(this._shapes.splice(i, 1));
             } else {

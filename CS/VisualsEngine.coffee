@@ -228,9 +228,8 @@ class VisualsEngine
 				line.type = 'stripeX'
 				line.beginning = 0
 				line.ending = 0
-				@_shapes.push line
+				line.closed = false
 			when 'stripe+'
-				console.log "...."
 				switch Math.ceil Math.random()*4
 					when 1
 						section = @_two.width/20
@@ -247,22 +246,28 @@ class VisualsEngine
 					when 3
 						section = @_two.width/20
 						line = @_two.makePolygon 0, @_two.height/2, section, @_two.height/2, section*2, @_two.height/2, section*3, @_two.height/2, section*4, @_two.height/2, section*5, @_two.height/2, section*6, @_two.height/2, section*7, @_two.height/2, section*8, @_two.height/2, section*9, @_two.height/2, section*10, @_two.height/2,  section*11, @_two.height/2, section*12, @_two.height/2, section*13, @_two.height/2, section*14, @_two.height/2, section*15, @_two.height/2, section*16, @_two.height/2, section*17, @_two.height/2, section*18, @_two.height/2, section*19, @_two.height/2, @_two.width, @_two.height/2 
-						line.beginning = 0
-						line.ending = 1
 						line.type = 'stripe+Reverse'
 					when 4
 						section = @_two.height/15
 						line = @_two.makePolygon @_two.width/2, 0, @_two.width/2, section, @_two.width/2, section*2, @_two.width/2, section*3, @_two.width/2, section*4, @_two.width/2, section*5, @_two.width/2, section*6, @_two.width/2, section*7, @_two.width/2, section*8, @_two.width/2, section*9, @_two.width/2, section*10, @_two.width/2, section*11, @_two.width/2, section*12, @_two.width/2, section*13, @_two.width/2, section*14, @_two.width/2, @_two.height
-						line.beginning = 0
-						line.ending = 1
 						line.type = 'stripe+Reverse'
+				line.closed = false
+			when 'circleLarge'
+				switch Math.ceil Math.random()*2
+					when 1
+						line = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.43
+					when 2
+						line = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.3
+				line.type = "circle"
 
+		line.linewidth = 20
 		@_foreGround.add line
 		line.noFill()
-		line.stroke = "rgb("+0+","+0+","+0+")"
-		line.linewidth = 20
+		if @_frequency <= 4
+			line.stroke = "rgb("+255+","+255+","+255+")"
+		else
+			line.stroke = "rgb("+0+","+0+","+0+")"
 		line.cap = 'butt'
-		line.closed = false
 		line.animationSpeed = @convertToRange(@_bpm, [60,600], [0.05, 0.12])
 		@_shapes.push line
 
@@ -361,6 +366,11 @@ class VisualsEngine
 					shape.beginning += shape.animationSpeed
 					shape.ending -= shape.animationSpeed
 					if shape.beginning >= 0.5 or shape.ending <= 0.5
+						shape.remove()
+						@_shapes.splice i, 1
+				if shape.type is 'circle'
+					shape.linewidth -= shape.animationSpeed*20
+					if shape.linewidth <= 0
 						shape.remove()
 						@_shapes.splice i, 1
 
