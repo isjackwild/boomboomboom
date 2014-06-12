@@ -349,10 +349,10 @@
         this._pauseBgLerp = true;
         if (length === 'long') {
           offset = 75;
-          hang = 500;
+          hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
         } else if (length === 'short') {
           offset = 20;
-          hang = 120;
+          hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
         }
         r = this._bgColCurrent.r + offset;
         g = this._bgColCurrent.g + offset;

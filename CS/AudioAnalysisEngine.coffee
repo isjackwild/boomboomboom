@@ -188,8 +188,8 @@ class AudioAnalysisEngine
 
 		if @_averageAmp+@_peakSensitivityOffset < @_lastAverageAmp and @_waitingForPeak
 			@_waitingForPeak = false
-			@checkForBreak()
 			if @_autoOn is true
+				@checkForBreak()
 				@calculateAveragePeakFrequency() #what was the highest frequency at the time of the peak
 				@calculateAverageBpm() #what is the bmp
 				@checkForFrequencyVariation()

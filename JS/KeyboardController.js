@@ -21,6 +21,8 @@
     }
 
     KeyboardController.prototype.keydown = function(e) {
+      console.log(e.keyCode);
+      e.preventDefault();
       switch (e.keyCode) {
         case 48:
           return window.events.inverseCols.dispatch();
@@ -44,6 +46,12 @@
           return window.events.frequency.dispatch(9);
         case 32:
           return this.getBPM();
+        case 66:
+          return window.events.bass.dispatch();
+        case 188:
+          return window.events["break"].dispatch('short');
+        case 190:
+          return window.events["break"].dispatch('long');
       }
     };
 

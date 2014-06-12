@@ -11,6 +11,8 @@ class KeyboardController
 		window.onkeydown = @keydown
 
 	keydown: (e) =>
+		console.log e.keyCode
+		e.preventDefault()
 		switch e.keyCode
 			#inverse colours with 0
 			when 48 then window.events.inverseCols.dispatch()
@@ -26,6 +28,11 @@ class KeyboardController
 			when 57 then window.events.frequency.dispatch 9
 			#set BPM by tapping spacebar
 			when 32 then @getBPM()
+			#bass with B
+			when 66 then window.events.bass.dispatch()
+			#breaks with < (short) and > (long)
+			when 188 then window.events.break.dispatch 'short'
+			when 190 then window.events.break.dispatch 'long'
 
 	getBPM: () =>
 		console.log 'bpm'

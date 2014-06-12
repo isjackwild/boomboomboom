@@ -241,8 +241,8 @@
       }
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
-        this.checkForBreak();
         if (this._autoOn === true) {
+          this.checkForBreak();
           this.calculateAveragePeakFrequency();
           this.calculateAverageBpm();
           this.checkForFrequencyVariation();
@@ -499,6 +499,8 @@
     }
 
     KeyboardController.prototype.keydown = function(e) {
+      console.log(e.keyCode);
+      e.preventDefault();
       switch (e.keyCode) {
         case 48:
           return window.events.inverseCols.dispatch();
@@ -522,6 +524,12 @@
           return window.events.frequency.dispatch(9);
         case 32:
           return this.getBPM();
+        case 66:
+          return window.events.bass.dispatch();
+        case 188:
+          return window.events["break"].dispatch('short');
+        case 190:
+          return window.events["break"].dispatch('long');
       }
     };
 
@@ -912,10 +920,10 @@
         this._pauseBgLerp = true;
         if (length === 'long') {
           offset = 75;
-          hang = 500;
+          hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
         } else if (length === 'short') {
           offset = 20;
-          hang = 120;
+          hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
         }
         r = this._bgColCurrent.r + offset;
         g = this._bgColCurrent.g + offset;

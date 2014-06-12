@@ -241,8 +241,8 @@
       }
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
-        this.checkForBreak();
         if (this._autoOn === true) {
+          this.checkForBreak();
           this.calculateAveragePeakFrequency();
           this.calculateAverageBpm();
           this.checkForFrequencyVariation();

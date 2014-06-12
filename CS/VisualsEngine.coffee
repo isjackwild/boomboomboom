@@ -233,10 +233,10 @@ class VisualsEngine
 			@_pauseBgLerp = true
 			if length is 'long'
 				offset = 75
-				hang = 500
+				hang = @convertToRange(@_bpm, [60,600], [200, 80])
 			else if length is 'short'
 				offset = 20
-				hang = 120
+				hang = @convertToRange(@_bpm, [60,600], [200, 80])
 			r = @_bgColCurrent.r + offset
 			g = @_bgColCurrent.g + offset
 			b = @_bgColCurrent.b + offset
