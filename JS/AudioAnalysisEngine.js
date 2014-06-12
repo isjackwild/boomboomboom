@@ -19,7 +19,7 @@
 
     AudioAnalysisEngine.prototype._alreadySetup = false;
 
-    AudioAnalysisEngine.prototype._autoOn = false;
+    AudioAnalysisEngine.prototype._automatic = true;
 
     AudioAnalysisEngine.prototype._samplesPerSecond = 30;
 
@@ -53,11 +53,11 @@
 
     AudioAnalysisEngine.prototype._lastFrequencyVariation = null;
 
-    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 12;
+    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 2.5;
 
-    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 12;
+    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 2;
 
-    AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 12;
+    AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 3;
 
     AudioAnalysisEngine.prototype._lastPeakTime = null;
 
@@ -99,6 +99,7 @@
       this.checkForBassPeak = __bind(this.checkForBassPeak, this);
       this.checkForPeak = __bind(this.checkForPeak, this);
       this.analyse = __bind(this.analyse, this);
+      this.toggleAuto = __bind(this.toggleAuto, this);
       this.startAnalysis = __bind(this.startAnalysis, this);
       this.onError = __bind(this.onError, this);
       this.setupMic = __bind(this.setupMic, this);
@@ -109,10 +110,18 @@
       this.setupAnalyser();
       this.setupFilters();
       this.setupDebugEqualizer();
+      window.events.automatic.add(this.toggleAuto);
       this._testAudio = document.getElementById('test_audio');
       document.onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
+        };
+      })(this);
+      document.onclick = (function(_this) {
+        return function() {
+          return navigator.webkitGetUserMedia({
+            audio: true
+          }, _this.setupMic, _this.onError);
         };
       })(this);
     }
@@ -178,6 +187,10 @@
       })(this), 1000 / this._samplesPerSecond);
     };
 
+    AudioAnalysisEngine.prototype.toggleAuto = function(onOff) {
+      return this._automatic = onOff;
+    };
+
     AudioAnalysisEngine.prototype.analyse = function() {
       var i, _i, _j, _ref, _ref1, _ref2, _results;
       this._analyserNode.getByteFrequencyData(this._frequencyData);
@@ -185,7 +198,7 @@
       this._frequencyOfPeak.amp = 0;
       for (i = _i = 0, _ref = this._frequencyData.length; _i < _ref; i = _i += 1) {
         if (this._frequencyData[i] > this._frequencyOfPeak.amp) {
-          this._frequencyOfPeak.freq = i;
+          this._frequencyOfPeak.freq = this.convertToRange(i, [0, 40], [0, 9]);
           this._frequencyOfPeak.amp = this._frequencyData[i];
         }
         if (i === 0) {
@@ -225,7 +238,7 @@
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
         this.checkForBreak();
-        if (this._autoOn === true) {
+        if (this._automatic === true) {
           this.calculateAveragePeakFrequency();
           this.calculateAverageBpm();
           this.checkForFrequencyVariation();
@@ -272,9 +285,10 @@
           if (i === this._averageFreqCalcArray.length - 1) {
             tempAvFreq /= this._averageFreqCalcArray.length;
             this._averageFrequency = tempAvFreq;
+            console.log(this._averageFrequency, "<<<");
             window.events.frequency.dispatch(this._averageFrequency);
             this._averageFreqCalcArray = [];
-            _results.push(this._bassCutoff = this._averageFrequency + 40);
+            _results.push(this._bassCutoff = this._averageFrequency + 3);
           } else {
             _results.push(void 0);
           }
@@ -431,6 +445,20 @@
         _results.push(this._debugCTX.stroke());
       }
       return _results;
+    };
+
+    AudioAnalysisEngine.prototype.convertToRange = function(value, srcRange, dstRange) {
+      var adjValue, dstMax, srcMax;
+      if (value < srcRange[0]) {
+        return dstRange[0];
+      } else if (value > srcRange[1]) {
+        return dstRange[1];
+      } else {
+        srcMax = srcRange[1] - srcRange[0];
+        dstMax = dstRange[1] - dstRange[0];
+        adjValue = value - srcRange[0];
+        return (adjValue * dstMax / srcMax) + dstRange[0];
+      }
     };
 
     return AudioAnalysisEngine;

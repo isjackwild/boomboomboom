@@ -22,6 +22,7 @@
 
     KeyboardController.prototype.keydown = function(e) {
       console.log(e.keyCode);
+      window.events.automatic.dispatch(false);
       if (e.keyCode === !91 || e.keyCode === !82) {
         e.preventDefault();
       }
@@ -58,7 +59,11 @@
           return window.events["break"].dispatch('long');
         case 38:
           return window.events.peak.dispatch('hi');
+        case 67:
+          return window.events.peak.dispatch('hi');
         case 40:
+          return window.events.peak.dispatch('lo');
+        case 86:
           return window.events.peak.dispatch('lo');
         case 37:
           return window.events.peak.dispatch('soft');

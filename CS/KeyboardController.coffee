@@ -12,6 +12,9 @@ class KeyboardController
 
 	keydown: (e) =>
 		console.log e.keyCode
+		window.events.automatic.dispatch false
+		#add turn auto on if no keystroke for > 20ish seconds
+
 		if e.keyCode is not 91 or e.keyCode is not 82
 			e.preventDefault()
 		switch e.keyCode
@@ -37,7 +40,9 @@ class KeyboardController
 			when 88 then window.events.break.dispatch 'long'
 			#peaks with up (high) down (low) left (soft) right (hard)
 			when 38 then window.events.peak.dispatch 'hi'
+			when 67 then window.events.peak.dispatch 'hi'
 			when 40 then window.events.peak.dispatch 'lo'
+			when 86 then window.events.peak.dispatch 'lo'
 			when 37 then window.events.peak.dispatch 'soft'
 			when 39 then window.events.peak.dispatch 'hard'
 			#stripes

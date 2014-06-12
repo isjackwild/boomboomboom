@@ -186,7 +186,7 @@
 
     VisualsEngine.prototype.gotFrequency = function(freq) {
       this._frequency = freq;
-      console.log(this._frequency, "got freq");
+      console.log(this._frequency, "got freq", this._frequency);
       this.updateBackgroundColour();
       return this.updateColourBucket();
     };
@@ -308,21 +308,21 @@
       } else if (this._negativeColours === true) {
         if (type === 'hard') {
           col = {
-            r: 170 - this._frequency * 2,
-            g: 170 - this._frequency * 2,
-            b: 170 - this._frequency * 2
+            r: 155,
+            g: 155,
+            b: 155
           };
         } else if (type === 'soft') {
           col = {
-            r: 210 - this._frequency * 2,
-            g: 210 - this._frequency * 2,
-            b: 210 - this._frequency * 2
+            r: 190,
+            g: 190,
+            b: 190
           };
         } else if (type === 'hi') {
           col = {
-            r: 255 - this._frequency * 2,
-            g: 255 - this._frequency * 2,
-            b: 255 - this._frequency * 2
+            r: 230,
+            g: 230,
+            b: 230
           };
         } else if (type === 'lo') {
           col = {

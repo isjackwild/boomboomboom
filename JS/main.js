@@ -19,7 +19,7 @@
 
     AudioAnalysisEngine.prototype._alreadySetup = false;
 
-    AudioAnalysisEngine.prototype._autoOn = false;
+    AudioAnalysisEngine.prototype._automatic = true;
 
     AudioAnalysisEngine.prototype._samplesPerSecond = 30;
 
@@ -53,11 +53,11 @@
 
     AudioAnalysisEngine.prototype._lastFrequencyVariation = null;
 
-    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 12;
+    AudioAnalysisEngine.prototype._sensivitityForHighPeak = 2.5;
 
-    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 12;
+    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 2;
 
-    AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 12;
+    AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 3;
 
     AudioAnalysisEngine.prototype._lastPeakTime = null;
 
@@ -99,6 +99,7 @@
       this.checkForBassPeak = __bind(this.checkForBassPeak, this);
       this.checkForPeak = __bind(this.checkForPeak, this);
       this.analyse = __bind(this.analyse, this);
+      this.toggleAuto = __bind(this.toggleAuto, this);
       this.startAnalysis = __bind(this.startAnalysis, this);
       this.onError = __bind(this.onError, this);
       this.setupMic = __bind(this.setupMic, this);
@@ -109,10 +110,18 @@
       this.setupAnalyser();
       this.setupFilters();
       this.setupDebugEqualizer();
+      window.events.automatic.add(this.toggleAuto);
       this._testAudio = document.getElementById('test_audio');
       document.onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
+        };
+      })(this);
+      document.onclick = (function(_this) {
+        return function() {
+          return navigator.webkitGetUserMedia({
+            audio: true
+          }, _this.setupMic, _this.onError);
         };
       })(this);
     }
@@ -178,6 +187,10 @@
       })(this), 1000 / this._samplesPerSecond);
     };
 
+    AudioAnalysisEngine.prototype.toggleAuto = function(onOff) {
+      return this._automatic = onOff;
+    };
+
     AudioAnalysisEngine.prototype.analyse = function() {
       var i, _i, _j, _ref, _ref1, _ref2, _results;
       this._analyserNode.getByteFrequencyData(this._frequencyData);
@@ -185,7 +198,7 @@
       this._frequencyOfPeak.amp = 0;
       for (i = _i = 0, _ref = this._frequencyData.length; _i < _ref; i = _i += 1) {
         if (this._frequencyData[i] > this._frequencyOfPeak.amp) {
-          this._frequencyOfPeak.freq = i;
+          this._frequencyOfPeak.freq = this.convertToRange(i, [0, 40], [0, 9]);
           this._frequencyOfPeak.amp = this._frequencyData[i];
         }
         if (i === 0) {
@@ -225,7 +238,7 @@
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
         this.checkForBreak();
-        if (this._autoOn === true) {
+        if (this._automatic === true) {
           this.calculateAveragePeakFrequency();
           this.calculateAverageBpm();
           this.checkForFrequencyVariation();
@@ -272,9 +285,10 @@
           if (i === this._averageFreqCalcArray.length - 1) {
             tempAvFreq /= this._averageFreqCalcArray.length;
             this._averageFrequency = tempAvFreq;
+            console.log(this._averageFrequency, "<<<");
             window.events.frequency.dispatch(this._averageFrequency);
             this._averageFreqCalcArray = [];
-            _results.push(this._bassCutoff = this._averageFrequency + 40);
+            _results.push(this._bassCutoff = this._averageFrequency + 3);
           } else {
             _results.push(void 0);
           }
@@ -433,6 +447,20 @@
       return _results;
     };
 
+    AudioAnalysisEngine.prototype.convertToRange = function(value, srcRange, dstRange) {
+      var adjValue, dstMax, srcMax;
+      if (value < srcRange[0]) {
+        return dstRange[0];
+      } else if (value > srcRange[1]) {
+        return dstRange[1];
+      } else {
+        srcMax = srcRange[1] - srcRange[0];
+        dstMax = dstRange[1] - dstRange[0];
+        adjValue = value - srcRange[0];
+        return (adjValue * dstMax / srcMax) + dstRange[0];
+      }
+    };
+
     return AudioAnalysisEngine;
 
   })();
@@ -445,6 +473,7 @@
   Signal = signals.Signal;
 
   window.events = {
+    automatic: new Signal(),
     peak: new Signal(),
     bass: new Signal(),
     "break": new Signal(),
@@ -486,6 +515,7 @@
 
     KeyboardController.prototype.keydown = function(e) {
       console.log(e.keyCode);
+      window.events.automatic.dispatch(false);
       if (e.keyCode === !91 || e.keyCode === !82) {
         e.preventDefault();
       }
@@ -522,7 +552,11 @@
           return window.events["break"].dispatch('long');
         case 38:
           return window.events.peak.dispatch('hi');
+        case 67:
+          return window.events.peak.dispatch('hi');
         case 40:
+          return window.events.peak.dispatch('lo');
+        case 86:
           return window.events.peak.dispatch('lo');
         case 37:
           return window.events.peak.dispatch('soft');
@@ -787,7 +821,7 @@
 
     VisualsEngine.prototype.gotFrequency = function(freq) {
       this._frequency = freq;
-      console.log(this._frequency, "got freq");
+      console.log(this._frequency, "got freq", this._frequency);
       this.updateBackgroundColour();
       return this.updateColourBucket();
     };
@@ -909,21 +943,21 @@
       } else if (this._negativeColours === true) {
         if (type === 'hard') {
           col = {
-            r: 170 - this._frequency * 2,
-            g: 170 - this._frequency * 2,
-            b: 170 - this._frequency * 2
+            r: 155,
+            g: 155,
+            b: 155
           };
         } else if (type === 'soft') {
           col = {
-            r: 210 - this._frequency * 2,
-            g: 210 - this._frequency * 2,
-            b: 210 - this._frequency * 2
+            r: 190,
+            g: 190,
+            b: 190
           };
         } else if (type === 'hi') {
           col = {
-            r: 255 - this._frequency * 2,
-            g: 255 - this._frequency * 2,
-            b: 255 - this._frequency * 2
+            r: 230,
+            g: 230,
+            b: 230
           };
         } else if (type === 'lo') {
           col = {

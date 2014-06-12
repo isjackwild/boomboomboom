@@ -4,6 +4,7 @@
   Signal = signals.Signal;
 
   window.events = {
+    automatic: new Signal(),
     peak: new Signal(),
     bass: new Signal(),
     "break": new Signal(),

@@ -103,7 +103,7 @@ class VisualsEngine
 
 	gotFrequency: (freq) =>
 		@_frequency = freq
-		console.log @_frequency, "got freq"
+		console.log @_frequency, "got freq", @_frequency
 		@updateBackgroundColour()
 		@updateColourBucket()
 
@@ -202,11 +202,11 @@ class VisualsEngine
 				col = @HSVtoRGB col.h, 15, v
 		else if @_negativeColours is true
 			if type is 'hard'
-				col = {r: 170-@_frequency*2, g: 170-@_frequency*2, b: 170-@_frequency*2}
+				col = {r: 155, g: 155, b: 155}
 			else if type is 'soft'
-				col = {r: 210-@_frequency*2, g: 210-@_frequency*2, b: 210-@_frequency*2}
+				col = {r: 190, g: 190, b: 190}
 			else if type is 'hi'
-				col = {r: 255-@_frequency*2, g: 255-@_frequency*2, b: 255-@_frequency*2}
+				col = {r: 230, g: 230, b: 230}
 			else if type is 'lo'
 				col = {r: 50, g: 50, b: 50}
 

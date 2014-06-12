@@ -27,7 +27,7 @@ class AudioAnalysisEngine
 	_source: null
 	_testAudio: null
 	_alreadySetup: false
-	_autoOn: false
+	_automatic: true
 
 	_samplesPerSecond: 30
 	_ticker = null #analysis interval
@@ -51,9 +51,9 @@ class AudioAnalysisEngine
 	_averageFrequency: 0
 	_frequencyVariationCheck: []
 	_lastFrequencyVariation: null
-	_sensivitityForHighPeak: 12 #how much the peak has to be above average to be considered high
-	_sensivitityForLowPeak: 12 #how much the peak has to be above average to be considered low
-	_sensitivityForHighFrequencyVariation: 12 #how much the peaks have to differ from each other on average to trigger a hi freq variation zone
+	_sensivitityForHighPeak: 2.5 #how much the peak has to be above average to be considered high
+	_sensivitityForLowPeak: 2 #how much the peak has to be above average to be considered low
+	_sensitivityForHighFrequencyVariation: 3 #how much the peaks have to differ from each other on average to trigger a hi freq variation zone
 
 	_lastPeakTime: null
 	_thisPeakTime: null
@@ -80,15 +80,17 @@ class AudioAnalysisEngine
 		@setupAnalyser()
 		@setupFilters()
 		@setupDebugEqualizer()
+		window.events.automatic.add @toggleAuto
+
 
 		@_testAudio = document.getElementById('test_audio')
 		document.onclick = => @setupTestAudio()
 
 		#comment this out to disable mid and use audio insteaad
-		# document.onclick = =>
-		# 	navigator.webkitGetUserMedia
-		# 		audio: true
-		# 	,@setupMic, @onError
+		document.onclick = =>
+			navigator.webkitGetUserMedia
+				audio: true
+			,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -144,6 +146,9 @@ class AudioAnalysisEngine
 			@analyse()
 		, 1000 / @_samplesPerSecond
 
+	toggleAuto: (onOff) =>
+		@_automatic = onOff
+
 
 	analyse: =>
 		@_analyserNode.getByteFrequencyData @_frequencyData
@@ -153,7 +158,7 @@ class AudioAnalysisEngine
 		for i in [0...@_frequencyData.length] by 1 #check for highest peak over the whole range
 
 			if @_frequencyData[i] > @_frequencyOfPeak.amp
-				@_frequencyOfPeak.freq = i #set highest freq found as this one
+				@_frequencyOfPeak.freq = @convertToRange i, [0, 40], [0, 9] #set highest freq found as this one
 				@_frequencyOfPeak.amp = @_frequencyData[i] #how high the peak was
 
 			if i is 0 #reset
@@ -189,7 +194,7 @@ class AudioAnalysisEngine
 		if @_averageAmp+@_peakSensitivityOffset < @_lastAverageAmp and @_waitingForPeak
 			@_waitingForPeak = false
 			@checkForBreak()
-			if @_autoOn is true
+			if @_automatic is true
 				@calculateAveragePeakFrequency() #what was the highest frequency at the time of the peak
 				@calculateAverageBpm() #what is the bmp
 				@checkForFrequencyVariation()
@@ -231,9 +236,10 @@ class AudioAnalysisEngine
 				if i is @_averageFreqCalcArray.length-1
 					tempAvFreq /= @_averageFreqCalcArray.length #get average freq of them
 					@_averageFrequency = tempAvFreq
+					console.log @_averageFrequency, "<<<"
 					window.events.frequency.dispatch @_averageFrequency
 					@_averageFreqCalcArray = []
-					@_bassCutoff = @_averageFrequency + 40
+					@_bassCutoff = @_averageFrequency + 3
 
 
 	#how much is the difference in frequency about the peaks, and when does the average difference in frequency change?
@@ -350,6 +356,18 @@ class AudioAnalysisEngine
 			@_debugCTX.moveTo i/2, @_debugCV.height
 			@_debugCTX.lineTo i/2, @_debugCV.height - @_frequencyData[i]/2
 			@_debugCTX.stroke()
+
+
+	convertToRange: (value, srcRange, dstRange) ->
+		if value < srcRange[0]
+			return dstRange[0]
+		else if value > srcRange[1]
+			return dstRange[1]
+		else
+			srcMax = srcRange[1] - srcRange[0]
+			dstMax = dstRange[1] - dstRange[0]
+			adjValue = value  - srcRange[0]
+			return (adjValue * dstMax / srcMax) + dstRange[0]
 
 
 #clean-up / comment out the methods i don't end up using in the graphics
