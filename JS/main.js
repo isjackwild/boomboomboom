@@ -110,16 +110,9 @@
       this.setupFilters();
       this.setupDebugEqualizer();
       this._testAudio = document.getElementById('test_audio');
-      document.getElementById('twoMagic').onclick = (function(_this) {
+      document.onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
-        };
-      })(this);
-      document.getElementById('twoMagic').onclick = (function(_this) {
-        return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
         };
       })(this);
     }
@@ -231,8 +224,8 @@
       }
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
+        this.checkForBreak();
         if (this._autoOn === true) {
-          this.checkForBreak();
           this.calculateAveragePeakFrequency();
           this.calculateAverageBpm();
           this.checkForFrequencyVariation();
@@ -463,7 +456,8 @@
     frequency: new Signal(),
     inverseCols: new Signal(),
     makeSpecial: new Signal(),
-    showText: new Signal()
+    showText: new Signal(),
+    filter: new Signal()
   };
 
 }).call(this);
@@ -518,7 +512,7 @@
           return window.events.frequency.dispatch(9);
         case 32:
           return this.getBPM();
-        case 66:
+        case 78:
           return window.events.bass.dispatch();
         case 90:
           return window.events["break"].dispatch('short');
@@ -560,6 +554,10 @@
           return window.events.showText.dispatch('bisque');
         case 70:
           return window.events.showText.dispatch('rage');
+        case 77:
+          return window.events.filter.dispatch('blur');
+        case 67:
+          return window.events.filter.dispatch('invert');
       }
     };
 
@@ -608,6 +606,8 @@
   });
 
   VisualsEngine = (function() {
+    var _currentBlur, _targetBlur;
+
     VisualsEngine.prototype._cv = null;
 
     VisualsEngine.prototype._shapes = [];
@@ -626,7 +626,7 @@
 
     VisualsEngine.prototype._frequency = 5;
 
-    VisualsEngine.prototype._bpm = 100;
+    VisualsEngine.prototype._bpm = 200;
 
     VisualsEngine.prototype._bpmJumpTime = new Date().getTime();
 
@@ -708,6 +708,10 @@
 
     VisualsEngine.prototype._pauseBgLerp = false;
 
+    _targetBlur = 0;
+
+    _currentBlur = 0;
+
     function VisualsEngine() {
       this.HSVtoRGB = __bind(this.HSVtoRGB, this);
       this.lerp = __bind(this.lerp, this);
@@ -720,6 +724,7 @@
       this.showText = __bind(this.showText, this);
       this.makeSpecial = __bind(this.makeSpecial, this);
       this.onPeak = __bind(this.onPeak, this);
+      this.addFilter = __bind(this.addFilter, this);
       this.updateBackgroundColour = __bind(this.updateBackgroundColour, this);
       this.gotVolume = __bind(this.gotVolume, this);
       this.inverseCols = __bind(this.inverseCols, this);
@@ -746,6 +751,7 @@
       window.events.inverseCols.add(this.inverseCols);
       window.events.makeSpecial.add(this.makeSpecial);
       window.events.showText.add(this.showText);
+      window.events.filter.add(this.addFilter);
       return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
     };
 
@@ -852,6 +858,18 @@
         this._bgColFrom = this._bgColTo;
         this._bgColTo = col;
         return this._bgColLerp = 0;
+      }
+    };
+
+    VisualsEngine.prototype.addFilter = function(type) {
+      if (this._filterTimer) {
+        clearTimeout(this._filterTimer);
+      }
+      switch (type) {
+        case 'blur':
+          this._targetBlur = 20;
+          this._currentBlur = 0;
+          return $('#twoMagic svg').css("-webkit-filter", "blur(" + this._currentBlur + "px)");
       }
     };
 
@@ -1077,7 +1095,16 @@
         this.animateMiddleGroundFlux();
       }
       if (this._shapes.length >= 1) {
-        return this.removeShapes();
+        this.removeShapes();
+      }
+      if (this._targetBlur > this._currentBlur) {
+        this._currentBlur += 2.5;
+        $('#twoMagic svg').css("-webkit-filter", "blur(" + this._currentBlur + "px)");
+      }
+      if (Math.abs(this._targetBlur - this._currentBlur < 0.5)) {
+        this._targetBlur = 0;
+        this._currentBlur = 0;
+        return $('#twoMagic svg').css("-webkit-filter", "initial");
       }
     };
 

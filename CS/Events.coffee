@@ -14,6 +14,7 @@ window.events = {
 	inverseCols: new Signal()
 	makeSpecial: new Signal()
 	showText: new Signal()
+	filter: new Signal()
 }
 
 

@@ -110,16 +110,9 @@
       this.setupFilters();
       this.setupDebugEqualizer();
       this._testAudio = document.getElementById('test_audio');
-      document.getElementById('twoMagic').onclick = (function(_this) {
+      document.onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
-        };
-      })(this);
-      document.getElementById('twoMagic').onclick = (function(_this) {
-        return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
         };
       })(this);
     }
@@ -231,8 +224,8 @@
       }
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
+        this.checkForBreak();
         if (this._autoOn === true) {
-          this.checkForBreak();
           this.calculateAveragePeakFrequency();
           this.calculateAverageBpm();
           this.checkForFrequencyVariation();

@@ -48,7 +48,7 @@
           return window.events.frequency.dispatch(9);
         case 32:
           return this.getBPM();
-        case 66:
+        case 78:
           return window.events.bass.dispatch();
         case 90:
           return window.events["break"].dispatch('short');
@@ -90,6 +90,10 @@
           return window.events.showText.dispatch('bisque');
         case 70:
           return window.events.showText.dispatch('rage');
+        case 77:
+          return window.events.filter.dispatch('blur');
+        case 67:
+          return window.events.filter.dispatch('invert');
       }
     };
 

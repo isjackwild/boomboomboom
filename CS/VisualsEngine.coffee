@@ -15,7 +15,7 @@ class VisualsEngine
 
 	_volume: 20
 	_frequency: 5
-	_bpm: 100
+	_bpm: 200
 	_bpmJumpTime: new Date().getTime()
 
 
@@ -33,6 +33,9 @@ class VisualsEngine
 	_bgColLerp: 0
 	_bgColLerpSpeed: 0.005
 	_pauseBgLerp: false
+
+	_targetBlur = 0
+	_currentBlur = 0
 
 	#colours
 		#bg = low sat and low bright
@@ -67,6 +70,7 @@ class VisualsEngine
 		window.events.inverseCols.add @inverseCols
 		window.events.makeSpecial.add @makeSpecial
 		window.events.showText.add @showText
+		window.events.filter.add @addFilter
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
 
 
@@ -154,6 +158,16 @@ class VisualsEngine
 			@_bgColFrom = @_bgColTo
 			@_bgColTo = col
 			@_bgColLerp = 0
+
+	addFilter: (type) =>
+		if @_filterTimer
+			clearTimeout @_filterTimer
+		switch type
+			when 'blur'
+				@_targetBlur = 20
+				@_currentBlur = 0
+				$('#twoMagic svg').css "-webkit-filter", "blur("+@_currentBlur+"px)"
+
 	
 
 	onPeak: (type) =>
@@ -339,6 +353,14 @@ class VisualsEngine
 			@animateMiddleGroundFlux()
 		if @_shapes.length >= 1
 			@removeShapes()
+
+		if @_targetBlur > @_currentBlur
+			@_currentBlur += 2.5
+			$('#twoMagic svg').css "-webkit-filter", "blur("+@_currentBlur+"px)"
+		if Math.abs @_targetBlur - @_currentBlur < 0.5
+			@_targetBlur = 0
+			@_currentBlur = 0
+			$('#twoMagic svg').css "-webkit-filter", "initial"
 
 
 	lerpBackground: () =>

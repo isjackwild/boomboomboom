@@ -15,7 +15,8 @@
     frequency: new Signal(),
     inverseCols: new Signal(),
     makeSpecial: new Signal(),
-    showText: new Signal()
+    showText: new Signal(),
+    filter: new Signal()
   };
 
 }).call(this);
