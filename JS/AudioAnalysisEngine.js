@@ -36,6 +36,8 @@
 
     AudioAnalysisEngine.prototype._alreadySetup = false;
 
+    AudioAnalysisEngine.prototype._autoOn = false;
+
     AudioAnalysisEngine.prototype._samplesPerSecond = 30;
 
     _ticker = null;
@@ -128,13 +130,6 @@
       document.getElementById('twoMagic').onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
-        };
-      })(this);
-      document.getElementById('twoMagic').onclick = (function(_this) {
-        return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
         };
       })(this);
     }
@@ -246,10 +241,12 @@
       }
       if (this._averageAmp + this._peakSensitivityOffset < this._lastAverageAmp && this._waitingForPeak) {
         this._waitingForPeak = false;
-        this.calculateAveragePeakFrequency();
-        this.calculateAverageBpm();
         this.checkForBreak();
-        this.checkForFrequencyVariation();
+        if (this._autoOn === true) {
+          this.calculateAveragePeakFrequency();
+          this.calculateAverageBpm();
+          this.checkForFrequencyVariation();
+        }
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
           return window.events.peak.dispatch('hi');

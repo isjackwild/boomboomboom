@@ -47,6 +47,7 @@ module.exports = function(grunt){
 				files: {
 					'JS/main.js' : ['CS/*.coffee'],
 					'JS/AudioAnalysisEngine.js' : 'CS/AudioAnalysisEngine.coffee',
+					'JS/KeyboardController.js' : 'CS/KeyboardController.coffee',
 					'JS/Events.js' : 'CS/Events.coffee',
 					'JS/VisualsEngine.js' : 'CS/VisualsEngine.coffee',
 				},

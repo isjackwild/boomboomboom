@@ -27,6 +27,7 @@ class AudioAnalysisEngine
 	_source: null
 	_testAudio: null
 	_alreadySetup: false
+	_autoOn: false
 
 	_samplesPerSecond: 30
 	_ticker = null #analysis interval
@@ -84,10 +85,10 @@ class AudioAnalysisEngine
 		document.getElementById('twoMagic').onclick = => @setupTestAudio()
 
 		#comment this out to disable mid and use audio insteaad
-		document.getElementById('twoMagic').onclick = =>
-			navigator.webkitGetUserMedia
-				audio: true
-			,@setupMic, @onError
+		# document.getElementById('twoMagic').onclick = =>
+		# 	navigator.webkitGetUserMedia
+		# 		audio: true
+		# 	,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -187,10 +188,11 @@ class AudioAnalysisEngine
 
 		if @_averageAmp+@_peakSensitivityOffset < @_lastAverageAmp and @_waitingForPeak
 			@_waitingForPeak = false
-			@calculateAveragePeakFrequency() #what was the highest frequency at the time of the peak
-			@calculateAverageBpm() #what is the bmp
 			@checkForBreak()
-			@checkForFrequencyVariation()
+			if @_autoOn is true
+				@calculateAveragePeakFrequency() #what was the highest frequency at the time of the peak
+				@calculateAverageBpm() #what is the bmp
+				@checkForFrequencyVariation()
 
 			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
@@ -202,7 +204,6 @@ class AudioAnalysisEngine
 			else
 				if @_averageAmp+@_peakSensitivityOffset*2 < @_lastAverageAmp
 					@eventLogger 'hardPeak'
-					# @calculateAverageBpm() #what is the bmp
 					window.events.peak.dispatch 'hard'
 				else
 					@eventLogger "softPeak"

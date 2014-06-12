@@ -14,7 +14,7 @@ class VisualsEngine
 	_foreGround: null
 
 	_volume: 20
-	_frequency: 10
+	_frequency: 5
 	_bpm: 200
 	_bpmJumpTime: new Date().getTime()
 
@@ -96,6 +96,7 @@ class VisualsEngine
 
 	gotFrequency: (freq) =>
 		@_frequency = freq
+		console.log @_frequency, "got freq"
 		@updateBackgroundColour()
 		@updateColourBucket()
 
@@ -122,8 +123,8 @@ class VisualsEngine
 		else
 			for i in [0...@_colourBucket.fg.length]
 				#maybe add in volume if / when can accuratly normalise mic volume
-				sOffset = Math.floor @convertToRange(@_frequency, [4,33], [10, -20]) + Math.floor @convertToRange(@_bpm, [60,600], [-50, 15])
-				vOffset = Math.floor @convertToRange(@_frequency, [4,33], [15, -15])
+				sOffset = Math.floor @convertToRange(@_frequency, [1,9], [10, -20]) + Math.floor @convertToRange(@_bpm, [60,600], [-50, 15])
+				vOffset = Math.floor @convertToRange(@_frequency, [1,9], [15, -15])
 				@_colourBucket.fg[i] = Object.create @_baseColours.fg[i]
 				@_colourBucket.fg[i].s = @_colourBucket.fg[i].s + sOffset
 				if @_colourBucket.fg[i].s < 25 then @_colourBucket.fg[i].s = 25
@@ -131,9 +132,8 @@ class VisualsEngine
 
 
 	updateBackgroundColour: =>
-		console.log 'updateBackgroundColour'
 		if @_negativeColours is false
-			col = Math.floor(@convertToRange(@_frequency, [4,33], [30, 190])+Math.random()*20)
+			col = Math.floor(@convertToRange(@_frequency, [1,9], [30, 190])+Math.random()*33)
 			col = {r: col, g: col, b: col}
 		else if @_negativeColours is true
 			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
@@ -144,12 +144,14 @@ class VisualsEngine
 			@_bgColFrom = @_bgColTo
 			@_bgColTo = col
 			@_bgColLerp = 0
+			console.log 'changing to new bg', @_bgColTo
 	
 
 	onPeak: (type) =>
 		@_peakCount++
 
 		if type is 'hard'
+			@updateBackgroundColour()
 			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.43
 		else if type is 'soft'
 			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.3
@@ -168,10 +170,10 @@ class VisualsEngine
 			if type is 'hard' or type is 'soft'
 				col = @HSVtoRGB col.h, col.s, col.v
 			else if type is 'hi'
-				v = @convertToRange @_frequency, [4, 33], [80,90]
+				v = @convertToRange @_frequency, [1, 9], [80,90]
 				col = @HSVtoRGB col.h, 15, v
 			else if type is 'lo'
-				v = @convertToRange @_frequency, [4, 33], [15,33]
+				v = @convertToRange @_frequency, [1, 9], [15,33]
 				col = @HSVtoRGB col.h, 15, v
 		else if @_negativeColours is true
 			if type is 'hard'

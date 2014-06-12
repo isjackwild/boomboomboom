@@ -23,7 +23,7 @@
 
     VisualsEngine.prototype._volume = 20;
 
-    VisualsEngine.prototype._frequency = 10;
+    VisualsEngine.prototype._frequency = 5;
 
     VisualsEngine.prototype._bpm = 200;
 
@@ -172,6 +172,7 @@
 
     VisualsEngine.prototype.gotFrequency = function(freq) {
       this._frequency = freq;
+      console.log(this._frequency, "got freq");
       this.updateBackgroundColour();
       return this.updateColourBucket();
     };
@@ -203,8 +204,8 @@
       } else {
         _results1 = [];
         for (i = _j = 0, _ref1 = this._colourBucket.fg.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          sOffset = Math.floor(this.convertToRange(this._frequency, [4, 33], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [60, 600], [-50, 15])));
-          vOffset = Math.floor(this.convertToRange(this._frequency, [4, 33], [15, -15]));
+          sOffset = Math.floor(this.convertToRange(this._frequency, [1, 9], [10, -20]) + Math.floor(this.convertToRange(this._bpm, [60, 600], [-50, 15])));
+          vOffset = Math.floor(this.convertToRange(this._frequency, [1, 9], [15, -15]));
           this._colourBucket.fg[i] = Object.create(this._baseColours.fg[i]);
           this._colourBucket.fg[i].s = this._colourBucket.fg[i].s + sOffset;
           if (this._colourBucket.fg[i].s < 25) {
@@ -218,9 +219,8 @@
 
     VisualsEngine.prototype.updateBackgroundColour = function() {
       var col, whichCol;
-      console.log('updateBackgroundColour');
       if (this._negativeColours === false) {
-        col = Math.floor(this.convertToRange(this._frequency, [4, 33], [30, 190]) + Math.random() * 20);
+        col = Math.floor(this.convertToRange(this._frequency, [1, 9], [30, 190]) + Math.random() * 33);
         col = {
           r: col,
           g: col,
@@ -234,7 +234,8 @@
       if (this._bgColLerp > 0.95) {
         this._bgColFrom = this._bgColTo;
         this._bgColTo = col;
-        return this._bgColLerp = 0;
+        this._bgColLerp = 0;
+        return console.log('changing to new bg', this._bgColTo);
       }
     };
 
@@ -242,6 +243,7 @@
       var circle, col, line, peakTime, sectionX, sectionY, stripeDuration, v, whichCol;
       this._peakCount++;
       if (type === 'hard') {
+        this.updateBackgroundColour();
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
       } else if (type === 'soft') {
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
@@ -260,10 +262,10 @@
         if (type === 'hard' || type === 'soft') {
           col = this.HSVtoRGB(col.h, col.s, col.v);
         } else if (type === 'hi') {
-          v = this.convertToRange(this._frequency, [4, 33], [80, 90]);
+          v = this.convertToRange(this._frequency, [1, 9], [80, 90]);
           col = this.HSVtoRGB(col.h, 15, v);
         } else if (type === 'lo') {
-          v = this.convertToRange(this._frequency, [4, 33], [15, 33]);
+          v = this.convertToRange(this._frequency, [1, 9], [15, 33]);
           col = this.HSVtoRGB(col.h, 15, v);
         }
       } else if (this._negativeColours === true) {
