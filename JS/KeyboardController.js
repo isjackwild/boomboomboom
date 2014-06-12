@@ -82,6 +82,14 @@
           return window.events.makeSpecial.dispatch(9);
         case 80:
           return window.events.makeSpecial.dispatch(0);
+        case 65:
+          return window.events.showText.dispatch('ber');
+        case 83:
+          return window.events.showText.dispatch('lin');
+        case 68:
+          return window.events.showText.dispatch('bisque');
+        case 70:
+          return window.events.showText.dispatch('rage');
       }
     };
 

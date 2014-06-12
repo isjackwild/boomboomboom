@@ -462,7 +462,8 @@
     volume: new Signal(),
     frequency: new Signal(),
     inverseCols: new Signal(),
-    makeSpecial: new Signal()
+    makeSpecial: new Signal(),
+    showText: new Signal()
   };
 
 }).call(this);
@@ -551,6 +552,14 @@
           return window.events.makeSpecial.dispatch(9);
         case 80:
           return window.events.makeSpecial.dispatch(0);
+        case 65:
+          return window.events.showText.dispatch('ber');
+        case 83:
+          return window.events.showText.dispatch('lin');
+        case 68:
+          return window.events.showText.dispatch('bisque');
+        case 70:
+          return window.events.showText.dispatch('rage');
       }
     };
 
@@ -708,6 +717,7 @@
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
       this.onBass = __bind(this.onBass, this);
       this.onBreak = __bind(this.onBreak, this);
+      this.showText = __bind(this.showText, this);
       this.makeSpecial = __bind(this.makeSpecial, this);
       this.onPeak = __bind(this.onPeak, this);
       this.updateBackgroundColour = __bind(this.updateBackgroundColour, this);
@@ -735,6 +745,7 @@
       window.events.frequency.add(this.gotFrequency);
       window.events.inverseCols.add(this.inverseCols);
       window.events.makeSpecial.add(this.makeSpecial);
+      window.events.showText.add(this.showText);
       return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
     };
 
@@ -992,6 +1003,37 @@
       line.cap = "butt";
       this._foreGround.add(line);
       return this._shapes.push(line);
+    };
+
+    VisualsEngine.prototype.showText = function(which) {
+      var elem, hang;
+      if (this._textTimer) {
+        clearTimeout(this._textTimer);
+      }
+      hang = this.convertToRange(this._bpm, [60, 600], [1500, 500]);
+      switch (which) {
+        case 'ber':
+          elem = "#ber";
+          $("#bisque").removeClass('show');
+          break;
+        case 'lin':
+          elem = "#lin";
+          $("#rage").removeClass('show');
+          break;
+        case 'bisque':
+          elem = "#bisque";
+          $("#ber").removeClass('show');
+          break;
+        case 'rage':
+          elem = "#rage";
+          $("#lin").removeClass('show');
+      }
+      $(elem).addClass('show');
+      return this._textTimer = setTimeout((function(_this) {
+        return function() {
+          return $(".show").removeClass('show');
+        };
+      })(this), hang);
     };
 
     VisualsEngine.prototype.onBreak = function(length) {

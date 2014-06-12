@@ -66,6 +66,7 @@ class VisualsEngine
 		window.events.frequency.add @gotFrequency
 		window.events.inverseCols.add @inverseCols
 		window.events.makeSpecial.add @makeSpecial
+		window.events.showText.add @showText
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
 
 
@@ -280,7 +281,30 @@ class VisualsEngine
 		line.cap = "butt"
 		@_foreGround.add line
 		@_shapes.push line
-		
+	
+	showText: (which) =>
+		if @_textTimer
+			clearTimeout @_textTimer
+		hang = @convertToRange(@_bpm, [60,600], [1500, 500])
+		switch which
+			when 'ber'
+				elem = "#ber"
+				$("#bisque").removeClass 'show'
+			when 'lin'
+				elem = "#lin"
+				$("#rage").removeClass 'show'
+			when 'bisque'
+				elem = "#bisque"
+				$("#ber").removeClass 'show'
+			when 'rage'
+				elem = "#rage"
+				$("#lin").removeClass 'show'
+
+		$(elem).addClass 'show'
+		@_textTimer = setTimeout =>
+			$(".show").removeClass 'show'
+		, hang
+
 
 	onBreak: (length) =>
 		if @_pauseBgLerp is false

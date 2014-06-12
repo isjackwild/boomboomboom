@@ -14,7 +14,8 @@
     volume: new Signal(),
     frequency: new Signal(),
     inverseCols: new Signal(),
-    makeSpecial: new Signal()
+    makeSpecial: new Signal(),
+    showText: new Signal()
   };
 
 }).call(this);
