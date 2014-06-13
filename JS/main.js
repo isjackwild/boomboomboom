@@ -507,7 +507,12 @@
 
     KeyboardController.prototype._dropJumpBPMSensitivity = 50;
 
+    KeyboardController.prototype._timeSinceLastKeyPress = 0;
+
+    KeyboardController.prototype._autoTimer = null;
+
     function KeyboardController() {
+      this.setAutoTimer = __bind(this.setAutoTimer, this);
       this.getBPM = __bind(this.getBPM, this);
       this.keydown = __bind(this.keydown, this);
       console.log('setup keyboard controller');
@@ -516,6 +521,7 @@
 
     KeyboardController.prototype.keydown = function(e) {
       console.log(e.keyCode);
+      this.setAutoTimer();
       if (e.keyCode === !91 || e.keyCode === !82) {
         e.preventDefault();
       }
@@ -635,6 +641,25 @@
         }
         return this._lastBPM = this._approxBPM;
       }
+    };
+
+    KeyboardController.prototype.setAutoTimer = function() {
+      window.events.automatic.dispatch(false);
+      clearInterval(this._autoTimer);
+      this._timeSinceLastKeyPress = 0;
+      console.log('automatic off');
+      this._autoTimer = setInterval((function(_this) {
+        return function() {
+          _this._timeSinceLastKeyPress += 1;
+          if (_this._timeSinceLastKeyPress > 10) {
+            clearInterval(_this._autoTimer);
+            _this._timeSinceLastKeyPress = 0;
+            window.events.automatic.dispatch(true);
+            return console.log('automatic ON');
+          }
+        };
+      })(this), 1000);
+      return console.log('set auto timer');
     };
 
     return KeyboardController;

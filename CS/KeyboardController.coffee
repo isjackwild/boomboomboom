@@ -5,6 +5,8 @@ $ =>
 class KeyboardController
 	_bpmCalcArray: []
 	_dropJumpBPMSensitivity: 50
+	_timeSinceLastKeyPress: 0
+	_autoTimer: null
 
 	constructor: ->
 		console.log 'setup keyboard controller'
@@ -12,8 +14,7 @@ class KeyboardController
 
 	keydown: (e) =>
 		console.log e.keyCode
-		# window.events.automatic.dispatch false
-		#add turn auto on if no keystroke for > 20ish seconds
+		@setAutoTimer()
 
 		if e.keyCode is not 91 or e.keyCode is not 82
 			e.preventDefault()
@@ -98,4 +99,21 @@ class KeyboardController
 			else if @_approxBPM < @_lastBPM-@_dropJumpBPMSensitivity
 				window.events.BPMDrop.dispatch @_approxBPM
 			@_lastBPM = @_approxBPM
+
+	setAutoTimer: () =>
+		window.events.automatic.dispatch false
+		clearInterval @_autoTimer
+		@_timeSinceLastKeyPress = 0
+		console.log 'automatic off'
+
+		@_autoTimer = setInterval =>
+			@_timeSinceLastKeyPress += 1
+			if @_timeSinceLastKeyPress > 10
+				clearInterval @_autoTimer
+				@_timeSinceLastKeyPress = 0
+				window.events.automatic.dispatch true
+				console.log 'automatic ON'
+		,1000
+
+		console.log 'set auto timer'
 
