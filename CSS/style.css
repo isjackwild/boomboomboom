@@ -99,22 +99,22 @@ body {
   left: 0;
   z-index: 3;
   background-size: cover;
-  display: none;
+  opacity: 0;
+  -webkit-transition: opacity 0.5s;
+}
+#angela.show {
+  opacity: 1;
 }
 #angela.angela_1 {
-  display: inline;
   background-image: url("../Assets/angela_1.gif");
 }
 #angela.angela_2 {
-  display: inline;
   background-image: url("../Assets/angela_2.gif");
 }
 #angela.angela_3 {
-  display: inline;
   background-image: url("../Assets/angela_3.gif");
 }
 #angela.angela_4 {
-  display: inline;
   background-image: url("../Assets/angela_4.gif");
 }
 #debugVisualiser {

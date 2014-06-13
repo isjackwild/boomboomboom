@@ -365,11 +365,18 @@ class VisualsEngine
 
 	showAngela: (which) =>
 		$('#angela').removeClass()
+
 		$('#angela').addClass which
+		$('#angela').addClass 'show'
 		clearTimeout @_angelaTimer
+		clearTimeout @_angelaTimer2
+
 		@_angelaTimer = setTimeout =>
-			$('#angela').removeClass()
+			$('#angela').removeClass 'show'
 		, 2000
+		@_angelaTimer2 = setTimeout =>
+			$('#angela').removeClass which
+		, 2500
 
 
 

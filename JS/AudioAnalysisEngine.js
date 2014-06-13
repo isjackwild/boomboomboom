@@ -251,7 +251,7 @@
           this.eventLogger("loPeak");
           window.events.peak.dispatch('lo');
         } else {
-          if (Math.random() > 0.85) {
+          if (Math.random() > 0.94) {
             if (Math.random() > 0.49) {
               window.events.makeSpecial.dispatch(9);
             } else {
@@ -279,7 +279,7 @@
               window.events.showIllustration.dispatch('landmark');
           }
         }
-        if (Math.random() > 0.99) {
+        if (Math.random() > 0.995) {
           if (Math.random() > 0.6) {
             window.events.showText.dispatch('ber');
             return window.events.showText.dispatch('lin');
@@ -402,9 +402,9 @@
           window.events.BPMDrop.dispatch(this._approxBPM);
           this.eventLogger('BPMDrop');
           random = Math.random();
-          if (random < 0.2) {
+          if (random < 0.15) {
             window.events.showText.dispatch('putUpWall');
-          } else if (random > 0.2 && random < 0.4) {
+          } else if (random > 0.15 && random < 0.35) {
             window.events.showText.dispatch('tearDownWall');
           }
         }

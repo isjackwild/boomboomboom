@@ -528,12 +528,19 @@
     VisualsEngine.prototype.showAngela = function(which) {
       $('#angela').removeClass();
       $('#angela').addClass(which);
+      $('#angela').addClass('show');
       clearTimeout(this._angelaTimer);
-      return this._angelaTimer = setTimeout((function(_this) {
+      clearTimeout(this._angelaTimer2);
+      this._angelaTimer = setTimeout((function(_this) {
         return function() {
-          return $('#angela').removeClass();
+          return $('#angela').removeClass('show');
         };
       })(this), 2000);
+      return this._angelaTimer2 = setTimeout((function(_this) {
+        return function() {
+          return $('#angela').removeClass(which);
+        };
+      })(this), 2500);
     };
 
     VisualsEngine.prototype.onBreak = function(length) {
