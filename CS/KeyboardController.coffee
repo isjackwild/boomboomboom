@@ -14,6 +14,7 @@ class KeyboardController
 
 	keydown: (e) =>
 		console.log e.keyCode
+		#do this only if any of the function keys are pressed
 		@setAutoTimer()
 
 		if e.keyCode is not 91 or e.keyCode is not 82
@@ -62,9 +63,9 @@ class KeyboardController
 			when 83 then window.events.showText.dispatch 'lin'
 			when 68 then window.events.showText.dispatch 'bisque'
 			when 70 then window.events.showText.dispatch 'rage'
+			when 71 then window.events.showText.dispatch 'putUpWall'
+			when 72 then window.events.showText.dispatch 'tearDownWall'
 			#illustrations
-			when 71 then window.events.showIllustration.dispatch 'bear'
-			when 72 then window.events.showIllustration.dispatch 'ample'
 			when 74 then window.events.showIllustration.dispatch 'pretzel'
 			when 75 then window.events.showIllustration.dispatch 'currywurst'
 			when 76 then window.events.showIllustration.dispatch 'tower'

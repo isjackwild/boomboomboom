@@ -304,15 +304,39 @@ class VisualsEngine
 			when 'ber'
 				elem = "#ber"
 				$("#bisque").removeClass 'show'
+				$("#putUpWall").removeClass 'show'
+				$("#tearDownWall").removeClass 'show'
 			when 'lin'
 				elem = "#lin"
 				$("#rage").removeClass 'show'
+				$("#putUpWall").removeClass 'show'
+				$("#tearDownWall").removeClass 'show'
 			when 'bisque'
 				elem = "#bisque"
 				$("#ber").removeClass 'show'
+				$("#putUpWall").removeClass 'show'
+				$("#tearDownWall").removeClass 'show'
 			when 'rage'
 				elem = "#rage"
 				$("#lin").removeClass 'show'
+				$("#putUpWall").removeClass 'show'
+				$("#tearDownWall").removeClass 'show'
+			when 'putUpWall'
+				elem = "#putUpWall"
+				hang = 3500
+				$("#bisque").removeClass 'show'
+				$("#rage").removeClass 'show'
+				$("#ber").removeClass 'show'
+				$("#lin").removeClass 'show'
+				$("#tearDownWall").removeClass 'show'
+			when 'tearDownWall'
+				elem = "#tearDownWall"
+				hang = 3500
+				$("#bisque").removeClass 'show'
+				$("#rage").removeClass 'show'
+				$("#ber").removeClass 'show'
+				$("#lin").removeClass 'show'
+				$("#putUpWall").removeClass 'show'
 
 		$(elem).addClass 'show'
 		@_textTimer = setTimeout =>

@@ -597,9 +597,9 @@
         case 70:
           return window.events.showText.dispatch('rage');
         case 71:
-          return window.events.showIllustration.dispatch('bear');
+          return window.events.showText.dispatch('putUpWall');
         case 72:
-          return window.events.showIllustration.dispatch('ample');
+          return window.events.showText.dispatch('tearDownWall');
         case 74:
           return window.events.showIllustration.dispatch('pretzel');
         case 75:
@@ -1106,18 +1106,44 @@
         case 'ber':
           elem = "#ber";
           $("#bisque").removeClass('show');
+          $("#putUpWall").removeClass('show');
+          $("#tearDownWall").removeClass('show');
           break;
         case 'lin':
           elem = "#lin";
           $("#rage").removeClass('show');
+          $("#putUpWall").removeClass('show');
+          $("#tearDownWall").removeClass('show');
           break;
         case 'bisque':
           elem = "#bisque";
           $("#ber").removeClass('show');
+          $("#putUpWall").removeClass('show');
+          $("#tearDownWall").removeClass('show');
           break;
         case 'rage':
           elem = "#rage";
           $("#lin").removeClass('show');
+          $("#putUpWall").removeClass('show');
+          $("#tearDownWall").removeClass('show');
+          break;
+        case 'putUpWall':
+          elem = "#putUpWall";
+          hang = 3500;
+          $("#bisque").removeClass('show');
+          $("#rage").removeClass('show');
+          $("#ber").removeClass('show');
+          $("#lin").removeClass('show');
+          $("#tearDownWall").removeClass('show');
+          break;
+        case 'tearDownWall':
+          elem = "#tearDownWall";
+          hang = 3500;
+          $("#bisque").removeClass('show');
+          $("#rage").removeClass('show');
+          $("#ber").removeClass('show');
+          $("#lin").removeClass('show');
+          $("#putUpWall").removeClass('show');
       }
       $(elem).addClass('show');
       return this._textTimer = setTimeout((function(_this) {

@@ -103,9 +103,9 @@
         case 70:
           return window.events.showText.dispatch('rage');
         case 71:
-          return window.events.showIllustration.dispatch('bear');
+          return window.events.showText.dispatch('putUpWall');
         case 72:
-          return window.events.showIllustration.dispatch('ample');
+          return window.events.showText.dispatch('tearDownWall');
         case 74:
           return window.events.showIllustration.dispatch('pretzel');
         case 75:

@@ -28,7 +28,8 @@ body {
 #illustrations {
   display: none;
 }
-#text {
+#text,
+#quotes {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -36,7 +37,8 @@ body {
   left: 0;
   z-index: 4;
 }
-#text span {
+#text span,
+#quotes span {
   width: 100%;
   float: left;
   font-family: 'Oswald', Helvetica, sans-serif;
@@ -46,28 +48,48 @@ body {
   margin: 0;
   text-align: center;
   position: absolute;
-  display: none;
+  opacity: 0;
+  z-index: 5;
 }
-#text span.show {
-  display: inline;
+#text span.show,
+#quotes span.show {
+  opacity: 1;
 }
-#text span.top {
+#text span.top,
+#quotes span.top {
   top: -80px;
 }
-#text span.bottom {
+#text span.bottom,
+#quotes span.bottom {
   bottom: -80px;
 }
-#text span#bisque {
+#text span#bisque,
+#quotes span#bisque {
   font-size: 40vmin;
   margin-top: 40px;
 }
 #text span#bisque,
-#text span#lin {
+#quotes span#bisque,
+#text span#lin,
+#quotes span#lin {
   color: #efcd0b;
 }
 #text span#rage,
-#text span#ber {
+#quotes span#rage,
+#text span#ber,
+#quotes span#ber {
   color: #c00;
+}
+#quotes span {
+  -webkit-transition: opacity 2s;
+  margin-top: 55px;
+  colour: #fff;
+  font-size: 15vw;
+  line-height: 28vh;
+  letter-spacing: -0.005em;
+}
+#quotes span.show {
+  opacity: 0.66;
 }
 #debugVisualiser {
   width: 300px;
