@@ -122,6 +122,7 @@
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
       this.onBass = __bind(this.onBass, this);
       this.onBreak = __bind(this.onBreak, this);
+      this.showAngela = __bind(this.showAngela, this);
       this.showIllustration = __bind(this.showIllustration, this);
       this.showText = __bind(this.showText, this);
       this.makeSpecial = __bind(this.makeSpecial, this);
@@ -154,6 +155,7 @@
       window.events.makeSpecial.add(this.makeSpecial);
       window.events.showText.add(this.showText);
       window.events.showIllustration.add(this.showIllustration);
+      window.events.angela.add(this.showAngela);
       window.events.filter.add(this.addFilter);
       return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
     };
@@ -484,7 +486,7 @@
     };
 
     VisualsEngine.prototype.showIllustration = function(which) {
-      var i, illustration, shape, _i, _len, _ref;
+      var i, id, illustration, shape, _i, _len, _ref;
       _ref = this._shapes;
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         shape = _ref[i];
@@ -492,13 +494,46 @@
           return;
         }
       }
-      illustration = this._two.interpret(document.getElementById(which));
+      switch (which) {
+        case 'food':
+          if (Math.random() > 0.49) {
+            id = 'currywurst';
+          } else {
+            id = 'pretzel';
+          }
+          break;
+        case 'mascot':
+          if (Math.random() > 0.49) {
+            id = 'ample';
+          } else {
+            id = 'bear';
+          }
+          break;
+        case 'landmark':
+          if (Math.random() > 0.49) {
+            id = 'tower';
+          } else {
+            id = 'tor';
+          }
+      }
+      illustration = this._two.interpret(document.getElementById(id));
       illustration.center().translation.set(this._two.width / 2, this._two.height / 2);
       this._foreGround.add(illustration);
       illustration.lifeSpan = 100;
       illustration.creationTime = new Date().getTime();
       illustration.isIllustration = true;
       return this._shapes.push(illustration);
+    };
+
+    VisualsEngine.prototype.showAngela = function(which) {
+      $('#angela').removeClass();
+      $('#angela').addClass(which);
+      clearTimeout(this._angelaTimer);
+      return this._angelaTimer = setTimeout((function(_this) {
+        return function() {
+          return $('#angela').removeClass();
+        };
+      })(this), 2000);
     };
 
     VisualsEngine.prototype.onBreak = function(length) {

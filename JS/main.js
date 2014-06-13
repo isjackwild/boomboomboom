@@ -487,7 +487,8 @@
     makeSpecial: new Signal(),
     showText: new Signal(),
     showIllustration: new Signal(),
-    filter: new Signal()
+    filter: new Signal(),
+    angela: new Signal()
   };
 
 }).call(this);
@@ -520,9 +521,11 @@
     }
 
     KeyboardController.prototype.keydown = function(e) {
-      console.log(e.keyCode);
-      this.setAutoTimer();
-      if (e.keyCode === !91 || e.keyCode === !82) {
+      console.log(e.keyCode, e);
+      if (e.keyCode >= 37 && e.keyCode <= 40 || e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90) {
+        this.setAutoTimer();
+      }
+      if (e.metaKey === false) {
         e.preventDefault();
       }
       switch (e.keyCode) {
@@ -553,16 +556,16 @@
         case 66:
           return window.events.bass.dispatch('big');
         case 90:
-          return window.events["break"].dispatch('short');
+          return window.events.angela.dispatch('angela_1');
         case 88:
-          return window.events["break"].dispatch('long');
+          return window.events.angela.dispatch('angela_2');
+        case 67:
+          return window.events.angela.dispatch('angela_3');
+        case 86:
+          return window.events.angela.dispatch('angela_4');
         case 38:
           return window.events.peak.dispatch('hi');
-        case 67:
-          return window.events.peak.dispatch('hi');
         case 40:
-          return window.events.peak.dispatch('lo');
-        case 86:
           return window.events.peak.dispatch('lo');
         case 37:
           return window.events.peak.dispatch('soft');
@@ -601,15 +604,13 @@
         case 72:
           return window.events.showText.dispatch('tearDownWall');
         case 74:
-          return window.events.showIllustration.dispatch('pretzel');
+          return window.events.showIllustration.dispatch('food');
         case 75:
-          return window.events.showIllustration.dispatch('currywurst');
+          return window.events.showIllustration.dispatch('mascot');
         case 76:
-          return window.events.showIllustration.dispatch('tower');
+          return window.events.showIllustration.dispatch('landmark');
         case 77:
           return window.events.filter.dispatch('blur');
-        case 67:
-          return window.events.filter.dispatch('invert');
       }
     };
 
@@ -792,6 +793,7 @@
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
       this.onBass = __bind(this.onBass, this);
       this.onBreak = __bind(this.onBreak, this);
+      this.showAngela = __bind(this.showAngela, this);
       this.showIllustration = __bind(this.showIllustration, this);
       this.showText = __bind(this.showText, this);
       this.makeSpecial = __bind(this.makeSpecial, this);
@@ -824,6 +826,7 @@
       window.events.makeSpecial.add(this.makeSpecial);
       window.events.showText.add(this.showText);
       window.events.showIllustration.add(this.showIllustration);
+      window.events.angela.add(this.showAngela);
       window.events.filter.add(this.addFilter);
       return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
     };
@@ -1154,7 +1157,7 @@
     };
 
     VisualsEngine.prototype.showIllustration = function(which) {
-      var i, illustration, shape, _i, _len, _ref;
+      var i, id, illustration, shape, _i, _len, _ref;
       _ref = this._shapes;
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         shape = _ref[i];
@@ -1162,13 +1165,46 @@
           return;
         }
       }
-      illustration = this._two.interpret(document.getElementById(which));
+      switch (which) {
+        case 'food':
+          if (Math.random() > 0.49) {
+            id = 'currywurst';
+          } else {
+            id = 'pretzel';
+          }
+          break;
+        case 'mascot':
+          if (Math.random() > 0.49) {
+            id = 'ample';
+          } else {
+            id = 'bear';
+          }
+          break;
+        case 'landmark':
+          if (Math.random() > 0.49) {
+            id = 'tower';
+          } else {
+            id = 'tor';
+          }
+      }
+      illustration = this._two.interpret(document.getElementById(id));
       illustration.center().translation.set(this._two.width / 2, this._two.height / 2);
       this._foreGround.add(illustration);
       illustration.lifeSpan = 100;
       illustration.creationTime = new Date().getTime();
       illustration.isIllustration = true;
       return this._shapes.push(illustration);
+    };
+
+    VisualsEngine.prototype.showAngela = function(which) {
+      $('#angela').removeClass();
+      $('#angela').addClass(which);
+      clearTimeout(this._angelaTimer);
+      return this._angelaTimer = setTimeout((function(_this) {
+        return function() {
+          return $('#angela').removeClass();
+        };
+      })(this), 2000);
     };
 
     VisualsEngine.prototype.onBreak = function(length) {

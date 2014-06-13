@@ -26,9 +26,11 @@
     }
 
     KeyboardController.prototype.keydown = function(e) {
-      console.log(e.keyCode);
-      this.setAutoTimer();
-      if (e.keyCode === !91 || e.keyCode === !82) {
+      console.log(e.keyCode, e);
+      if (e.keyCode >= 37 && e.keyCode <= 40 || e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90) {
+        this.setAutoTimer();
+      }
+      if (e.metaKey === false) {
         e.preventDefault();
       }
       switch (e.keyCode) {
@@ -59,16 +61,16 @@
         case 66:
           return window.events.bass.dispatch('big');
         case 90:
-          return window.events["break"].dispatch('short');
+          return window.events.angela.dispatch('angela_1');
         case 88:
-          return window.events["break"].dispatch('long');
+          return window.events.angela.dispatch('angela_2');
+        case 67:
+          return window.events.angela.dispatch('angela_3');
+        case 86:
+          return window.events.angela.dispatch('angela_4');
         case 38:
           return window.events.peak.dispatch('hi');
-        case 67:
-          return window.events.peak.dispatch('hi');
         case 40:
-          return window.events.peak.dispatch('lo');
-        case 86:
           return window.events.peak.dispatch('lo');
         case 37:
           return window.events.peak.dispatch('soft');
@@ -107,15 +109,13 @@
         case 72:
           return window.events.showText.dispatch('tearDownWall');
         case 74:
-          return window.events.showIllustration.dispatch('pretzel');
+          return window.events.showIllustration.dispatch('food');
         case 75:
-          return window.events.showIllustration.dispatch('currywurst');
+          return window.events.showIllustration.dispatch('mascot');
         case 76:
-          return window.events.showIllustration.dispatch('tower');
+          return window.events.showIllustration.dispatch('landmark');
         case 77:
           return window.events.filter.dispatch('blur');
-        case 67:
-          return window.events.filter.dispatch('invert');
       }
     };
 

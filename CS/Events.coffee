@@ -17,6 +17,7 @@ window.events = {
 	showText: new Signal()
 	showIllustration: new Signal()
 	filter: new Signal()
+	angela: new Signal()
 }
 
 

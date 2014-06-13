@@ -71,6 +71,7 @@ class VisualsEngine
 		window.events.makeSpecial.add @makeSpecial
 		window.events.showText.add @showText
 		window.events.showIllustration.add @showIllustration
+		window.events.angela.add @showAngela
 		window.events.filter.add @addFilter
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
 
@@ -347,7 +348,25 @@ class VisualsEngine
 		for shape, i in @_shapes
 			if shape.isIllustration
 				return
-		illustration = @_two.interpret document.getElementById which
+
+		switch which
+			when 'food'
+				if Math.random() > 0.49
+					id = 'currywurst'
+				else
+					id = 'pretzel'
+			when 'mascot'
+				if Math.random() > 0.49
+					id = 'ample'
+				else
+					id = 'bear'
+			when 'landmark'
+				if Math.random() > 0.49
+					id = 'tower'
+				else
+					id = 'tor'
+				
+		illustration = @_two.interpret document.getElementById id
 
 		illustration.center().translation.set @_two.width / 2, @_two.height / 2
 		@_foreGround.add illustration
@@ -355,6 +374,16 @@ class VisualsEngine
 		illustration.creationTime = new Date().getTime()
 		illustration.isIllustration = true
 		@_shapes.push illustration
+
+	showAngela: (which) =>
+		$('#angela').removeClass()
+		$('#angela').addClass which
+		clearTimeout @_angelaTimer
+		@_angelaTimer = setTimeout =>
+			$('#angela').removeClass()
+		, 2000
+
+
 
 	onBreak: (length) =>
 		if @_pauseBgLerp is false

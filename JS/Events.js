@@ -18,7 +18,8 @@
     makeSpecial: new Signal(),
     showText: new Signal(),
     showIllustration: new Signal(),
-    filter: new Signal()
+    filter: new Signal(),
+    angela: new Signal()
   };
 
 }).call(this);

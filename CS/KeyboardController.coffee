@@ -13,12 +13,14 @@ class KeyboardController
 		window.onkeydown = @keydown
 
 	keydown: (e) =>
-		console.log e.keyCode
+		console.log e.keyCode, e
 		#do this only if any of the function keys are pressed
-		@setAutoTimer()
+		if e.keyCode >= 37 and e.keyCode <=40 or e.keyCode >= 48 and e.keyCode <= 57 or e.keyCode >= 65 and e.keyCode <= 90
+			@setAutoTimer()
 
-		if e.keyCode is not 91 or e.keyCode is not 82
+		if e.metaKey is false
 			e.preventDefault()
+
 		switch e.keyCode
 			#inverse colours with 0
 			when 48 then window.events.inverseCols.dispatch()
@@ -37,14 +39,14 @@ class KeyboardController
 			#bass with B
 			when 78 then window.events.bass.dispatch 'small'
 			when 66 then window.events.bass.dispatch 'big'
-			#breaks with < (short) and > (long)
-			when 90 then window.events.break.dispatch 'short'
-			when 88 then window.events.break.dispatch 'long'
+			#angela
+			when 90 then window.events.angela.dispatch 'angela_1'
+			when 88 then window.events.angela.dispatch 'angela_2'
+			when 67 then window.events.angela.dispatch 'angela_3'
+			when 86 then window.events.angela.dispatch 'angela_4'
 			#peaks with up (high) down (low) left (soft) right (hard)
 			when 38 then window.events.peak.dispatch 'hi'
-			when 67 then window.events.peak.dispatch 'hi'
 			when 40 then window.events.peak.dispatch 'lo'
-			when 86 then window.events.peak.dispatch 'lo'
 			when 37 then window.events.peak.dispatch 'soft'
 			when 39 then window.events.peak.dispatch 'hard'
 			#stripes
@@ -66,12 +68,11 @@ class KeyboardController
 			when 71 then window.events.showText.dispatch 'putUpWall'
 			when 72 then window.events.showText.dispatch 'tearDownWall'
 			#illustrations
-			when 74 then window.events.showIllustration.dispatch 'pretzel'
-			when 75 then window.events.showIllustration.dispatch 'currywurst'
-			when 76 then window.events.showIllustration.dispatch 'tower'
+			when 74 then window.events.showIllustration.dispatch 'food'
+			when 75 then window.events.showIllustration.dispatch 'mascot'
+			when 76 then window.events.showIllustration.dispatch 'landmark'
 			#filters
 			when 77 then window.events.filter.dispatch 'blur'
-			when 67 then window.events.filter.dispatch 'invert'
 
 
 	getBPM: () =>
