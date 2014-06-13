@@ -20,59 +20,58 @@ class KeyboardController
 
 		if e.metaKey is false
 			e.preventDefault()
-
-		switch e.keyCode
-			#inverse colours with 0
-			when 48 then window.events.inverseCols.dispatch()
-			#set intensity of colours with 1-9 (1 = intense, 9 = subtle)
-			when 49 then window.events.frequency.dispatch 1
-			when 50 then window.events.frequency.dispatch 2
-			when 51 then window.events.frequency.dispatch 3
-			when 52 then window.events.frequency.dispatch 4
-			when 53 then window.events.frequency.dispatch 5
-			when 54 then window.events.frequency.dispatch 6
-			when 55 then window.events.frequency.dispatch 7
-			when 56 then window.events.frequency.dispatch 8
-			when 57 then window.events.frequency.dispatch 9
-			#set BPM by tapping spacebar
-			when 32 then @getBPM()
-			#bass with B
-			when 78 then window.events.bass.dispatch 'small'
-			when 66 then window.events.bass.dispatch 'big'
-			#angela
-			when 90 then window.events.angela.dispatch 'angela_1'
-			when 88 then window.events.angela.dispatch 'angela_2'
-			when 67 then window.events.angela.dispatch 'angela_3'
-			when 86 then window.events.angela.dispatch 'angela_4'
-			#peaks with up (high) down (low) left (soft) right (hard)
-			when 38 then window.events.peak.dispatch 'hi'
-			when 40 then window.events.peak.dispatch 'lo'
-			when 37 then window.events.peak.dispatch 'soft'
-			when 39 then window.events.peak.dispatch 'hard'
-			#stripes
-			when 81 then window.events.makeSpecial.dispatch 1
-			when 87 then window.events.makeSpecial.dispatch 2
-			when 69 then window.events.makeSpecial.dispatch 3
-			when 82 then window.events.makeSpecial.dispatch 4
-			when 84 then window.events.makeSpecial.dispatch 5
-			when 89 then window.events.makeSpecial.dispatch 6
-			when 85 then window.events.makeSpecial.dispatch 7
-			when 73 then window.events.makeSpecial.dispatch 8
-			when 79 then window.events.makeSpecial.dispatch 9
-			when 80 then window.events.makeSpecial.dispatch 0
-			#text
-			when 65 then window.events.showText.dispatch 'ber'
-			when 83 then window.events.showText.dispatch 'lin'
-			when 68 then window.events.showText.dispatch 'bisque'
-			when 70 then window.events.showText.dispatch 'rage'
-			when 71 then window.events.showText.dispatch 'putUpWall'
-			when 72 then window.events.showText.dispatch 'tearDownWall'
-			#illustrations
-			when 74 then window.events.showIllustration.dispatch 'food'
-			when 75 then window.events.showIllustration.dispatch 'mascot'
-			when 76 then window.events.showIllustration.dispatch 'landmark'
-			#filters
-			when 77 then window.events.filter.dispatch 'blur'
+			switch e.keyCode
+				#inverse colours with 0
+				when 48 then window.events.inverseCols.dispatch()
+				#set intensity of colours with 1-9 (1 = intense, 9 = subtle)
+				when 49 then window.events.frequency.dispatch 1
+				when 50 then window.events.frequency.dispatch 2
+				when 51 then window.events.frequency.dispatch 3
+				when 52 then window.events.frequency.dispatch 4
+				when 53 then window.events.frequency.dispatch 5
+				when 54 then window.events.frequency.dispatch 6
+				when 55 then window.events.frequency.dispatch 7
+				when 56 then window.events.frequency.dispatch 8
+				when 57 then window.events.frequency.dispatch 9
+				#set BPM by tapping spacebar
+				when 32 then @getBPM()
+				#bass with B
+				when 78 then window.events.bass.dispatch 'small'
+				when 66 then window.events.bass.dispatch 'big'
+				#angela
+				when 90 then window.events.angela.dispatch 'angela_1'
+				when 88 then window.events.angela.dispatch 'angela_2'
+				when 67 then window.events.angela.dispatch 'angela_3'
+				when 86 then window.events.angela.dispatch 'angela_4'
+				#peaks with up (high) down (low) left (soft) right (hard)
+				when 38 then window.events.peak.dispatch 'hi'
+				when 40 then window.events.peak.dispatch 'lo'
+				when 37 then window.events.peak.dispatch 'soft'
+				when 39 then window.events.peak.dispatch 'hard'
+				#stripes
+				when 81 then window.events.makeSpecial.dispatch 1
+				when 87 then window.events.makeSpecial.dispatch 2
+				when 69 then window.events.makeSpecial.dispatch 3
+				when 82 then window.events.makeSpecial.dispatch 4
+				when 84 then window.events.makeSpecial.dispatch 5
+				when 89 then window.events.makeSpecial.dispatch 6
+				when 85 then window.events.makeSpecial.dispatch 7
+				when 73 then window.events.makeSpecial.dispatch 8
+				when 79 then window.events.makeSpecial.dispatch 9
+				when 80 then window.events.makeSpecial.dispatch 0
+				#text
+				when 65 then window.events.showText.dispatch 'ber'
+				when 83 then window.events.showText.dispatch 'lin'
+				when 68 then window.events.showText.dispatch 'bisque'
+				when 70 then window.events.showText.dispatch 'rage'
+				when 71 then window.events.showText.dispatch 'putUpWall'
+				when 72 then window.events.showText.dispatch 'tearDownWall'
+				#illustrations
+				when 74 then window.events.showIllustration.dispatch 'food'
+				when 75 then window.events.showIllustration.dispatch 'mascot'
+				when 76 then window.events.showIllustration.dispatch 'landmark'
+				#filters
+				when 77 then window.events.filter.dispatch 'blur'
 
 
 	getBPM: () =>

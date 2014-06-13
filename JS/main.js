@@ -232,6 +232,7 @@
     };
 
     AudioAnalysisEngine.prototype.checkForPeak = function() {
+      var illu;
       if (this._averageAmp > this._lastAverageAmp && !this._waitingForPeak) {
         this._waitingForPeak = true;
       }
@@ -245,17 +246,46 @@
         }
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
-          return window.events.peak.dispatch('hi');
+          window.events.peak.dispatch('hi');
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
-          return window.events.peak.dispatch('lo');
+          window.events.peak.dispatch('lo');
         } else {
+          if (Math.random() > 0.85) {
+            if (Math.random() > 0.49) {
+              window.events.makeSpecial.dispatch(9);
+            } else {
+              window.events.makeSpecial.dispatch(0);
+            }
+          }
           if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
             this.eventLogger('hardPeak');
-            return window.events.peak.dispatch('hard');
+            window.events.peak.dispatch('hard');
           } else {
             this.eventLogger("softPeak");
-            return window.events.peak.dispatch('soft');
+            window.events.peak.dispatch('soft');
+          }
+        }
+        if (Math.random() > 0.9) {
+          illu = Math.ceil(Math.random() * 3);
+          switch (illu) {
+            case 1:
+              window.events.showIllustration.dispatch('food');
+              break;
+            case 2:
+              window.events.showIllustration.dispatch('mascot');
+              break;
+            case 3:
+              window.events.showIllustration.dispatch('landmark');
+          }
+        }
+        if (Math.random() > 0.99) {
+          if (Math.random() > 0.6) {
+            window.events.showText.dispatch('ber');
+            return window.events.showText.dispatch('lin');
+          } else {
+            window.events.showText.dispatch('bisque');
+            return window.events.showText.dispatch('rage');
           }
         }
       }
@@ -354,7 +384,7 @@
     };
 
     AudioAnalysisEngine.prototype.calculateAverageBpm = function() {
-      var timeForTenPeaks;
+      var random, timeForTenPeaks;
       this._bpmCalcArray.push(new Date().getTime());
       if (this._bpmCalcArray.length === 10) {
         timeForTenPeaks = this._bpmCalcArray[this._bpmCalcArray.length - 1] - this._bpmCalcArray[0];
@@ -371,6 +401,12 @@
         } else if (this._approxBPM < this._lastBPM - this._dropJumpBPMSensitivity) {
           window.events.BPMDrop.dispatch(this._approxBPM);
           this.eventLogger('BPMDrop');
+          random = Math.random();
+          if (random < 0.2) {
+            window.events.showText.dispatch('putUpWall');
+          } else if (random > 0.2 && random < 0.4) {
+            window.events.showText.dispatch('tearDownWall');
+          }
         }
         return this._lastBPM = this._approxBPM;
       }
@@ -527,90 +563,90 @@
       }
       if (e.metaKey === false) {
         e.preventDefault();
-      }
-      switch (e.keyCode) {
-        case 48:
-          return window.events.inverseCols.dispatch();
-        case 49:
-          return window.events.frequency.dispatch(1);
-        case 50:
-          return window.events.frequency.dispatch(2);
-        case 51:
-          return window.events.frequency.dispatch(3);
-        case 52:
-          return window.events.frequency.dispatch(4);
-        case 53:
-          return window.events.frequency.dispatch(5);
-        case 54:
-          return window.events.frequency.dispatch(6);
-        case 55:
-          return window.events.frequency.dispatch(7);
-        case 56:
-          return window.events.frequency.dispatch(8);
-        case 57:
-          return window.events.frequency.dispatch(9);
-        case 32:
-          return this.getBPM();
-        case 78:
-          return window.events.bass.dispatch('small');
-        case 66:
-          return window.events.bass.dispatch('big');
-        case 90:
-          return window.events.angela.dispatch('angela_1');
-        case 88:
-          return window.events.angela.dispatch('angela_2');
-        case 67:
-          return window.events.angela.dispatch('angela_3');
-        case 86:
-          return window.events.angela.dispatch('angela_4');
-        case 38:
-          return window.events.peak.dispatch('hi');
-        case 40:
-          return window.events.peak.dispatch('lo');
-        case 37:
-          return window.events.peak.dispatch('soft');
-        case 39:
-          return window.events.peak.dispatch('hard');
-        case 81:
-          return window.events.makeSpecial.dispatch(1);
-        case 87:
-          return window.events.makeSpecial.dispatch(2);
-        case 69:
-          return window.events.makeSpecial.dispatch(3);
-        case 82:
-          return window.events.makeSpecial.dispatch(4);
-        case 84:
-          return window.events.makeSpecial.dispatch(5);
-        case 89:
-          return window.events.makeSpecial.dispatch(6);
-        case 85:
-          return window.events.makeSpecial.dispatch(7);
-        case 73:
-          return window.events.makeSpecial.dispatch(8);
-        case 79:
-          return window.events.makeSpecial.dispatch(9);
-        case 80:
-          return window.events.makeSpecial.dispatch(0);
-        case 65:
-          return window.events.showText.dispatch('ber');
-        case 83:
-          return window.events.showText.dispatch('lin');
-        case 68:
-          return window.events.showText.dispatch('bisque');
-        case 70:
-          return window.events.showText.dispatch('rage');
-        case 71:
-          return window.events.showText.dispatch('putUpWall');
-        case 72:
-          return window.events.showText.dispatch('tearDownWall');
-        case 74:
-          return window.events.showIllustration.dispatch('food');
-        case 75:
-          return window.events.showIllustration.dispatch('mascot');
-        case 76:
-          return window.events.showIllustration.dispatch('landmark');
-        case 77:
-          return window.events.filter.dispatch('blur');
+        switch (e.keyCode) {
+          case 48:
+            return window.events.inverseCols.dispatch();
+          case 49:
+            return window.events.frequency.dispatch(1);
+          case 50:
+            return window.events.frequency.dispatch(2);
+          case 51:
+            return window.events.frequency.dispatch(3);
+          case 52:
+            return window.events.frequency.dispatch(4);
+          case 53:
+            return window.events.frequency.dispatch(5);
+          case 54:
+            return window.events.frequency.dispatch(6);
+          case 55:
+            return window.events.frequency.dispatch(7);
+          case 56:
+            return window.events.frequency.dispatch(8);
+          case 57:
+            return window.events.frequency.dispatch(9);
+          case 32:
+            return this.getBPM();
+          case 78:
+            return window.events.bass.dispatch('small');
+          case 66:
+            return window.events.bass.dispatch('big');
+          case 90:
+            return window.events.angela.dispatch('angela_1');
+          case 88:
+            return window.events.angela.dispatch('angela_2');
+          case 67:
+            return window.events.angela.dispatch('angela_3');
+          case 86:
+            return window.events.angela.dispatch('angela_4');
+          case 38:
+            return window.events.peak.dispatch('hi');
+          case 40:
+            return window.events.peak.dispatch('lo');
+          case 37:
+            return window.events.peak.dispatch('soft');
+          case 39:
+            return window.events.peak.dispatch('hard');
+          case 81:
+            return window.events.makeSpecial.dispatch(1);
+          case 87:
+            return window.events.makeSpecial.dispatch(2);
+          case 69:
+            return window.events.makeSpecial.dispatch(3);
+          case 82:
+            return window.events.makeSpecial.dispatch(4);
+          case 84:
+            return window.events.makeSpecial.dispatch(5);
+          case 89:
+            return window.events.makeSpecial.dispatch(6);
+          case 85:
+            return window.events.makeSpecial.dispatch(7);
+          case 73:
+            return window.events.makeSpecial.dispatch(8);
+          case 79:
+            return window.events.makeSpecial.dispatch(9);
+          case 80:
+            return window.events.makeSpecial.dispatch(0);
+          case 65:
+            return window.events.showText.dispatch('ber');
+          case 83:
+            return window.events.showText.dispatch('lin');
+          case 68:
+            return window.events.showText.dispatch('bisque');
+          case 70:
+            return window.events.showText.dispatch('rage');
+          case 71:
+            return window.events.showText.dispatch('putUpWall');
+          case 72:
+            return window.events.showText.dispatch('tearDownWall');
+          case 74:
+            return window.events.showIllustration.dispatch('food');
+          case 75:
+            return window.events.showIllustration.dispatch('mascot');
+          case 76:
+            return window.events.showIllustration.dispatch('landmark');
+          case 77:
+            return window.events.filter.dispatch('blur');
+        }
       }
     };
 

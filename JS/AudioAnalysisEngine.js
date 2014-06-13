@@ -232,6 +232,7 @@
     };
 
     AudioAnalysisEngine.prototype.checkForPeak = function() {
+      var illu;
       if (this._averageAmp > this._lastAverageAmp && !this._waitingForPeak) {
         this._waitingForPeak = true;
       }
@@ -245,17 +246,46 @@
         }
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
-          return window.events.peak.dispatch('hi');
+          window.events.peak.dispatch('hi');
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
-          return window.events.peak.dispatch('lo');
+          window.events.peak.dispatch('lo');
         } else {
+          if (Math.random() > 0.85) {
+            if (Math.random() > 0.49) {
+              window.events.makeSpecial.dispatch(9);
+            } else {
+              window.events.makeSpecial.dispatch(0);
+            }
+          }
           if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
             this.eventLogger('hardPeak');
-            return window.events.peak.dispatch('hard');
+            window.events.peak.dispatch('hard');
           } else {
             this.eventLogger("softPeak");
-            return window.events.peak.dispatch('soft');
+            window.events.peak.dispatch('soft');
+          }
+        }
+        if (Math.random() > 0.9) {
+          illu = Math.ceil(Math.random() * 3);
+          switch (illu) {
+            case 1:
+              window.events.showIllustration.dispatch('food');
+              break;
+            case 2:
+              window.events.showIllustration.dispatch('mascot');
+              break;
+            case 3:
+              window.events.showIllustration.dispatch('landmark');
+          }
+        }
+        if (Math.random() > 0.99) {
+          if (Math.random() > 0.6) {
+            window.events.showText.dispatch('ber');
+            return window.events.showText.dispatch('lin');
+          } else {
+            window.events.showText.dispatch('bisque');
+            return window.events.showText.dispatch('rage');
           }
         }
       }
@@ -354,7 +384,7 @@
     };
 
     AudioAnalysisEngine.prototype.calculateAverageBpm = function() {
-      var timeForTenPeaks;
+      var random, timeForTenPeaks;
       this._bpmCalcArray.push(new Date().getTime());
       if (this._bpmCalcArray.length === 10) {
         timeForTenPeaks = this._bpmCalcArray[this._bpmCalcArray.length - 1] - this._bpmCalcArray[0];
@@ -371,6 +401,12 @@
         } else if (this._approxBPM < this._lastBPM - this._dropJumpBPMSensitivity) {
           window.events.BPMDrop.dispatch(this._approxBPM);
           this.eventLogger('BPMDrop');
+          random = Math.random();
+          if (random < 0.2) {
+            window.events.showText.dispatch('putUpWall');
+          } else if (random > 0.2 && random < 0.4) {
+            window.events.showText.dispatch('tearDownWall');
+          }
         }
         return this._lastBPM = this._approxBPM;
       }

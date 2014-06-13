@@ -37,19 +37,7 @@ class VisualsEngine
 	_targetBlur = 0
 	_currentBlur = 0
 
-	#colours
-		#bg = low sat and low bright
-		#fg = high sat and high bright
-		#OR sometimes reverse this and have bg bright and saturated, and fg desat and darker
-		#high volume / high BPM = more saturated colours
-		#low freq = darker, high = lighter
-
-		#when beats are softer (but still hard enough to change bg colour) then contrast between bg colours should be less
-
-		#manage colours with a colour bucket manager... change colour scheme when things such as freq / vol / bpm change. sometimes lerp between old and new colours, sometimes straight swap
-		#make lots of colour buckets with similar properties on each change, and then randomly pick which one to use in the method which makes the shape / bg
-
-
+	
 	constructor: ->
 		console.log 'setup background generation'
 		@_cv = document.getElementById "magic"
