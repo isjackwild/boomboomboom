@@ -251,11 +251,13 @@
           this.eventLogger("loPeak");
           window.events.peak.dispatch('lo');
         } else {
-          if (Math.random() > 0.94) {
-            if (Math.random() > 0.49) {
-              window.events.makeSpecial.dispatch(9);
-            } else {
-              window.events.makeSpecial.dispatch(0);
+          if (this._automatic === true) {
+            if (Math.random() > 0.94) {
+              if (Math.random() > 0.49) {
+                window.events.makeSpecial.dispatch(9);
+              } else {
+                window.events.makeSpecial.dispatch(0);
+              }
             }
           }
           if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
@@ -266,26 +268,28 @@
             window.events.peak.dispatch('soft');
           }
         }
-        if (Math.random() > 0.9) {
-          illu = Math.ceil(Math.random() * 3);
-          switch (illu) {
-            case 1:
-              window.events.showIllustration.dispatch('food');
-              break;
-            case 2:
-              window.events.showIllustration.dispatch('mascot');
-              break;
-            case 3:
-              window.events.showIllustration.dispatch('landmark');
+        if (this._automatic === true) {
+          if (Math.random() > 0.9) {
+            illu = Math.ceil(Math.random() * 3);
+            switch (illu) {
+              case 1:
+                window.events.showIllustration.dispatch('food');
+                break;
+              case 2:
+                window.events.showIllustration.dispatch('mascot');
+                break;
+              case 3:
+                window.events.showIllustration.dispatch('landmark');
+            }
           }
-        }
-        if (Math.random() > 0.995) {
-          if (Math.random() > 0.6) {
-            window.events.showText.dispatch('ber');
-            return window.events.showText.dispatch('lin');
-          } else {
-            window.events.showText.dispatch('bisque');
-            return window.events.showText.dispatch('rage');
+          if (Math.random() > 0.995) {
+            if (Math.random() > 0.6) {
+              window.events.showText.dispatch('ber');
+              return window.events.showText.dispatch('lin');
+            } else {
+              window.events.showText.dispatch('bisque');
+              return window.events.showText.dispatch('rage');
+            }
           }
         }
       }
@@ -401,11 +405,13 @@
         } else if (this._approxBPM < this._lastBPM - this._dropJumpBPMSensitivity) {
           window.events.BPMDrop.dispatch(this._approxBPM);
           this.eventLogger('BPMDrop');
-          random = Math.random();
-          if (random < 0.15) {
-            window.events.showText.dispatch('putUpWall');
-          } else if (random > 0.15 && random < 0.35) {
-            window.events.showText.dispatch('tearDownWall');
+          if (this._automatic === true) {
+            random = Math.random();
+            if (random < 0.1) {
+              window.events.showText.dispatch('putUpWall');
+            } else if (random > 0.1 && random < 0.2) {
+              window.events.showText.dispatch('tearDownWall');
+            }
           }
         }
         return this._lastBPM = this._approxBPM;

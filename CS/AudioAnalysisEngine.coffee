@@ -207,11 +207,12 @@ class AudioAnalysisEngine
 				@eventLogger "loPeak"
 				window.events.peak.dispatch 'lo'
 			else
-				if Math.random() > 0.94
-					if Math.random() > 0.49
-						window.events.makeSpecial.dispatch 9
-					else 
-						window.events.makeSpecial.dispatch 0
+				if @_automatic is true
+					if Math.random() > 0.94
+						if Math.random() > 0.49
+							window.events.makeSpecial.dispatch 9
+						else 
+							window.events.makeSpecial.dispatch 0
 				if @_averageAmp+@_peakSensitivityOffset*2 < @_lastAverageAmp
 					@eventLogger 'hardPeak'
 					window.events.peak.dispatch 'hard'
@@ -219,21 +220,21 @@ class AudioAnalysisEngine
 					@eventLogger "softPeak"
 					window.events.peak.dispatch 'soft'
 			#show an illustration sometimes
-			if Math.random() > 0.9
-				illu = Math.ceil Math.random()*3
-				#bug here when requestanimframe is paused. get the problem where too many instances are added. Fix this.
-				switch illu
-					when 1 then window.events.showIllustration.dispatch 'food'
-					when 2 then window.events.showIllustration.dispatch 'mascot'
-					when 3 then window.events.showIllustration.dispatch 'landmark'
-
-			if Math.random() > 0.995
-				if Math.random() > 0.6
-					window.events.showText.dispatch 'ber'
-					window.events.showText.dispatch 'lin'
-				else 
-					window.events.showText.dispatch 'bisque'
-					window.events.showText.dispatch 'rage'
+			if @_automatic is true
+				if Math.random() > 0.9
+					illu = Math.ceil Math.random()*3
+					#bug here when requestanimframe is paused. get the problem where too many instances are added. Fix this.
+					switch illu
+						when 1 then window.events.showIllustration.dispatch 'food'
+						when 2 then window.events.showIllustration.dispatch 'mascot'
+						when 3 then window.events.showIllustration.dispatch 'landmark'
+				if Math.random() > 0.995
+					if Math.random() > 0.6
+						window.events.showText.dispatch 'ber'
+						window.events.showText.dispatch 'lin'
+					else 
+						window.events.showText.dispatch 'bisque'
+						window.events.showText.dispatch 'rage'
 
 
 
@@ -327,11 +328,12 @@ class AudioAnalysisEngine
 			else if @_approxBPM < @_lastBPM-@_dropJumpBPMSensitivity
 				window.events.BPMDrop.dispatch @_approxBPM
 				@eventLogger 'BPMDrop'
-				random = Math.random()
-				if random < 0.15
-					window.events.showText.dispatch 'putUpWall'
-				else if random > 0.15 and random < 0.35
-					window.events.showText.dispatch 'tearDownWall'
+				if @_automatic is true
+					random = Math.random()
+					if random < 0.1
+						window.events.showText.dispatch 'putUpWall'
+					else if random > 0.1 and random < 0.2
+						window.events.showText.dispatch 'tearDownWall'
 			@_lastBPM = @_approxBPM
 
 
