@@ -47,7 +47,8 @@ class VisualsEngine
 		@updateColourBucket()
 		
 
-	setupListeners: ->
+	setupListeners: =>
+		console.log 'setup listeners'
 		window.events.peak.add @onPeak
 		window.events.bass.add @onBass
 		window.events.break.add @onBreak
@@ -59,9 +60,10 @@ class VisualsEngine
 		window.events.makeSpecial.add @makeSpecial
 		window.events.showText.add @showText
 		window.events.showIllustration.add @showIllustration
-		window.events.angela.add @showAngela
+		window.events.angela.add @showPhoto
 		window.events.filter.add @addFilter
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
+
 
 
 	setupTwoJs: ->
@@ -94,7 +96,6 @@ class VisualsEngine
 
 	gotFrequency: (freq) =>
 		@_frequency = freq
-		console.log @_frequency, "got freq", @_frequency
 		@updateBackgroundColour()
 		@updateColourBucket()
 
@@ -108,7 +109,6 @@ class VisualsEngine
 		@updateBackgroundColour()
 
 	inverseCols: () =>
-		console.log 'inverseCols'
 		if @_negativeColours is false
 			@_negativeColours = true
 		else
@@ -162,7 +162,6 @@ class VisualsEngine
 	
 
 	onPeak: (type) =>
-		console.log 'peak'
 		@_peakCount++
 		peakTime = new Date().getTime()
 
@@ -334,7 +333,7 @@ class VisualsEngine
 
 	showIllustration: (which) =>
 		for shape, i in @_shapes
-			if shape.isIllustration
+			if shape.isIllustration is true
 				return
 
 		switch which
@@ -363,19 +362,19 @@ class VisualsEngine
 		illustration.isIllustration = true
 		@_shapes.push illustration
 
-	showAngela: (which) =>
-		$('#angela').removeClass()
+	showPhoto: (which) =>
+		$('#photo').removeClass()
 
-		$('#angela').addClass which
-		$('#angela').addClass 'show'
+		$('#photo').addClass which
+		$('#photo').addClass 'show'
 		clearTimeout @_angelaTimer
 		clearTimeout @_angelaTimer2
 
 		@_angelaTimer = setTimeout =>
-			$('#angela').removeClass 'show'
+			$('#photo').removeClass 'show'
 		, 2000
 		@_angelaTimer2 = setTimeout =>
-			$('#angela').removeClass which
+			$('#photo').removeClass which
 		, 2500
 
 

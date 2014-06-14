@@ -122,7 +122,7 @@
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
       this.onBass = __bind(this.onBass, this);
       this.onBreak = __bind(this.onBreak, this);
-      this.showAngela = __bind(this.showAngela, this);
+      this.showPhoto = __bind(this.showPhoto, this);
       this.showIllustration = __bind(this.showIllustration, this);
       this.showText = __bind(this.showText, this);
       this.makeSpecial = __bind(this.makeSpecial, this);
@@ -135,6 +135,7 @@
       this.gotFrequency = __bind(this.gotFrequency, this);
       this.onBPMJump = __bind(this.onBPMJump, this);
       this.gotBPM = __bind(this.gotBPM, this);
+      this.setupListeners = __bind(this.setupListeners, this);
       console.log('setup background generation');
       this._cv = document.getElementById("magic");
       this._ctx = this._cv.getContext('2d');
@@ -144,6 +145,7 @@
     }
 
     VisualsEngine.prototype.setupListeners = function() {
+      console.log('setup listeners');
       window.events.peak.add(this.onPeak);
       window.events.bass.add(this.onBass);
       window.events["break"].add(this.onBreak);
@@ -155,7 +157,7 @@
       window.events.makeSpecial.add(this.makeSpecial);
       window.events.showText.add(this.showText);
       window.events.showIllustration.add(this.showIllustration);
-      window.events.angela.add(this.showAngela);
+      window.events.angela.add(this.showPhoto);
       window.events.filter.add(this.addFilter);
       return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
     };
@@ -190,7 +192,6 @@
 
     VisualsEngine.prototype.gotFrequency = function(freq) {
       this._frequency = freq;
-      console.log(this._frequency, "got freq", this._frequency);
       this.updateBackgroundColour();
       return this.updateColourBucket();
     };
@@ -206,7 +207,6 @@
     };
 
     VisualsEngine.prototype.inverseCols = function() {
-      console.log('inverseCols');
       if (this._negativeColours === false) {
         this._negativeColours = true;
       } else {
@@ -280,7 +280,6 @@
 
     VisualsEngine.prototype.onPeak = function(type) {
       var circle, col, duration, peakTime, v, whichCol;
-      console.log('peak');
       this._peakCount++;
       peakTime = new Date().getTime();
       if (type === 'hard') {
@@ -490,7 +489,7 @@
       _ref = this._shapes;
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         shape = _ref[i];
-        if (shape.isIllustration) {
+        if (shape.isIllustration === true) {
           return;
         }
       }
@@ -525,20 +524,20 @@
       return this._shapes.push(illustration);
     };
 
-    VisualsEngine.prototype.showAngela = function(which) {
-      $('#angela').removeClass();
-      $('#angela').addClass(which);
-      $('#angela').addClass('show');
+    VisualsEngine.prototype.showPhoto = function(which) {
+      $('#photo').removeClass();
+      $('#photo').addClass(which);
+      $('#photo').addClass('show');
       clearTimeout(this._angelaTimer);
       clearTimeout(this._angelaTimer2);
       this._angelaTimer = setTimeout((function(_this) {
         return function() {
-          return $('#angela').removeClass('show');
+          return $('#photo').removeClass('show');
         };
       })(this), 2000);
       return this._angelaTimer2 = setTimeout((function(_this) {
         return function() {
-          return $('#angela').removeClass(which);
+          return $('#photo').removeClass(which);
         };
       })(this), 2500);
     };

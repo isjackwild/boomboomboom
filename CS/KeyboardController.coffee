@@ -39,10 +39,10 @@ class KeyboardController
 				when 78 then window.events.bass.dispatch 'small'
 				when 66 then window.events.bass.dispatch 'big'
 				#angela
-				when 90 then window.events.angela.dispatch 'angela_1'
-				when 88 then window.events.angela.dispatch 'angela_2'
-				when 67 then window.events.angela.dispatch 'angela_3'
-				when 86 then window.events.angela.dispatch 'angela_4'
+				when 90 then window.events.angela.dispatch 'angela'
+				when 88 then window.events.angela.dispatch 'kiss'
+				when 67 then window.events.angela.dispatch 'wall'
+				when 86 then window.events.angela.dispatch 'ruins'
 				#peaks with up (high) down (low) left (soft) right (hard)
 				when 38 then window.events.peak.dispatch 'hi'
 				when 40 then window.events.peak.dispatch 'lo'

@@ -73,6 +73,7 @@ class AudioAnalysisEngine
 
 	_debugCV: null
 	_debugCTX: null
+	_visible: true
 
 
 	constructor: ->
@@ -81,6 +82,15 @@ class AudioAnalysisEngine
 		@setupFilters()
 		@setupDebugEqualizer()
 		window.events.automatic.add @toggleAuto
+
+
+		$(window).on 'blur', =>
+			console.log 'blur'
+			@_visible = false
+		$(window).on 'focus', =>
+			console.log 'focus'
+			@_visible = true
+
 
 
 		@_testAudio = document.getElementById('test_audio')
@@ -111,7 +121,6 @@ class AudioAnalysisEngine
 		@_biquadFilter.type = "lowshelf"
 		@_biquadFilter.frequency.value = 300
 		@_biquadFilter.gain.value = 5
-		console.log @_biquadFilter, @_dynamicsCompressor
 		
 	setupTestAudio: =>
 		console.log 'setup test audio', @_testAudio
@@ -221,13 +230,16 @@ class AudioAnalysisEngine
 					window.events.peak.dispatch 'soft'
 			#show an illustration sometimes
 			if @_automatic is true
-				if Math.random() > 0.9
+				if Math.random() > 0.1
 					illu = Math.ceil Math.random()*3
-					#bug here when requestanimframe is paused. get the problem where too many instances are added. Fix this.
-					switch illu
-						when 1 then window.events.showIllustration.dispatch 'food'
-						when 2 then window.events.showIllustration.dispatch 'mascot'
-						when 3 then window.events.showIllustration.dispatch 'landmark'
+					#move this to the visuals engine
+					console.log @_visible
+					if @_visible is true
+						switch illu
+							when 1 then window.events.showIllustration.dispatch 'food'
+							when 2 then window.events.showIllustration.dispatch 'mascot'
+							when 3 then window.events.showIllustration.dispatch 'landmark'
+
 				if Math.random() > 0.995
 					if Math.random() > 0.6
 						window.events.showText.dispatch 'ber'
@@ -260,7 +272,6 @@ class AudioAnalysisEngine
 				if i is @_averageFreqCalcArray.length-1
 					tempAvFreq /= @_averageFreqCalcArray.length #get average freq of them
 					@_averageFrequency = tempAvFreq
-					console.log @_averageFrequency, "<<<"
 					window.events.frequency.dispatch @_averageFrequency
 					@_averageFreqCalcArray = []
 					@_bassCutoff = @_averageFrequency + 3

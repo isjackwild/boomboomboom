@@ -60,13 +60,13 @@
           case 66:
             return window.events.bass.dispatch('big');
           case 90:
-            return window.events.angela.dispatch('angela_1');
+            return window.events.angela.dispatch('angela');
           case 88:
-            return window.events.angela.dispatch('angela_2');
+            return window.events.angela.dispatch('kiss');
           case 67:
-            return window.events.angela.dispatch('angela_3');
+            return window.events.angela.dispatch('wall');
           case 86:
-            return window.events.angela.dispatch('angela_4');
+            return window.events.angela.dispatch('ruins');
           case 38:
             return window.events.peak.dispatch('hi');
           case 40:

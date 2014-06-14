@@ -91,7 +91,7 @@ body {
 #quotes span.show {
   opacity: 0.66;
 }
-#angela {
+#photo {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -102,20 +102,20 @@ body {
   opacity: 0;
   -webkit-transition: opacity 0.5s;
 }
-#angela.show {
+#photo.show {
   opacity: 0.8;
 }
-#angela.angela_1 {
-  background-image: url("../Assets/angela_1.gif");
+#photo.angela {
+  background-image: url("../Assets/angela.gif");
 }
-#angela.angela_2 {
-  background-image: url("../Assets/angela_2.gif");
+#photo.kiss {
+  background-image: url("../Assets/kiss.gif");
 }
-#angela.angela_3 {
-  background-image: url("../Assets/angela_3.gif");
+#photo.wall {
+  background-image: url("../Assets/fallwall.gif");
 }
-#angela.angela_4 {
-  background-image: url("../Assets/angela_4.gif");
+#photo.ruins {
+  background-image: url("../Assets/ruins.gif");
 }
 #debugVisualiser {
   width: 300px;

@@ -87,6 +87,8 @@
 
     AudioAnalysisEngine.prototype._debugCTX = null;
 
+    AudioAnalysisEngine.prototype._visible = true;
+
     function AudioAnalysisEngine() {
       this.drawDebugEqualizer = __bind(this.drawDebugEqualizer, this);
       this.setupDebugEqualizer = __bind(this.setupDebugEqualizer, this);
@@ -111,6 +113,18 @@
       this.setupFilters();
       this.setupDebugEqualizer();
       window.events.automatic.add(this.toggleAuto);
+      $(window).on('blur', (function(_this) {
+        return function() {
+          console.log('blur');
+          return _this._visible = false;
+        };
+      })(this));
+      $(window).on('focus', (function(_this) {
+        return function() {
+          console.log('focus');
+          return _this._visible = true;
+        };
+      })(this));
       this._testAudio = document.getElementById('test_audio');
       document.onclick = (function(_this) {
         return function() {
@@ -143,8 +157,7 @@
       this._biquadFilter = this._context.createBiquadFilter();
       this._biquadFilter.type = "lowshelf";
       this._biquadFilter.frequency.value = 300;
-      this._biquadFilter.gain.value = 5;
-      return console.log(this._biquadFilter, this._dynamicsCompressor);
+      return this._biquadFilter.gain.value = 5;
     };
 
     AudioAnalysisEngine.prototype.setupTestAudio = function() {
@@ -269,17 +282,20 @@
           }
         }
         if (this._automatic === true) {
-          if (Math.random() > 0.9) {
+          if (Math.random() > 0.1) {
             illu = Math.ceil(Math.random() * 3);
-            switch (illu) {
-              case 1:
-                window.events.showIllustration.dispatch('food');
-                break;
-              case 2:
-                window.events.showIllustration.dispatch('mascot');
-                break;
-              case 3:
-                window.events.showIllustration.dispatch('landmark');
+            console.log(this._visible);
+            if (this._visible === true) {
+              switch (illu) {
+                case 1:
+                  window.events.showIllustration.dispatch('food');
+                  break;
+                case 2:
+                  window.events.showIllustration.dispatch('mascot');
+                  break;
+                case 3:
+                  window.events.showIllustration.dispatch('landmark');
+              }
             }
           }
           if (Math.random() > 0.995) {
@@ -319,7 +335,6 @@
           if (i === this._averageFreqCalcArray.length - 1) {
             tempAvFreq /= this._averageFreqCalcArray.length;
             this._averageFrequency = tempAvFreq;
-            console.log(this._averageFrequency, "<<<");
             window.events.frequency.dispatch(this._averageFrequency);
             this._averageFreqCalcArray = [];
             _results.push(this._bassCutoff = this._averageFrequency + 3);
