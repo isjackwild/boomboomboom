@@ -15,7 +15,7 @@ class VisualsEngine
 
 	_volume: 20
 	_frequency: 5
-	_bpm: 200
+	_bpm: 333
 	_bpmJumpTime: new Date().getTime()
 
 
@@ -258,6 +258,9 @@ class VisualsEngine
 				line = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.43
 			when 0
 				line = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.3
+			when 11
+				line = @_two.makeRectangle @_two.width/2,  @_two.height/2, @_two.width-40, @_two.height-40
+
 		animationSpeed = @convertToRange(@_bpm, [60,600], [0.05, 0.12])
 		if which >= 1 and which <= 4
 			line.type = 'stripeX'
@@ -271,17 +274,21 @@ class VisualsEngine
 		else if which is 9 or which is 0
 			line.type = 'circle'
 			line.animationSpeed = animationSpeed*20
+		else if which is 11
+			line.type = 'rect'
+			line.animationSpeed = animationSpeed*20
 
-		if @_frequency <= 4
-			line.stroke = "rgb("+255+","+255+","+255+")"
-		else
-			line.stroke = "rgb("+0+","+0+","+0+")"	
+		if line
+			if @_frequency <= 4
+				line.stroke = "rgb("+255+","+255+","+255+")"
+			else
+				line.stroke = "rgb("+0+","+0+","+0+")"	
 
-		line.noFill()
-		line.linewidth = 20
-		line.cap = "butt"
-		@_foreGround.add line
-		@_shapes.push line
+			line.noFill()
+			line.linewidth = 20
+			line.cap = "butt"
+			@_foreGround.add line
+			@_shapes.push line
 	
 
 	showText: (which) =>
@@ -489,7 +496,7 @@ class VisualsEngine
 					if shape.beginning >= 0.5 or shape.ending <= 0.5
 						shape.remove()
 						@_shapes.splice i, 1
-				if shape.type is 'circle'
+				if shape.type is 'circle' or shape.type is 'rect'
 					shape.linewidth -= shape.animationSpeed
 					if shape.linewidth <= 0
 						shape.remove()

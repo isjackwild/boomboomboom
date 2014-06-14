@@ -27,7 +27,7 @@
 
     KeyboardController.prototype.keydown = function(e) {
       console.log(e.keyCode, e);
-      if (e.keyCode >= 37 && e.keyCode <= 40 || e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90) {
+      if (e.keyCode >= 37 && e.keyCode <= 40 || e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90 || e.keyCode === 219 || e.keyCode === 221) {
         this.setAutoTimer();
       }
       if (e.metaKey === false) {
@@ -95,6 +95,10 @@
             return window.events.makeSpecial.dispatch(9);
           case 80:
             return window.events.makeSpecial.dispatch(0);
+          case 219:
+            return window.events.makeSpecial.dispatch(11);
+          case 221:
+            return window.events.makeSpecial.dispatch(12);
           case 65:
             return window.events.showText.dispatch('ber');
           case 83:
@@ -115,6 +119,10 @@
             return window.events.showIllustration.dispatch('landmark');
           case 77:
             return window.events.filter.dispatch('blur');
+          case 188:
+            return window.events["break"].dispatch('long');
+          case 190:
+            return window.events["break"].dispatch('short');
         }
       }
     };

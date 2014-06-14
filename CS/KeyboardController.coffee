@@ -15,7 +15,7 @@ class KeyboardController
 	keydown: (e) =>
 		console.log e.keyCode, e
 		#do this only if any of the function keys are pressed
-		if e.keyCode >= 37 and e.keyCode <=40 or e.keyCode >= 48 and e.keyCode <= 57 or e.keyCode >= 65 and e.keyCode <= 90
+		if e.keyCode >= 37 and e.keyCode <=40 or e.keyCode >= 48 and e.keyCode <= 57 or e.keyCode >= 65 and e.keyCode <= 90 or e.keyCode is 219 or e.keyCode is 221
 			@setAutoTimer()
 
 		if e.metaKey is false
@@ -59,6 +59,8 @@ class KeyboardController
 				when 73 then window.events.makeSpecial.dispatch 8
 				when 79 then window.events.makeSpecial.dispatch 9
 				when 80 then window.events.makeSpecial.dispatch 0
+				when 219 then window.events.makeSpecial.dispatch 11
+				when 221 then window.events.makeSpecial.dispatch 12
 				#text
 				when 65 then window.events.showText.dispatch 'ber'
 				when 83 then window.events.showText.dispatch 'lin'
@@ -72,6 +74,9 @@ class KeyboardController
 				when 76 then window.events.showIllustration.dispatch 'landmark'
 				#filters
 				when 77 then window.events.filter.dispatch 'blur'
+				#flashes
+				when 188 then window.events.break.dispatch 'long'
+				when 190 then window.events.break.dispatch 'short'
 
 
 	getBPM: () =>

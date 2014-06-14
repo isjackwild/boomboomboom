@@ -39,7 +39,7 @@ class AudioAnalysisEngine
 	_lastAverageAmp: null
 
 	_waitingForPeak: false
-	_peakSensitivityOffset: 3 #how much the amp. has to fall by to register a peak
+	_peakSensitivityOffset: 1 #how much the amp. has to fall by to register a peak
 	_bassWaitingForPeak: false
 	_bassCutoff: 1000 #will be overridde... which frequencies in the spectogram aree considered bass
 	_frequencyOfPeak: {

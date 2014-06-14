@@ -27,7 +27,7 @@
 
     VisualsEngine.prototype._frequency = 5;
 
-    VisualsEngine.prototype._bpm = 200;
+    VisualsEngine.prototype._bpm = 333;
 
     VisualsEngine.prototype._bpmJumpTime = new Date().getTime();
 
@@ -400,6 +400,9 @@
           break;
         case 0:
           line = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
+          break;
+        case 11:
+          line = this._two.makeRectangle(this._two.width / 2, this._two.height / 2, this._two.width - 40, this._two.height - 40);
       }
       animationSpeed = this.convertToRange(this._bpm, [60, 600], [0.05, 0.12]);
       if (which >= 1 && which <= 4) {
@@ -414,17 +417,22 @@
       } else if (which === 9 || which === 0) {
         line.type = 'circle';
         line.animationSpeed = animationSpeed * 20;
+      } else if (which === 11) {
+        line.type = 'rect';
+        line.animationSpeed = animationSpeed * 20;
       }
-      if (this._frequency <= 4) {
-        line.stroke = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
-      } else {
-        line.stroke = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
+      if (line) {
+        if (this._frequency <= 4) {
+          line.stroke = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
+        } else {
+          line.stroke = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
+        }
+        line.noFill();
+        line.linewidth = 20;
+        line.cap = "butt";
+        this._foreGround.add(line);
+        return this._shapes.push(line);
       }
-      line.noFill();
-      line.linewidth = 20;
-      line.cap = "butt";
-      this._foreGround.add(line);
-      return this._shapes.push(line);
     };
 
     VisualsEngine.prototype.showText = function(which) {
@@ -690,7 +698,7 @@
               this._shapes.splice(i, 1);
             }
           }
-          if (shape.type === 'circle') {
+          if (shape.type === 'circle' || shape.type === 'rect') {
             shape.linewidth -= shape.animationSpeed;
             if (shape.linewidth <= 0) {
               shape.remove();

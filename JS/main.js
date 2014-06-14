@@ -35,7 +35,7 @@
 
     AudioAnalysisEngine.prototype._waitingForPeak = false;
 
-    AudioAnalysisEngine.prototype._peakSensitivityOffset = 3;
+    AudioAnalysisEngine.prototype._peakSensitivityOffset = 1;
 
     AudioAnalysisEngine.prototype._bassWaitingForPeak = false;
 
@@ -579,7 +579,7 @@
 
     KeyboardController.prototype.keydown = function(e) {
       console.log(e.keyCode, e);
-      if (e.keyCode >= 37 && e.keyCode <= 40 || e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90) {
+      if (e.keyCode >= 37 && e.keyCode <= 40 || e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90 || e.keyCode === 219 || e.keyCode === 221) {
         this.setAutoTimer();
       }
       if (e.metaKey === false) {
@@ -647,6 +647,10 @@
             return window.events.makeSpecial.dispatch(9);
           case 80:
             return window.events.makeSpecial.dispatch(0);
+          case 219:
+            return window.events.makeSpecial.dispatch(11);
+          case 221:
+            return window.events.makeSpecial.dispatch(12);
           case 65:
             return window.events.showText.dispatch('ber');
           case 83:
@@ -667,6 +671,10 @@
             return window.events.showIllustration.dispatch('landmark');
           case 77:
             return window.events.filter.dispatch('blur');
+          case 188:
+            return window.events["break"].dispatch('long');
+          case 190:
+            return window.events["break"].dispatch('short');
         }
       }
     };
@@ -755,7 +763,7 @@
 
     VisualsEngine.prototype._frequency = 5;
 
-    VisualsEngine.prototype._bpm = 200;
+    VisualsEngine.prototype._bpm = 333;
 
     VisualsEngine.prototype._bpmJumpTime = new Date().getTime();
 
@@ -1128,6 +1136,9 @@
           break;
         case 0:
           line = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.3);
+          break;
+        case 11:
+          line = this._two.makeRectangle(this._two.width / 2, this._two.height / 2, this._two.width - 40, this._two.height - 40);
       }
       animationSpeed = this.convertToRange(this._bpm, [60, 600], [0.05, 0.12]);
       if (which >= 1 && which <= 4) {
@@ -1142,17 +1153,22 @@
       } else if (which === 9 || which === 0) {
         line.type = 'circle';
         line.animationSpeed = animationSpeed * 20;
+      } else if (which === 11) {
+        line.type = 'rect';
+        line.animationSpeed = animationSpeed * 20;
       }
-      if (this._frequency <= 4) {
-        line.stroke = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
-      } else {
-        line.stroke = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
+      if (line) {
+        if (this._frequency <= 4) {
+          line.stroke = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
+        } else {
+          line.stroke = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
+        }
+        line.noFill();
+        line.linewidth = 20;
+        line.cap = "butt";
+        this._foreGround.add(line);
+        return this._shapes.push(line);
       }
-      line.noFill();
-      line.linewidth = 20;
-      line.cap = "butt";
-      this._foreGround.add(line);
-      return this._shapes.push(line);
     };
 
     VisualsEngine.prototype.showText = function(which) {
@@ -1418,7 +1434,7 @@
               this._shapes.splice(i, 1);
             }
           }
-          if (shape.type === 'circle') {
+          if (shape.type === 'circle' || shape.type === 'rect') {
             shape.linewidth -= shape.animationSpeed;
             if (shape.linewidth <= 0) {
               shape.remove();
