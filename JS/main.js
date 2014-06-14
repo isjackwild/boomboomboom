@@ -282,7 +282,7 @@
           }
         }
         if (this._automatic === true) {
-          if (Math.random() > 0.1) {
+          if (Math.random() > 0.9) {
             illu = Math.ceil(Math.random() * 3);
             console.log(this._visible);
             if (this._visible === true) {
@@ -1244,7 +1244,11 @@
           }
       }
       illustration = this._two.interpret(document.getElementById(id));
-      illustration.center().translation.set(this._two.width / 2, this._two.height / 2);
+      if (id === 'pretzel') {
+        illustration.center().translation.set(12 + (this._two.width / 2), this._two.height / 2);
+      } else {
+        illustration.center().translation.set(this._two.width / 2, this._two.height / 2);
+      }
       this._foreGround.add(illustration);
       illustration.lifeSpan = 100;
       illustration.creationTime = new Date().getTime();

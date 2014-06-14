@@ -354,8 +354,12 @@ class VisualsEngine
 					id = 'tor'
 				
 		illustration = @_two.interpret document.getElementById id
+		
+		if id is 'pretzel'
+			illustration.center().translation.set 12+(@_two.width / 2), @_two.height / 2
+		else
+			illustration.center().translation.set @_two.width / 2, @_two.height / 2
 
-		illustration.center().translation.set @_two.width / 2, @_two.height / 2
 		@_foreGround.add illustration
 		illustration.lifeSpan = 100
 		illustration.creationTime = new Date().getTime()

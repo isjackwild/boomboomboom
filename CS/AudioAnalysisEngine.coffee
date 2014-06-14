@@ -230,7 +230,7 @@ class AudioAnalysisEngine
 					window.events.peak.dispatch 'soft'
 			#show an illustration sometimes
 			if @_automatic is true
-				if Math.random() > 0.1
+				if Math.random() > 0.9
 					illu = Math.ceil Math.random()*3
 					#move this to the visuals engine
 					console.log @_visible

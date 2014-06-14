@@ -282,7 +282,7 @@
           }
         }
         if (this._automatic === true) {
-          if (Math.random() > 0.1) {
+          if (Math.random() > 0.9) {
             illu = Math.ceil(Math.random() * 3);
             console.log(this._visible);
             if (this._visible === true) {

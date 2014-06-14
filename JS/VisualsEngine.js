@@ -516,7 +516,11 @@
           }
       }
       illustration = this._two.interpret(document.getElementById(id));
-      illustration.center().translation.set(this._two.width / 2, this._two.height / 2);
+      if (id === 'pretzel') {
+        illustration.center().translation.set(12 + (this._two.width / 2), this._two.height / 2);
+      } else {
+        illustration.center().translation.set(this._two.width / 2, this._two.height / 2);
+      }
       this._foreGround.add(illustration);
       illustration.lifeSpan = 100;
       illustration.creationTime = new Date().getTime();
