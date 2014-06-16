@@ -113,18 +113,6 @@
       this.setupFilters();
       this.setupDebugEqualizer();
       window.events.automatic.add(this.toggleAuto);
-      $(window).on('blur', (function(_this) {
-        return function() {
-          console.log('blur');
-          return _this._visible = false;
-        };
-      })(this));
-      $(window).on('focus', (function(_this) {
-        return function() {
-          console.log('focus');
-          return _this._visible = true;
-        };
-      })(this));
       this._testAudio = document.getElementById('test_audio');
       document.onclick = (function(_this) {
         return function() {

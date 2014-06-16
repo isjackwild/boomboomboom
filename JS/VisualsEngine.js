@@ -11,6 +11,10 @@
 
     VisualsEngine.prototype._automatic = true;
 
+    VisualsEngine.prototype._visible = true;
+
+    VisualsEngine.prototype._listeners = [];
+
     VisualsEngine.prototype._shapes = [];
 
     VisualsEngine.prototype._peakCount = 0;
@@ -142,6 +146,18 @@
       this.setupListeners();
       this.setupTwoJs();
       this.updateColourBucket();
+      $(window).on('blur', (function(_this) {
+        return function() {
+          console.log('blur');
+          return _this._visible = false;
+        };
+      })(this));
+      $(window).on('focus', (function(_this) {
+        return function() {
+          console.log('focus');
+          return _this._visible = true;
+        };
+      })(this));
     }
 
     VisualsEngine.prototype.setupListeners = function() {

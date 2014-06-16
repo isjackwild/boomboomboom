@@ -1,6 +1,19 @@
 #Maybe change this to use the backbone events module — it's already included in two.js
 
 Signal = signals.Signal
+
+$(window).on 'blur', =>
+	for key of window.events
+		window.events[key].active = false
+		console.log 'disable events'
+
+$(window).on 'focus', =>
+	for key of window.events
+		window.events[key].active = true
+		console.log 'enable events', window.events[key].active
+
+
+
 window.events = {
 	automatic: new Signal()
 	peak: new Signal()

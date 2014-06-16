@@ -4,6 +4,8 @@ $ ->
 
 class VisualsEngine
 	_automatic: true
+	_visible: true
+	_listeners: []
 
 	_shapes: []
 	_peakCount: 0
@@ -43,6 +45,13 @@ class VisualsEngine
 		@setupListeners()
 		@setupTwoJs()
 		@updateColourBucket()
+
+		$(window).on 'blur', =>
+			console.log 'blur'
+			@_visible = false
+		$(window).on 'focus', =>
+			console.log 'focus'
+			@_visible = true
 		
 
 	setupListeners: =>

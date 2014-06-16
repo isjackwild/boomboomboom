@@ -3,6 +3,30 @@
 
   Signal = signals.Signal;
 
+  $(window).on('blur', (function(_this) {
+    return function() {
+      var key, _results;
+      _results = [];
+      for (key in window.events) {
+        window.events[key].active = false;
+        _results.push(console.log('disable events'));
+      }
+      return _results;
+    };
+  })(this));
+
+  $(window).on('focus', (function(_this) {
+    return function() {
+      var key, _results;
+      _results = [];
+      for (key in window.events) {
+        window.events[key].active = true;
+        _results.push(console.log('enable events', window.events[key].active));
+      }
+      return _results;
+    };
+  })(this));
+
   window.events = {
     automatic: new Signal(),
     peak: new Signal(),

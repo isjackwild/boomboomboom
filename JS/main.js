@@ -113,18 +113,6 @@
       this.setupFilters();
       this.setupDebugEqualizer();
       window.events.automatic.add(this.toggleAuto);
-      $(window).on('blur', (function(_this) {
-        return function() {
-          console.log('blur');
-          return _this._visible = false;
-        };
-      })(this));
-      $(window).on('focus', (function(_this) {
-        return function() {
-          console.log('focus');
-          return _this._visible = true;
-        };
-      })(this));
       this._testAudio = document.getElementById('test_audio');
       document.onclick = (function(_this) {
         return function() {
@@ -483,6 +471,30 @@
 
   Signal = signals.Signal;
 
+  $(window).on('blur', (function(_this) {
+    return function() {
+      var key, _results;
+      _results = [];
+      for (key in window.events) {
+        window.events[key].active = false;
+        _results.push(console.log('disable events'));
+      }
+      return _results;
+    };
+  })(this));
+
+  $(window).on('focus', (function(_this) {
+    return function() {
+      var key, _results;
+      _results = [];
+      for (key in window.events) {
+        window.events[key].active = true;
+        _results.push(console.log('enable events', window.events[key].active));
+      }
+      return _results;
+    };
+  })(this));
+
   window.events = {
     automatic: new Signal(),
     peak: new Signal(),
@@ -706,6 +718,10 @@
 
     VisualsEngine.prototype._automatic = true;
 
+    VisualsEngine.prototype._visible = true;
+
+    VisualsEngine.prototype._listeners = [];
+
     VisualsEngine.prototype._shapes = [];
 
     VisualsEngine.prototype._peakCount = 0;
@@ -837,6 +853,18 @@
       this.setupListeners();
       this.setupTwoJs();
       this.updateColourBucket();
+      $(window).on('blur', (function(_this) {
+        return function() {
+          console.log('blur');
+          return _this._visible = false;
+        };
+      })(this));
+      $(window).on('focus', (function(_this) {
+        return function() {
+          console.log('focus');
+          return _this._visible = true;
+        };
+      })(this));
     }
 
     VisualsEngine.prototype.setupListeners = function() {

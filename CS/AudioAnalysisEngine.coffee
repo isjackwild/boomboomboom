@@ -84,14 +84,6 @@ class AudioAnalysisEngine
 		window.events.automatic.add @toggleAuto
 
 
-		$(window).on 'blur', =>
-			console.log 'blur'
-			@_visible = false
-		$(window).on 'focus', =>
-			console.log 'focus'
-			@_visible = true
-
-
 		@_testAudio = document.getElementById('test_audio')
 		document.onclick = => @setupTestAudio()
 
