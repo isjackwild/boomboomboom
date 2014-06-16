@@ -55,7 +55,7 @@
 
     AudioAnalysisEngine.prototype._sensivitityForHighPeak = 2.5;
 
-    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 2;
+    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 2.8;
 
     AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 3;
 
@@ -245,7 +245,6 @@
     };
 
     AudioAnalysisEngine.prototype.checkForPeak = function() {
-      var illu;
       if (this._averageAmp > this._lastAverageAmp && !this._waitingForPeak) {
         this._waitingForPeak = true;
       }
@@ -259,10 +258,10 @@
         }
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
-          window.events.peak.dispatch('hi');
+          return window.events.peak.dispatch('hi');
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
-          window.events.peak.dispatch('lo');
+          return window.events.peak.dispatch('lo');
         } else {
           if (this._automatic === true) {
             if (Math.random() > 0.94) {
@@ -279,24 +278,6 @@
           } else {
             this.eventLogger("softPeak");
             window.events.peak.dispatch('soft');
-          }
-        }
-        if (this._automatic === true) {
-          if (Math.random() > 0.9) {
-            illu = Math.ceil(Math.random() * 3);
-            console.log(this._visible);
-            if (this._visible === true) {
-              switch (illu) {
-                case 1:
-                  window.events.showIllustration.dispatch('food');
-                  break;
-                case 2:
-                  window.events.showIllustration.dispatch('mascot');
-                  break;
-                case 3:
-                  window.events.showIllustration.dispatch('landmark');
-              }
-            }
           }
           if (Math.random() > 0.995) {
             if (Math.random() > 0.6) {

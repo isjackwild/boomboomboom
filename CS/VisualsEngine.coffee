@@ -40,8 +40,6 @@ class VisualsEngine
 	
 	constructor: ->
 		console.log 'setup background generation'
-		@_cv = document.getElementById "magic"
-		@_ctx = @_cv.getContext '2d'
 		@setupListeners()
 		@setupTwoJs()
 		@updateColourBucket()
@@ -63,6 +61,7 @@ class VisualsEngine
 		window.events.angela.add @showPhoto
 		window.events.filter.add @addFilter
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
+		window.events.transform.add @onTransform
 
 
 
@@ -159,6 +158,15 @@ class VisualsEngine
 				@_currentBlur = 0
 				$('#twoMagic svg').css "-webkit-filter", "blur("+@_currentBlur+"px)"
 
+	onTransform: (type) =>
+		if @_transformTimer
+			clearTimeout @_transformTimer
+		$('#twoMagic').removeClass()
+		console.log 'transform', type
+		$('#twoMagic').addClass type
+		@_transformTimer = setTimeout =>
+			$('#twoMagic').removeClass type
+		,400
 	
 
 	onPeak: (type) =>
@@ -339,39 +347,41 @@ class VisualsEngine
 		, hang
 
 	showIllustration: (which) =>
+		alreadyIllustration = false
 		for shape, i in @_shapes
 			if shape.isIllustration is true
-				return
+				alreadyIllustration = true
 
-		switch which
-			when 'food'
-				if Math.random() > 0.49
-					id = 'currywurst'
-				else
-					id = 'pretzel'
-			when 'mascot'
-				if Math.random() > 0.49
-					id = 'ample'
-				else
-					id = 'bear'
-			when 'landmark'
-				if Math.random() > 0.49
-					id = 'tower'
-				else
-					id = 'tor'
-				
-		illustration = @_two.interpret document.getElementById id
-		
-		if id is 'pretzel'
-			illustration.center().translation.set 12+(@_two.width / 2), @_two.height / 2
-		else
-			illustration.center().translation.set @_two.width / 2, @_two.height / 2
+		if alreadyIllustration is false
+			switch which
+				when 'food'
+					if Math.random() > 0.49
+						id = 'currywurst'
+					else
+						id = 'pretzel'
+				when 'mascot'
+					if Math.random() > 0.49
+						id = 'ample'
+					else
+						id = 'bear'
+				when 'landmark'
+					if Math.random() > 0.49
+						id = 'tower'
+					else
+						id = 'tor'
+					
+			illustration = @_two.interpret document.getElementById id
+			
+			if id is 'pretzel'
+				illustration.center().translation.set 12+(@_two.width / 2), @_two.height / 2
+			else
+				illustration.center().translation.set @_two.width / 2, @_two.height / 2
 
-		@_foreGround.add illustration
-		illustration.lifeSpan = 100
-		illustration.creationTime = new Date().getTime()
-		illustration.isIllustration = true
-		@_shapes.push illustration
+			@_foreGround.add illustration
+			illustration.lifeSpan = 100
+			illustration.creationTime = new Date().getTime()
+			illustration.isIllustration = true
+			@_shapes.push illustration
 
 	showPhoto: (which) =>
 		$('#photo').removeClass()

@@ -19,6 +19,7 @@
     showText: new Signal(),
     showIllustration: new Signal(),
     filter: new Signal(),
+    transform: new Signal(),
     angela: new Signal()
   };
 

@@ -55,7 +55,7 @@
 
     AudioAnalysisEngine.prototype._sensivitityForHighPeak = 2.5;
 
-    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 2;
+    AudioAnalysisEngine.prototype._sensivitityForLowPeak = 2.8;
 
     AudioAnalysisEngine.prototype._sensitivityForHighFrequencyVariation = 3;
 
@@ -245,7 +245,6 @@
     };
 
     AudioAnalysisEngine.prototype.checkForPeak = function() {
-      var illu;
       if (this._averageAmp > this._lastAverageAmp && !this._waitingForPeak) {
         this._waitingForPeak = true;
       }
@@ -259,10 +258,10 @@
         }
         if (this._averageFrequency && this._frequencyOfPeak.freq > this._averageFrequency + this._sensivitityForHighPeak) {
           this.eventLogger("hiPeak");
-          window.events.peak.dispatch('hi');
+          return window.events.peak.dispatch('hi');
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
-          window.events.peak.dispatch('lo');
+          return window.events.peak.dispatch('lo');
         } else {
           if (this._automatic === true) {
             if (Math.random() > 0.94) {
@@ -279,24 +278,6 @@
           } else {
             this.eventLogger("softPeak");
             window.events.peak.dispatch('soft');
-          }
-        }
-        if (this._automatic === true) {
-          if (Math.random() > 0.9) {
-            illu = Math.ceil(Math.random() * 3);
-            console.log(this._visible);
-            if (this._visible === true) {
-              switch (illu) {
-                case 1:
-                  window.events.showIllustration.dispatch('food');
-                  break;
-                case 2:
-                  window.events.showIllustration.dispatch('mascot');
-                  break;
-                case 3:
-                  window.events.showIllustration.dispatch('landmark');
-              }
-            }
           }
           if (Math.random() > 0.995) {
             if (Math.random() > 0.6) {
@@ -545,6 +526,7 @@
     showText: new Signal(),
     showIllustration: new Signal(),
     filter: new Signal(),
+    transform: new Signal(),
     angela: new Signal()
   };
 
@@ -675,6 +657,10 @@
             return window.events["break"].dispatch('long');
           case 190:
             return window.events["break"].dispatch('short');
+          case 186:
+            return window.events.transform.dispatch('squashX');
+          case 222:
+            return window.events.transform.dispatch('squashY');
         }
       }
     };
@@ -863,6 +849,7 @@
       this.showText = __bind(this.showText, this);
       this.makeSpecial = __bind(this.makeSpecial, this);
       this.onPeak = __bind(this.onPeak, this);
+      this.onTransform = __bind(this.onTransform, this);
       this.addFilter = __bind(this.addFilter, this);
       this.updateBackgroundColour = __bind(this.updateBackgroundColour, this);
       this.gotVolume = __bind(this.gotVolume, this);
@@ -873,8 +860,6 @@
       this.gotBPM = __bind(this.gotBPM, this);
       this.setupListeners = __bind(this.setupListeners, this);
       console.log('setup background generation');
-      this._cv = document.getElementById("magic");
-      this._ctx = this._cv.getContext('2d');
       this.setupListeners();
       this.setupTwoJs();
       this.updateColourBucket();
@@ -895,7 +880,8 @@
       window.events.showIllustration.add(this.showIllustration);
       window.events.angela.add(this.showPhoto);
       window.events.filter.add(this.addFilter);
-      return window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
+      window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
+      return window.events.transform.add(this.onTransform);
     };
 
     VisualsEngine.prototype.setupTwoJs = function() {
@@ -1012,6 +998,20 @@
           this._currentBlur = 0;
           return $('#twoMagic svg').css("-webkit-filter", "blur(" + this._currentBlur + "px)");
       }
+    };
+
+    VisualsEngine.prototype.onTransform = function(type) {
+      if (this._transformTimer) {
+        clearTimeout(this._transformTimer);
+      }
+      $('#twoMagic').removeClass();
+      console.log('transform', type);
+      $('#twoMagic').addClass(type);
+      return this._transformTimer = setTimeout((function(_this) {
+        return function() {
+          return $('#twoMagic').removeClass(type);
+        };
+      })(this), 400);
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
@@ -1229,47 +1229,50 @@
     };
 
     VisualsEngine.prototype.showIllustration = function(which) {
-      var i, id, illustration, shape, _i, _len, _ref;
+      var alreadyIllustration, i, id, illustration, shape, _i, _len, _ref;
+      alreadyIllustration = false;
       _ref = this._shapes;
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         shape = _ref[i];
         if (shape.isIllustration === true) {
-          return;
+          alreadyIllustration = true;
         }
       }
-      switch (which) {
-        case 'food':
-          if (Math.random() > 0.49) {
-            id = 'currywurst';
-          } else {
-            id = 'pretzel';
-          }
-          break;
-        case 'mascot':
-          if (Math.random() > 0.49) {
-            id = 'ample';
-          } else {
-            id = 'bear';
-          }
-          break;
-        case 'landmark':
-          if (Math.random() > 0.49) {
-            id = 'tower';
-          } else {
-            id = 'tor';
-          }
+      if (alreadyIllustration === false) {
+        switch (which) {
+          case 'food':
+            if (Math.random() > 0.49) {
+              id = 'currywurst';
+            } else {
+              id = 'pretzel';
+            }
+            break;
+          case 'mascot':
+            if (Math.random() > 0.49) {
+              id = 'ample';
+            } else {
+              id = 'bear';
+            }
+            break;
+          case 'landmark':
+            if (Math.random() > 0.49) {
+              id = 'tower';
+            } else {
+              id = 'tor';
+            }
+        }
+        illustration = this._two.interpret(document.getElementById(id));
+        if (id === 'pretzel') {
+          illustration.center().translation.set(12 + (this._two.width / 2), this._two.height / 2);
+        } else {
+          illustration.center().translation.set(this._two.width / 2, this._two.height / 2);
+        }
+        this._foreGround.add(illustration);
+        illustration.lifeSpan = 100;
+        illustration.creationTime = new Date().getTime();
+        illustration.isIllustration = true;
+        return this._shapes.push(illustration);
       }
-      illustration = this._two.interpret(document.getElementById(id));
-      if (id === 'pretzel') {
-        illustration.center().translation.set(12 + (this._two.width / 2), this._two.height / 2);
-      } else {
-        illustration.center().translation.set(this._two.width / 2, this._two.height / 2);
-      }
-      this._foreGround.add(illustration);
-      illustration.lifeSpan = 100;
-      illustration.creationTime = new Date().getTime();
-      illustration.isIllustration = true;
-      return this._shapes.push(illustration);
     };
 
     VisualsEngine.prototype.showPhoto = function(which) {

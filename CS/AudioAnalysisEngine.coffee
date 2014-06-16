@@ -52,7 +52,7 @@ class AudioAnalysisEngine
 	_frequencyVariationCheck: []
 	_lastFrequencyVariation: null
 	_sensivitityForHighPeak: 2.5 #how much the peak has to be above average to be considered high
-	_sensivitityForLowPeak: 2 #how much the peak has to be above average to be considered low
+	_sensivitityForLowPeak: 2.8 #how much the peak has to be above average to be considered low
 	_sensitivityForHighFrequencyVariation: 3 #how much the peaks have to differ from each other on average to trigger a hi freq variation zone
 
 	_lastPeakTime: null
@@ -229,16 +229,15 @@ class AudioAnalysisEngine
 					@eventLogger "softPeak"
 					window.events.peak.dispatch 'soft'
 			#show an illustration sometimes
-			if @_automatic is true
-				if Math.random() > 0.9
-					illu = Math.ceil Math.random()*3
-					#move this to the visuals engine
-					console.log @_visible
-					if @_visible is true
-						switch illu
-							when 1 then window.events.showIllustration.dispatch 'food'
-							when 2 then window.events.showIllustration.dispatch 'mascot'
-							when 3 then window.events.showIllustration.dispatch 'landmark'
+			#still buggy.... fix this later
+			# if @_automatic is true
+			# 	if Math.random() > 0.9
+			# 		illu = Math.ceil Math.random()*3
+					# if @_visible is true
+					# 	switch illu
+					# 		when 1 then window.events.showIllustration.dispatch 'food'
+					# 		when 2 then window.events.showIllustration.dispatch 'mascot'
+					# 		when 3 then window.events.showIllustration.dispatch 'landmark'
 
 				if Math.random() > 0.995
 					if Math.random() > 0.6

@@ -123,6 +123,10 @@
             return window.events["break"].dispatch('long');
           case 190:
             return window.events["break"].dispatch('short');
+          case 186:
+            return window.events.transform.dispatch('squashX');
+          case 222:
+            return window.events.transform.dispatch('squashY');
         }
       }
     };

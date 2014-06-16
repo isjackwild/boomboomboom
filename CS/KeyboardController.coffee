@@ -77,6 +77,9 @@ class KeyboardController
 				#flashes
 				when 188 then window.events.break.dispatch 'long'
 				when 190 then window.events.break.dispatch 'short'
+				#transform
+				when 186 then window.events.transform.dispatch 'squashX'
+				when 222 then window.events.transform.dispatch 'squashY'
 
 
 	getBPM: () =>
