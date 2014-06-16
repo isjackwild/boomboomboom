@@ -92,15 +92,14 @@ class AudioAnalysisEngine
 			@_visible = true
 
 
-
 		@_testAudio = document.getElementById('test_audio')
 		document.onclick = => @setupTestAudio()
 
 		#comment this out to disable mid and use audio insteaad
-		document.onclick = =>
-			navigator.webkitGetUserMedia
-				audio: true
-			,@setupMic, @onError
+		# document.onclick = =>
+		# 	navigator.webkitGetUserMedia
+		# 		audio: true
+		# 	,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -146,14 +145,17 @@ class AudioAnalysisEngine
 		@startAnalysis()
 		@_alreadySetup = true
 
+
 	onError: (err) =>
 		console.log 'error setting up mic', err
+
 
 	startAnalysis: =>
 		console.log 'analysis started'
 		@_ticker = setInterval =>
 			@analyse()
 		, 1000 / @_samplesPerSecond
+
 
 	toggleAuto: (onOff) =>
 		@_automatic = onOff
@@ -215,38 +217,12 @@ class AudioAnalysisEngine
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
 				@eventLogger "loPeak"
 				window.events.peak.dispatch 'lo'
+			else if @_averageAmp+@_peakSensitivityOffset*2 < @_lastAverageAmp
+				@eventLogger 'hardPeak'
+				window.events.peak.dispatch 'hard'
 			else
-				if @_automatic is true
-					if Math.random() > 0.94
-						if Math.random() > 0.49
-							window.events.makeSpecial.dispatch 9
-						else 
-							window.events.makeSpecial.dispatch 0
-				if @_averageAmp+@_peakSensitivityOffset*2 < @_lastAverageAmp
-					@eventLogger 'hardPeak'
-					window.events.peak.dispatch 'hard'
-				else
-					@eventLogger "softPeak"
-					window.events.peak.dispatch 'soft'
-			#show an illustration sometimes
-			#still buggy.... fix this later
-			# if @_automatic is true
-			# 	if Math.random() > 0.9
-			# 		illu = Math.ceil Math.random()*3
-					# if @_visible is true
-					# 	switch illu
-					# 		when 1 then window.events.showIllustration.dispatch 'food'
-					# 		when 2 then window.events.showIllustration.dispatch 'mascot'
-					# 		when 3 then window.events.showIllustration.dispatch 'landmark'
-
-				if Math.random() > 0.995
-					if Math.random() > 0.6
-						window.events.showText.dispatch 'ber'
-						window.events.showText.dispatch 'lin'
-					else 
-						window.events.showText.dispatch 'bisque'
-						window.events.showText.dispatch 'rage'
-
+				@eventLogger "softPeak"
+				window.events.peak.dispatch 'soft'
 
 
 

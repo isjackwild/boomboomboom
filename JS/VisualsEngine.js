@@ -9,7 +9,7 @@
   VisualsEngine = (function() {
     var _currentBlur, _targetBlur;
 
-    VisualsEngine.prototype._cv = null;
+    VisualsEngine.prototype._automatic = true;
 
     VisualsEngine.prototype._shapes = [];
 
@@ -136,6 +136,7 @@
       this.gotFrequency = __bind(this.gotFrequency, this);
       this.onBPMJump = __bind(this.onBPMJump, this);
       this.gotBPM = __bind(this.gotBPM, this);
+      this.toggleAuto = __bind(this.toggleAuto, this);
       this.setupListeners = __bind(this.setupListeners, this);
       console.log('setup background generation');
       this.setupListeners();
@@ -159,7 +160,8 @@
       window.events.angela.add(this.showPhoto);
       window.events.filter.add(this.addFilter);
       window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
-      return window.events.transform.add(this.onTransform);
+      window.events.transform.add(this.onTransform);
+      return window.events.automatic.add(this.toggleAuto);
     };
 
     VisualsEngine.prototype.setupTwoJs = function() {
@@ -178,6 +180,10 @@
       this._middleGround.center();
       this._foreGround = this._two.makeGroup();
       return this._foreGround.id = 'foreground';
+    };
+
+    VisualsEngine.prototype.toggleAuto = function(onOff) {
+      return this._automatic = onOff;
     };
 
     VisualsEngine.prototype.gotBPM = function(BPM) {
@@ -293,7 +299,7 @@
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
-      var circle, col, duration, peakTime, v, whichCol;
+      var circle, col, duration, illu, peakTime, special, v, whichCol;
       this._peakCount++;
       peakTime = new Date().getTime();
       if (type === 'hard') {
@@ -309,6 +315,45 @@
         circle = this._two.makeCircle(this._two.width, this._two.height, this._two.height * 0.75);
         circle.fadeOut = true;
         circle.fadeOutSpeed = this.convertToRange(this._bpm, [60, 500], [0.1, 0.25]);
+      }
+      if (this._automatic) {
+        if (Math.random() > 0.92) {
+          illu = Math.ceil(Math.random() * 3);
+          switch (illu) {
+            case 1:
+              this.showIllustration('food');
+              break;
+            case 2:
+              this.showIllustration('mascot');
+              break;
+            case 3:
+              this.showIllustration('landmark');
+          }
+        }
+        if (Math.random() > 0.995) {
+          if (Math.random() > 0.6) {
+            this.showText('ber');
+            this.showText('lin');
+          } else {
+            this.showText('bisque');
+            this.showText('rage');
+          }
+        }
+        if (type === 'hard' || type === 'soft') {
+          if (Math.random() > 0.94) {
+            special = Math.ceil(Math.random() * 3);
+            switch (special) {
+              case 1:
+                this.makeSpecial(9);
+                break;
+              case 2:
+                this.makeSpecial(0);
+                break;
+              case 3:
+                this.makeSpecial(11);
+            }
+          }
+        }
       }
       if (this._negativeColours === false) {
         whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
@@ -512,11 +557,15 @@
       _ref = this._shapes;
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         shape = _ref[i];
+        console.log('X');
         if (shape.isIllustration === true) {
           alreadyIllustration = true;
+          console.log('already illu shown');
         }
       }
+      console.log(alreadyIllustration);
       if (alreadyIllustration === false) {
+        console.log('show an illu');
         switch (which) {
           case 'food':
             if (Math.random() > 0.49) {

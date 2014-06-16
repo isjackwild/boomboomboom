@@ -3,7 +3,7 @@ $ ->
 
 
 class VisualsEngine
-	_cv: null
+	_automatic: true
 
 	_shapes: []
 	_peakCount: 0
@@ -62,7 +62,7 @@ class VisualsEngine
 		window.events.filter.add @addFilter
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
 		window.events.transform.add @onTransform
-
+		window.events.automatic.add @toggleAuto
 
 
 	setupTwoJs: ->
@@ -80,8 +80,11 @@ class VisualsEngine
 		@_middleGround.center()
 		@_foreGround = @_two.makeGroup()
 		@_foreGround.id = 'foreground'
-		
 
+
+	toggleAuto: (onOff) =>
+		@_automatic = onOff
+		
 
 	gotBPM: (BPM) =>
 		@_bpm = BPM
@@ -187,6 +190,31 @@ class VisualsEngine
 			circle.fadeOut = true
 			circle.fadeOutSpeed = @convertToRange(@_bpm, [60,500], [0.1, 0.25])
 
+
+		if @_automatic
+			if Math.random() > 0.92
+				illu = Math.ceil Math.random()*3
+				switch illu
+					when 1 then @showIllustration 'food'
+					when 2 then @showIllustration 'mascot'
+					when 3 then @showIllustration 'landmark'
+			if Math.random() > 0.995
+				if Math.random() > 0.6
+					@showText 'ber'
+					@showText 'lin'
+				else 
+					@showText 'bisque'
+					@showText 'rage'
+
+			if type is 'hard' or type is 'soft'
+				if Math.random() > 0.94
+					special = Math.ceil Math.random()*3
+					switch special
+						when 1 then @makeSpecial 9
+						when 2 then @makeSpecial 0
+						when 3 then @makeSpecial 11
+
+
 		if @_negativeColours is false
 			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
 			col = @_colourBucket.fg[whichCol]
@@ -217,8 +245,6 @@ class VisualsEngine
 		circle.noStroke()
 		@_shapes.push circle
 
-
-		
 		duration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
 		if @_peakCount % 2 is 0 and peakTime - @_bpmJumpTime < duration and @_bpm > 150
 			@makeSpecial Math.floor Math.random()*10
@@ -349,10 +375,15 @@ class VisualsEngine
 	showIllustration: (which) =>
 		alreadyIllustration = false
 		for shape, i in @_shapes
+			console.log 'X'
 			if shape.isIllustration is true
 				alreadyIllustration = true
+				console.log 'already illu shown'
+
+		console.log alreadyIllustration
 
 		if alreadyIllustration is false
+			console.log 'show an illu'
 			switch which
 				when 'food'
 					if Math.random() > 0.49

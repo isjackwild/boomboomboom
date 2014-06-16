@@ -131,13 +131,6 @@
           return _this.setupTestAudio();
         };
       })(this);
-      document.onclick = (function(_this) {
-        return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
-        };
-      })(this);
     }
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
@@ -262,32 +255,12 @@
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
           return window.events.peak.dispatch('lo');
+        } else if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
+          this.eventLogger('hardPeak');
+          return window.events.peak.dispatch('hard');
         } else {
-          if (this._automatic === true) {
-            if (Math.random() > 0.94) {
-              if (Math.random() > 0.49) {
-                window.events.makeSpecial.dispatch(9);
-              } else {
-                window.events.makeSpecial.dispatch(0);
-              }
-            }
-          }
-          if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
-            this.eventLogger('hardPeak');
-            window.events.peak.dispatch('hard');
-          } else {
-            this.eventLogger("softPeak");
-            window.events.peak.dispatch('soft');
-          }
-          if (Math.random() > 0.995) {
-            if (Math.random() > 0.6) {
-              window.events.showText.dispatch('ber');
-              return window.events.showText.dispatch('lin');
-            } else {
-              window.events.showText.dispatch('bisque');
-              return window.events.showText.dispatch('rage');
-            }
-          }
+          this.eventLogger("softPeak");
+          return window.events.peak.dispatch('soft');
         }
       }
     };
