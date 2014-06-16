@@ -502,7 +502,6 @@ class VisualsEngine
 				@_middleGround.targetScale = 1
 				@_middleGround.isScaling = false
 
-
 	removeShapes: () =>
 		time = new Date().getTime()
 		for shape, i in @_shapes by -1
@@ -542,8 +541,6 @@ class VisualsEngine
 					if shape.linewidth <= 0
 						shape.remove()
 						@_shapes.splice i, 1
-
-
 
 	#add this to my UTILS
 	lerpColour: (from, to, control) ->
