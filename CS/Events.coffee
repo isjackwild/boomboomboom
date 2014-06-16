@@ -33,10 +33,3 @@ window.events = {
 	transform: new Signal()
 	angela: new Signal()
 }
-
-
-
-# test = =>
-# 	console.log 'event system works'
-
-# window.events.softPeak.add(test);

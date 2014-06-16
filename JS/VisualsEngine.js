@@ -13,8 +13,6 @@
 
     VisualsEngine.prototype._visible = true;
 
-    VisualsEngine.prototype._listeners = [];
-
     VisualsEngine.prototype._shapes = [];
 
     VisualsEngine.prototype._peakCount = 0;
@@ -138,6 +136,7 @@
       this.inverseCols = __bind(this.inverseCols, this);
       this.onChangeFrequencyVariation = __bind(this.onChangeFrequencyVariation, this);
       this.gotFrequency = __bind(this.gotFrequency, this);
+      this.onBPMDrop = __bind(this.onBPMDrop, this);
       this.onBPMJump = __bind(this.onBPMJump, this);
       this.gotBPM = __bind(this.gotBPM, this);
       this.toggleAuto = __bind(this.toggleAuto, this);
@@ -167,6 +166,7 @@
       window.events["break"].add(this.onBreak);
       window.events.BPM.add(this.gotBPM);
       window.events.BPMJump.add(this.onBPMJump);
+      window.events.BPMDrop.add(this.onBPMDrop);
       window.events.volume.add(this.gotVolume);
       window.events.frequency.add(this.gotFrequency);
       window.events.inverseCols.add(this.inverseCols);
@@ -210,6 +210,18 @@
 
     VisualsEngine.prototype.onBPMJump = function() {
       return this._bpmJumpTime = new Date().getTime();
+    };
+
+    VisualsEngine.prototype.onBPMDrop = function() {
+      var random;
+      if (this._automatic) {
+        random = Math.random();
+        if (random < 0.1) {
+          return this.showText('putUpWall');
+        } else if (random > 0.1 && random < 0.2) {
+          return this.showText('tearDownWall');
+        }
+      }
     };
 
     VisualsEngine.prototype.gotFrequency = function(freq) {

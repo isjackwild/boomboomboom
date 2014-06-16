@@ -119,6 +119,13 @@
           return _this.setupTestAudio();
         };
       })(this);
+      document.onclick = (function(_this) {
+        return function() {
+          return navigator.webkitGetUserMedia({
+            audio: true
+          }, _this.setupMic, _this.onError);
+        };
+      })(this);
     }
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
@@ -190,7 +197,7 @@
       this._analyserNode.getByteFrequencyData(this._frequencyData);
       this.drawDebugEqualizer();
       this._frequencyOfPeak.amp = 0;
-      for (i = _i = 0, _ref = this._frequencyData.length; _i < _ref; i = _i += 1) {
+      for (i = _i = 0, _ref = this._frequencyData.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         if (this._frequencyData[i] > this._frequencyOfPeak.amp) {
           this._frequencyOfPeak.freq = this.convertToRange(i, [0, 40], [0, 9]);
           this._frequencyOfPeak.amp = this._frequencyData[i];
@@ -208,7 +215,7 @@
         }
       }
       _results = [];
-      for (i = _j = _ref1 = this._bassCutoff, _ref2 = this._frequencyData.length; _j < _ref2; i = _j += 1) {
+      for (i = _j = _ref1 = this._bassCutoff, _ref2 = this._frequencyData.length; _ref1 <= _ref2 ? _j < _ref2 : _j > _ref2; i = _ref1 <= _ref2 ? ++_j : --_j) {
         if (i === this._bassCutoff) {
           this._lastBassAverageAmp = this._bassAverageAmp;
           this._bassAverageAmp = 0;
@@ -272,7 +279,7 @@
       if (this._averageFreqCalcArray.length === 10) {
         tempAvFreq = 0;
         _results = [];
-        for (i = _i = 0, _ref = this._averageFreqCalcArray.length; _i < _ref; i = _i += 1) {
+        for (i = _i = 0, _ref = this._averageFreqCalcArray.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
           tempAvFreq += this._averageFreqCalcArray[i];
           if (i === this._averageFreqCalcArray.length - 1) {
             tempAvFreq /= this._averageFreqCalcArray.length;
@@ -298,7 +305,7 @@
         this._frequencyVariationCheck.push(differenceInFreq);
         if (this._frequencyVariationCheck.length === 10) {
           _results = [];
-          for (i = _i = 0, _ref = this._frequencyVariationCheck.length; _i < _ref; i = _i += 1) {
+          for (i = _i = 0, _ref = this._frequencyVariationCheck.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
             if (i === 0) {
               avDifference = 0;
             }
@@ -345,7 +352,7 @@
     };
 
     AudioAnalysisEngine.prototype.calculateAverageBpm = function() {
-      var random, timeForTenPeaks;
+      var timeForTenPeaks;
       this._bpmCalcArray.push(new Date().getTime());
       if (this._bpmCalcArray.length === 10) {
         timeForTenPeaks = this._bpmCalcArray[this._bpmCalcArray.length - 1] - this._bpmCalcArray[0];
@@ -362,14 +369,6 @@
         } else if (this._approxBPM < this._lastBPM - this._dropJumpBPMSensitivity) {
           window.events.BPMDrop.dispatch(this._approxBPM);
           this.eventLogger('BPMDrop');
-          if (this._automatic === true) {
-            random = Math.random();
-            if (random < 0.1) {
-              window.events.showText.dispatch('putUpWall');
-            } else if (random > 0.1 && random < 0.2) {
-              window.events.showText.dispatch('tearDownWall');
-            }
-          }
         }
         return this._lastBPM = this._approxBPM;
       }
@@ -381,7 +380,7 @@
       if (this._volCalcArray.length === this._samplesPerSecond) {
         tempAvVol = 0;
         _results = [];
-        for (i = _i = 0, _ref = this._volCalcArray.length; _i < _ref; i = _i += 1) {
+        for (i = _i = 0, _ref = this._volCalcArray.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
           tempAvVol += this._volCalcArray[i];
           if (i === this._volCalcArray.length - 1) {
             tempAvVol /= this._volCalcArray.length;

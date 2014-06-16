@@ -5,7 +5,6 @@ $ ->
 class VisualsEngine
 	_automatic: true
 	_visible: true
-	_listeners: []
 
 	_shapes: []
 	_peakCount: 0
@@ -61,6 +60,7 @@ class VisualsEngine
 		window.events.break.add @onBreak
 		window.events.BPM.add @gotBPM
 		window.events.BPMJump.add @onBPMJump
+		window.events.BPMDrop.add @onBPMDrop
 		window.events.volume.add @gotVolume
 		window.events.frequency.add @gotFrequency
 		window.events.inverseCols.add @inverseCols
@@ -103,6 +103,14 @@ class VisualsEngine
 
 	onBPMJump: () =>
 		@_bpmJumpTime = new Date().getTime()
+
+	onBPMDrop: () =>
+		if @_automatic
+			random = Math.random()
+			if random < 0.1
+				@showText 'putUpWall'
+			else if random > 0.1 and random < 0.2
+				@showText 'tearDownWall'
 
 
 	gotFrequency: (freq) =>
