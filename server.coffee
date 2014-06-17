@@ -21,4 +21,4 @@ app.get '/', (request, response) ->
 		response.sendfile __dirname + "/index.html"
 		console.log 'desktop'
 
-app.listen 8080
+app.listen 8080, '0.0.0.0'
