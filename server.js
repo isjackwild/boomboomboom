@@ -1,17 +1,25 @@
 (function() {
-  var app, bodyParser, express, http, path, sever;
+  var app, bodyParser, express, http, io, path, server, socket;
 
   express = require('express');
+
+  http = require('http');
+
+  socket = require('socket.io');
 
   path = require('path');
 
   bodyParser = require('body-parser');
 
-  http = require('http');
-
   app = express();
 
-  sever = http.createServer(app);
+  server = http.createServer(app);
+
+  io = socket.listen(server);
+
+  io.sockets.on('connection', function(client) {
+    return console.log('client connected');
+  });
 
   app.get('/', function(request, response) {
     var ua;
@@ -28,6 +36,6 @@
     }
   });
 
-  app.listen(8080, '0.0.0.0');
+  server.listen(8080, '0.0.0.0');
 
 }).call(this);

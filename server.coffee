@@ -1,13 +1,21 @@
 #node server
 
 express = require 'express'
+http = require 'http'
+socket = require 'socket.io'
 path = require 'path'
 bodyParser = require 'body-parser'
-http = require 'http'
 
 app = express()
 
-sever = http.createServer app
+server = http.createServer app
+io = socket.listen server
+
+
+io.sockets.on 'connection', (client) ->
+	console.log 'client connected'
+
+
 
 app.get '/', (request, response) ->
 	console.log 'request sent'
@@ -21,4 +29,4 @@ app.get '/', (request, response) ->
 		response.sendfile __dirname + "/index.html"
 		console.log 'desktop'
 
-app.listen 8080, '0.0.0.0'
+server.listen 8080, '0.0.0.0'
