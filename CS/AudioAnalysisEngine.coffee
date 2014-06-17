@@ -84,22 +84,14 @@ class AudioAnalysisEngine
 		window.events.automatic.add @toggleAuto
 
 
-		$(window).on 'blur', =>
-			console.log 'blur'
-			@_visible = false
-		$(window).on 'focus', =>
-			console.log 'focus'
-			@_visible = true
-
-
 		@_testAudio = document.getElementById('test_audio')
 		document.onclick = => @setupTestAudio()
 
 		#comment this out to disable mid and use audio insteaad
-		# document.onclick = =>
-		# 	navigator.webkitGetUserMedia
-		# 		audio: true
-		# 	,@setupMic, @onError
+		document.onclick = =>
+			navigator.webkitGetUserMedia
+				audio: true
+			,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -166,7 +158,7 @@ class AudioAnalysisEngine
 		@drawDebugEqualizer()
 		@_frequencyOfPeak.amp = 0
 
-		for i in [0...@_frequencyData.length] by 1 #check for highest peak over the whole range
+		for i in [0...@_frequencyData.length] #check for highest peak over the whole range
 
 			if @_frequencyData[i] > @_frequencyOfPeak.amp
 				@_frequencyOfPeak.freq = @convertToRange i, [0, 40], [0, 9] #set highest freq found as this one
@@ -185,7 +177,7 @@ class AudioAnalysisEngine
 				@checkForPeak()
 
 
-		for i in [@_bassCutoff...@_frequencyData.length] by 1
+		for i in [@_bassCutoff...@_frequencyData.length]
 			if i is @_bassCutoff
 				@_lastBassAverageAmp = @_bassAverageAmp
 				@_bassAverageAmp = 0
@@ -242,7 +234,7 @@ class AudioAnalysisEngine
 		@_averageFreqCalcArray.push @_frequencyOfPeak.freq #get ten peaks
 		if @_averageFreqCalcArray.length is 10
 			tempAvFreq = 0
-			for i in [0...@_averageFreqCalcArray.length] by 1
+			for i in [0...@_averageFreqCalcArray.length]
 				tempAvFreq += @_averageFreqCalcArray[i]
 				if i is @_averageFreqCalcArray.length-1
 					tempAvFreq /= @_averageFreqCalcArray.length #get average freq of them
@@ -261,7 +253,7 @@ class AudioAnalysisEngine
 			@_frequencyOfPeak.lastFreq = @_frequencyOfPeak.freq
 			@_frequencyVariationCheck.push differenceInFreq
 			if @_frequencyVariationCheck.length is 10
-				for i in [0...@_frequencyVariationCheck.length] by 1
+				for i in [0...@_frequencyVariationCheck.length]
 					if i is 0
 						avDifference = 0
 					avDifference += @_frequencyVariationCheck[i]
@@ -314,12 +306,6 @@ class AudioAnalysisEngine
 			else if @_approxBPM < @_lastBPM-@_dropJumpBPMSensitivity
 				window.events.BPMDrop.dispatch @_approxBPM
 				@eventLogger 'BPMDrop'
-				if @_automatic is true
-					random = Math.random()
-					if random < 0.1
-						window.events.showText.dispatch 'putUpWall'
-					else if random > 0.1 and random < 0.2
-						window.events.showText.dispatch 'tearDownWall'
 			@_lastBPM = @_approxBPM
 
 
@@ -329,7 +315,7 @@ class AudioAnalysisEngine
 		@_volCalcArray.push @_averageAmp
 		if @_volCalcArray.length is @_samplesPerSecond
 			tempAvVol = 0
-			for i in [0...@_volCalcArray.length] by 1
+			for i in [0...@_volCalcArray.length]
 				tempAvVol += @_volCalcArray[i]
 				if i is @_volCalcArray.length-1
 					tempAvVol /= @_volCalcArray.length
@@ -385,6 +371,8 @@ class AudioAnalysisEngine
 			dstMax = dstRange[1] - dstRange[0]
 			adjValue = value  - srcRange[0]
 			return (adjValue * dstMax / srcMax) + dstRange[0]
+
+
 
 
 #clean-up / comment out the methods i don't end up using in the graphics

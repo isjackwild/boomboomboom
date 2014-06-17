@@ -113,22 +113,17 @@
       this.setupFilters();
       this.setupDebugEqualizer();
       window.events.automatic.add(this.toggleAuto);
-      $(window).on('blur', (function(_this) {
-        return function() {
-          console.log('blur');
-          return _this._visible = false;
-        };
-      })(this));
-      $(window).on('focus', (function(_this) {
-        return function() {
-          console.log('focus');
-          return _this._visible = true;
-        };
-      })(this));
       this._testAudio = document.getElementById('test_audio');
       document.onclick = (function(_this) {
         return function() {
           return _this.setupTestAudio();
+        };
+      })(this);
+      document.onclick = (function(_this) {
+        return function() {
+          return navigator.webkitGetUserMedia({
+            audio: true
+          }, _this.setupMic, _this.onError);
         };
       })(this);
     }
@@ -202,7 +197,7 @@
       this._analyserNode.getByteFrequencyData(this._frequencyData);
       this.drawDebugEqualizer();
       this._frequencyOfPeak.amp = 0;
-      for (i = _i = 0, _ref = this._frequencyData.length; _i < _ref; i = _i += 1) {
+      for (i = _i = 0, _ref = this._frequencyData.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         if (this._frequencyData[i] > this._frequencyOfPeak.amp) {
           this._frequencyOfPeak.freq = this.convertToRange(i, [0, 40], [0, 9]);
           this._frequencyOfPeak.amp = this._frequencyData[i];
@@ -220,7 +215,7 @@
         }
       }
       _results = [];
-      for (i = _j = _ref1 = this._bassCutoff, _ref2 = this._frequencyData.length; _j < _ref2; i = _j += 1) {
+      for (i = _j = _ref1 = this._bassCutoff, _ref2 = this._frequencyData.length; _ref1 <= _ref2 ? _j < _ref2 : _j > _ref2; i = _ref1 <= _ref2 ? ++_j : --_j) {
         if (i === this._bassCutoff) {
           this._lastBassAverageAmp = this._bassAverageAmp;
           this._bassAverageAmp = 0;
@@ -284,7 +279,7 @@
       if (this._averageFreqCalcArray.length === 10) {
         tempAvFreq = 0;
         _results = [];
-        for (i = _i = 0, _ref = this._averageFreqCalcArray.length; _i < _ref; i = _i += 1) {
+        for (i = _i = 0, _ref = this._averageFreqCalcArray.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
           tempAvFreq += this._averageFreqCalcArray[i];
           if (i === this._averageFreqCalcArray.length - 1) {
             tempAvFreq /= this._averageFreqCalcArray.length;
@@ -310,7 +305,7 @@
         this._frequencyVariationCheck.push(differenceInFreq);
         if (this._frequencyVariationCheck.length === 10) {
           _results = [];
-          for (i = _i = 0, _ref = this._frequencyVariationCheck.length; _i < _ref; i = _i += 1) {
+          for (i = _i = 0, _ref = this._frequencyVariationCheck.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
             if (i === 0) {
               avDifference = 0;
             }
@@ -357,7 +352,7 @@
     };
 
     AudioAnalysisEngine.prototype.calculateAverageBpm = function() {
-      var random, timeForTenPeaks;
+      var timeForTenPeaks;
       this._bpmCalcArray.push(new Date().getTime());
       if (this._bpmCalcArray.length === 10) {
         timeForTenPeaks = this._bpmCalcArray[this._bpmCalcArray.length - 1] - this._bpmCalcArray[0];
@@ -374,14 +369,6 @@
         } else if (this._approxBPM < this._lastBPM - this._dropJumpBPMSensitivity) {
           window.events.BPMDrop.dispatch(this._approxBPM);
           this.eventLogger('BPMDrop');
-          if (this._automatic === true) {
-            random = Math.random();
-            if (random < 0.1) {
-              window.events.showText.dispatch('putUpWall');
-            } else if (random > 0.1 && random < 0.2) {
-              window.events.showText.dispatch('tearDownWall');
-            }
-          }
         }
         return this._lastBPM = this._approxBPM;
       }
@@ -393,7 +380,7 @@
       if (this._volCalcArray.length === this._samplesPerSecond) {
         tempAvVol = 0;
         _results = [];
-        for (i = _i = 0, _ref = this._volCalcArray.length; _i < _ref; i = _i += 1) {
+        for (i = _i = 0, _ref = this._volCalcArray.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
           tempAvVol += this._volCalcArray[i];
           if (i === this._volCalcArray.length - 1) {
             tempAvVol /= this._volCalcArray.length;
@@ -482,6 +469,30 @@
   var Signal;
 
   Signal = signals.Signal;
+
+  $(window).on('blur', (function(_this) {
+    return function() {
+      var key, _results;
+      _results = [];
+      for (key in window.events) {
+        window.events[key].active = false;
+        _results.push(console.log('disable events'));
+      }
+      return _results;
+    };
+  })(this));
+
+  $(window).on('focus', (function(_this) {
+    return function() {
+      var key, _results;
+      _results = [];
+      for (key in window.events) {
+        window.events[key].active = true;
+        _results.push(console.log('enable events', window.events[key].active));
+      }
+      return _results;
+    };
+  })(this));
 
   window.events = {
     automatic: new Signal(),
@@ -706,6 +717,8 @@
 
     VisualsEngine.prototype._automatic = true;
 
+    VisualsEngine.prototype._visible = true;
+
     VisualsEngine.prototype._shapes = [];
 
     VisualsEngine.prototype._peakCount = 0;
@@ -829,6 +842,7 @@
       this.inverseCols = __bind(this.inverseCols, this);
       this.onChangeFrequencyVariation = __bind(this.onChangeFrequencyVariation, this);
       this.gotFrequency = __bind(this.gotFrequency, this);
+      this.onBPMDrop = __bind(this.onBPMDrop, this);
       this.onBPMJump = __bind(this.onBPMJump, this);
       this.gotBPM = __bind(this.gotBPM, this);
       this.toggleAuto = __bind(this.toggleAuto, this);
@@ -837,6 +851,18 @@
       this.setupListeners();
       this.setupTwoJs();
       this.updateColourBucket();
+      $(window).on('blur', (function(_this) {
+        return function() {
+          console.log('blur');
+          return _this._visible = false;
+        };
+      })(this));
+      $(window).on('focus', (function(_this) {
+        return function() {
+          console.log('focus');
+          return _this._visible = true;
+        };
+      })(this));
     }
 
     VisualsEngine.prototype.setupListeners = function() {
@@ -846,6 +872,7 @@
       window.events["break"].add(this.onBreak);
       window.events.BPM.add(this.gotBPM);
       window.events.BPMJump.add(this.onBPMJump);
+      window.events.BPMDrop.add(this.onBPMDrop);
       window.events.volume.add(this.gotVolume);
       window.events.frequency.add(this.gotFrequency);
       window.events.inverseCols.add(this.inverseCols);
@@ -889,6 +916,18 @@
 
     VisualsEngine.prototype.onBPMJump = function() {
       return this._bpmJumpTime = new Date().getTime();
+    };
+
+    VisualsEngine.prototype.onBPMDrop = function() {
+      var random;
+      if (this._automatic) {
+        random = Math.random();
+        if (random < 0.1) {
+          return this.showText('putUpWall');
+        } else if (random > 0.1 && random < 0.2) {
+          return this.showText('tearDownWall');
+        }
+      }
     };
 
     VisualsEngine.prototype.gotFrequency = function(freq) {
