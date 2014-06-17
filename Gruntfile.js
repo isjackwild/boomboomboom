@@ -21,7 +21,7 @@ module.exports = function(grunt){
 			},
 
 			js: {
-				files: 'CS/*.coffee',
+				files: ['CS/*.coffee', '*.coffee'],
 				tasks: ['coffee'],
 				options: {
 					livereload: true,
@@ -50,6 +50,7 @@ module.exports = function(grunt){
 					'JS/KeyboardController.js' : 'CS/KeyboardController.coffee',
 					'JS/Events.js' : 'CS/Events.coffee',
 					'JS/VisualsEngine.js' : 'CS/VisualsEngine.coffee',
+					'server.js' : 'server.coffee',
 				},
 			},
 		},
