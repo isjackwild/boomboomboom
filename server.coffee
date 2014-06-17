@@ -7,16 +7,17 @@ http = require 'http'
 
 app = express()
 
-#this should be in the pubic folder when i do the actual server setup. it should all be in the public folder
-app.use express.static(path.join(__dirname, ''))
-
 sever = http.createServer app
 
 app.get '/', (request, response) ->
+	console.log 'request sent'
 	ua = request.headers['user-agent']
 	if /mobile/i.test ua
 		console.log 'mobile'
+		app.use express.static(path.join(__dirname, ''))
+		response.sendfile __dirname + "/mobile.html"
 	else
+		app.use express.static(path.join(__dirname, ''))
 		response.sendfile __dirname + "/index.html"
 		console.log 'desktop'
 
