@@ -2,16 +2,14 @@
 Signal = signals.Signal
 
 $(window).on 'blur', =>
+	console.log 'disable events'
 	for key of window.events
 		window.events[key].active = false
-		console.log 'disable events'
 
 $(window).on 'focus', =>
+	console.log 'enable events'
 	for key of window.events
 		window.events[key].active = true
-		console.log 'enable events', window.events[key].active
-
-
 
 window.events = {
 	automatic: new Signal()
@@ -32,7 +30,3 @@ window.events = {
 	transform: new Signal()
 	angela: new Signal()
 }
-
-
-#socketevents
-socket = io()

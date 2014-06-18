@@ -466,17 +466,17 @@
 }).call(this);
 
 (function() {
-  var Signal, socket;
+  var Signal;
 
   Signal = signals.Signal;
 
   $(window).on('blur', (function(_this) {
     return function() {
       var key, _results;
+      console.log('disable events');
       _results = [];
       for (key in window.events) {
-        window.events[key].active = false;
-        _results.push(console.log('disable events'));
+        _results.push(window.events[key].active = false);
       }
       return _results;
     };
@@ -485,10 +485,10 @@
   $(window).on('focus', (function(_this) {
     return function() {
       var key, _results;
+      console.log('enable events');
       _results = [];
       for (key in window.events) {
-        window.events[key].active = true;
-        _results.push(console.log('enable events', window.events[key].active));
+        _results.push(window.events[key].active = true);
       }
       return _results;
     };
@@ -513,8 +513,6 @@
     transform: new Signal(),
     angela: new Signal()
   };
-
-  socket = io();
 
 }).call(this);
 
@@ -707,6 +705,32 @@
 }).call(this);
 
 (function() {
+  var socket;
+
+  window.key = null;
+
+  $((function(_this) {
+    return function() {
+      window.key = Math.floor(Math.random() * 99999);
+      window.key = window.key.toString();
+      return alert('the key for this is ' + window.key);
+    };
+  })(this));
+
+  socket = io();
+
+  socket.on('button-push', function(which) {
+    console.log('ipad button pushed', which);
+    if (which.key === window.key) {
+      return console.log('im listening to this ipad');
+    } else {
+      return console.log('ignore');
+    }
+  });
+
+}).call(this);
+
+(function() {
   var VisualsEngine,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -855,13 +879,11 @@
       this.updateColourBucket();
       $(window).on('blur', (function(_this) {
         return function() {
-          console.log('blur');
           return _this._visible = false;
         };
       })(this));
       $(window).on('focus', (function(_this) {
         return function() {
-          console.log('focus');
           return _this._visible = true;
         };
       })(this));

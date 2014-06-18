@@ -29,7 +29,8 @@ io.sockets.on 'connection', (client) ->
 	console.log 'a client connected'
 
 	client.on 'button-push', (which) ->
-		console.log which
+		console.log 'which'
+		io.emit 'button-push', which
 
 	client.on 'disconnect', (client) ->
 		console.log 'a client disconnect'

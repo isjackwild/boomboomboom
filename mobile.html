@@ -8,23 +8,11 @@
 </head>
 
 <body>
-<script src="https://cdn.socket.io/socket.io-1.0.4.js"></script>
-<script>
-	var socket = io()
-	//make sure this is always a 4 digit number... e.g. 00000 will just show as 0
-	var key = 12345
-
-	document.onclick = function(){
-		button = {
-			button: 'a1',
-			key: key
-		}
-		socket.emit('button-push', button);
-		console.log('happening');
-	};
-
-</script>
 <h1>MOBILE VERSION</h1>
 
+
+<script src="JS/libs/jquery-2.0.0.min.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.0.4.js"></script>
+<script src="JS/MobileController/mainMobileController.js" type="text/javascript"></script>
 </body>
 </html>

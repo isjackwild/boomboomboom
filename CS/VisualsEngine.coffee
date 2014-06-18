@@ -46,10 +46,8 @@ class VisualsEngine
 		@updateColourBucket()
 
 		$(window).on 'blur', =>
-			console.log 'blur'
 			@_visible = false
 		$(window).on 'focus', =>
-			console.log 'focus'
 			@_visible = true
 		
 

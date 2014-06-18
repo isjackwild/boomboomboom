@@ -147,13 +147,11 @@
       this.updateColourBucket();
       $(window).on('blur', (function(_this) {
         return function() {
-          console.log('blur');
           return _this._visible = false;
         };
       })(this));
       $(window).on('focus', (function(_this) {
         return function() {
-          console.log('focus');
           return _this._visible = true;
         };
       })(this));

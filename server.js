@@ -35,7 +35,8 @@
   io.sockets.on('connection', function(client) {
     console.log('a client connected');
     client.on('button-push', function(which) {
-      return console.log(which);
+      console.log('which');
+      return io.emit('button-push', which);
     });
     return client.on('disconnect', function(client) {
       return console.log('a client disconnect');
