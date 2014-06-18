@@ -82,16 +82,12 @@ class AudioAnalysisEngine
 		@setupFilters()
 		@setupDebugEqualizer()
 		window.events.automatic.add @toggleAuto
+		window.events.micAccepted.add @setupMic
 
 
 		@_testAudio = document.getElementById('test_audio')
-		document.onclick = => @setupTestAudio()
+		# document.onclick = => @setupTestAudio()
 
-		#comment this out to disable mid and use audio insteaad
-		document.onclick = =>
-			navigator.webkitGetUserMedia
-				audio: true
-			,@setupMic, @onError
 
 	setupAnalyser: =>
 		@_analyserNode = @_context.createAnalyser()
@@ -126,7 +122,7 @@ class AudioAnalysisEngine
 		@_alreadySetup = true
 
 	setupMic: (stream) =>
-		console.log 'setup mic'
+		console.log 'setup mic......'
 		if (@_alreadySetup)
 			return
 		@_source = @_context.createMediaStreamSource stream
@@ -136,10 +132,6 @@ class AudioAnalysisEngine
 		# @_analyserNode.connect @_context.destination
 		@startAnalysis()
 		@_alreadySetup = true
-
-
-	onError: (err) =>
-		console.log 'error setting up mic', err
 
 
 	startAnalysis: =>

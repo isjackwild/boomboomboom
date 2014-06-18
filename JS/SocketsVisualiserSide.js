@@ -7,7 +7,7 @@
     return function() {
       window.key = Math.floor(Math.random() * 99999);
       window.key = window.key.toString();
-      return alert('the key for this is ' + window.key);
+      return console.log('the key for this is ' + window.key);
     };
   })(this));
 

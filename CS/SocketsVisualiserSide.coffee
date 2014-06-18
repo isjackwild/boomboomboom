@@ -3,7 +3,8 @@ window.key = null
 $ =>
 	window.key = Math.floor Math.random()*99999
 	window.key = window.key.toString()
-	alert 'the key for this is ' + window.key
+	console.log 'the key for this is ' + window.key
+
 
 socket = io()
 

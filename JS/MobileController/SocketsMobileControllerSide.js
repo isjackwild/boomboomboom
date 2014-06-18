@@ -5,23 +5,21 @@
 
   $((function(_this) {
     return function() {
-      window.key = prompt('enter key');
-      return alert('connected with key ' + window.key);
+      return window.key = prompt('enter key');
     };
   })(this));
 
   socket = io();
 
-  document.onclick = (function(_this) {
+  $(document).on('touchstart click', (function(_this) {
     return function() {
       var button;
       button = {
         button: 'a1',
         key: window.key
       };
-      socket.emit('button-push', button);
-      return console.log('pushed button on ipad');
+      return socket.emit('button-push', button);
     };
-  })(this);
+  })(this));
 
 }).call(this);

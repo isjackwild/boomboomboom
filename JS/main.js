@@ -103,7 +103,6 @@
       this.analyse = __bind(this.analyse, this);
       this.toggleAuto = __bind(this.toggleAuto, this);
       this.startAnalysis = __bind(this.startAnalysis, this);
-      this.onError = __bind(this.onError, this);
       this.setupMic = __bind(this.setupMic, this);
       this.setupTestAudio = __bind(this.setupTestAudio, this);
       this.setupFilters = __bind(this.setupFilters, this);
@@ -113,19 +112,8 @@
       this.setupFilters();
       this.setupDebugEqualizer();
       window.events.automatic.add(this.toggleAuto);
+      window.events.micAccepted.add(this.setupMic);
       this._testAudio = document.getElementById('test_audio');
-      document.onclick = (function(_this) {
-        return function() {
-          return _this.setupTestAudio();
-        };
-      })(this);
-      document.onclick = (function(_this) {
-        return function() {
-          return navigator.webkitGetUserMedia({
-            audio: true
-          }, _this.setupMic, _this.onError);
-        };
-      })(this);
     }
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
@@ -163,7 +151,7 @@
     };
 
     AudioAnalysisEngine.prototype.setupMic = function(stream) {
-      console.log('setup mic');
+      console.log('setup mic......');
       if (this._alreadySetup) {
         return;
       }
@@ -173,10 +161,6 @@
       this._biquadFilter.connect(this._analyserNode);
       this.startAnalysis();
       return this._alreadySetup = true;
-    };
-
-    AudioAnalysisEngine.prototype.onError = function(err) {
-      return console.log('error setting up mic', err);
     };
 
     AudioAnalysisEngine.prototype.startAnalysis = function() {
@@ -495,6 +479,7 @@
   })(this));
 
   window.events = {
+    micAccepted: new Signal(),
     automatic: new Signal(),
     peak: new Signal(),
     bass: new Signal(),
@@ -713,7 +698,7 @@
     return function() {
       window.key = Math.floor(Math.random() * 99999);
       window.key = window.key.toString();
-      return alert('the key for this is ' + window.key);
+      return console.log('the key for this is ' + window.key);
     };
   })(this));
 
@@ -1665,5 +1650,34 @@
     return VisualsEngine;
 
   })();
+
+}).call(this);
+
+(function() {
+  var onError, setupMic;
+
+  setupMic = function(stream) {
+    console.log('setup Mic');
+    return window.events.micAccepted.dispatch(stream);
+  };
+
+  onError = function(err) {
+    return console.log('error setting up mic');
+  };
+
+  $('.continue').on('touchstart click', (function(_this) {
+    return function() {
+      $('.accept').removeClass('hidden');
+      return navigator.webkitGetUserMedia({
+        audio: true
+      }, setupMic, onError);
+    };
+  })(this));
+
+  $('.usekeyboard').on('touchstart click', (function(_this) {
+    return function() {
+      return $('#instructions').addClass('hidden');
+    };
+  })(this));
 
 }).call(this);

@@ -28,6 +28,7 @@
   })(this));
 
   window.events = {
+    micAccepted: new Signal(),
     automatic: new Signal(),
     peak: new Signal(),
     bass: new Signal(),
