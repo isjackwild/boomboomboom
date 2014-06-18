@@ -5,10 +5,14 @@ clickContinue = () ->
 		,setupMic, onError
 
 setupMic = (stream) ->
-	console.log 'setup Mic'
 	$('.accept').addClass 'hidden'
-	$('#instructions').addClass 'hidden'
-	$('#ipadInstructions').addClass 'hidden'
+
+	$('#instructions, #ipadInstructions').addClass 'transitionOut'
+
+	setTimeout () ->
+		$('#instructions, #ipadInstructions').addClass 'hidden'
+	, 500
+
 	window.events.micAccepted.dispatch stream;
 
 onError = (err) ->
@@ -16,12 +20,18 @@ onError = (err) ->
 
 
 connectIpad = () ->
-	$('#instructions').addClass 'hidden'
+	$('#instructions').addClass 'transitionOut'
+
+	setTimeout () ->
+		$('#instructions').addClass 'hidden'
+	, 500
+
 	$('#ipadInstructions').removeClass 'hidden'
 	console.log 'conect ipad'
 	window.key = 10000 + Math.floor Math.random()*89999
 	window.key = window.key.toString()
 	console.log 'the key for this is ' + window.key
+	$('#key').html window.key
 	socket = io()
 	socket.on 'button-push', (which) ->
 		console.log 'ipad button pushed', which
@@ -34,3 +44,20 @@ connectIpad = () ->
 
 $('.continue').on 'touchstart click', clickContinue
 $('.connectipad').on 'touchstart click', connectIpad
+
+$ =>
+	setTimeout () ->
+		$('#music').removeClass 'hidden'
+	,500
+
+	setTimeout () ->
+		$('#visuals').removeClass 'hidden'
+	,1250
+
+	setTimeout () ->
+		$('#play').removeClass 'hidden'
+	,2000
+
+	setTimeout () ->
+		$('.instruction').addClass 'hidden'
+	,4500

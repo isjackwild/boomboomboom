@@ -1643,10 +1643,11 @@
   };
 
   setupMic = function(stream) {
-    console.log('setup Mic');
     $('.accept').addClass('hidden');
-    $('#instructions').addClass('hidden');
-    $('#ipadInstructions').addClass('hidden');
+    $('#instructions, #ipadInstructions').addClass('transitionOut');
+    setTimeout(function() {
+      return $('#instructions, #ipadInstructions').addClass('hidden');
+    }, 500);
     return window.events.micAccepted.dispatch(stream);
   };
 
@@ -1656,12 +1657,16 @@
 
   connectIpad = function() {
     var socket;
-    $('#instructions').addClass('hidden');
+    $('#instructions').addClass('transitionOut');
+    setTimeout(function() {
+      return $('#instructions').addClass('hidden');
+    }, 500);
     $('#ipadInstructions').removeClass('hidden');
     console.log('conect ipad');
     window.key = 10000 + Math.floor(Math.random() * 89999);
     window.key = window.key.toString();
     console.log('the key for this is ' + window.key);
+    $('#key').html(window.key);
     socket = io();
     return socket.on('button-push', function(which) {
       console.log('ipad button pushed', which);
@@ -1676,5 +1681,22 @@
   $('.continue').on('touchstart click', clickContinue);
 
   $('.connectipad').on('touchstart click', connectIpad);
+
+  $((function(_this) {
+    return function() {
+      setTimeout(function() {
+        return $('#music').removeClass('hidden');
+      }, 500);
+      setTimeout(function() {
+        return $('#visuals').removeClass('hidden');
+      }, 1250);
+      setTimeout(function() {
+        return $('#play').removeClass('hidden');
+      }, 2000);
+      return setTimeout(function() {
+        return $('.instruction').addClass('hidden');
+      }, 4500);
+    };
+  })(this));
 
 }).call(this);

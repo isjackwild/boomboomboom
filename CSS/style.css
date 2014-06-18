@@ -8,40 +8,52 @@ body {
 .dg {
   opacity: 0.8;
 }
-#instructions {
-  width: 100%;
-  height: 100%;
-  background: #00f;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  color: #fff;
-  font-size: 2em;
-}
-#instructions.hidden {
-  display: none;
-}
+#instructions,
 #ipadInstructions {
-  width: 100%;
-  height: 100%;
-  background: #008000;
+  font-family: Helvetica, sans-serif;
+  font-weight: normal;
+  width: 33%;
   position: absolute;
-  top: 0;
   left: 0;
+  right: 0;
+  top: 50%;
+  margin-top: -100px;
+  margin-left: auto;
+  margin-right: auto;
   z-index: 11;
-  color: #fff;
-  font-size: 2em;
 }
+#instructions.hidden,
 #ipadInstructions.hidden {
   display: none;
 }
-.continue,
-.connectipad {
-  background: #f00;
-  width: 200px;
-  height: 200px;
-  margin: 50px;
+#instructions .instruction,
+#ipadInstructions .instruction {
+  width: 33.3%;
+  height: 100%;
+  float: left;
+  position: relative;
+  -webkit-transition: opacity 0.75s;
+}
+#instructions .instruction.hidden,
+#ipadInstructions .instruction.hidden {
+  opacity: 0;
+  -webkit-transition: opacity 1.3s;
+}
+#instructions .instruction img,
+#ipadInstructions .instruction img {
+  display: block;
+  width: 66%;
+  margin: auto;
+}
+#instructions .instruction h1,
+#ipadInstructions .instruction h1 {
+  color: #fff;
+  text-align: center;
+  font-size: 1.3vw;
+  position: absolute;
+  left: 0;
+  right: 0;
+  letter-spacing: 0.005em;
 }
 .accept {
   background: #f00;
