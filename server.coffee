@@ -12,11 +12,6 @@ server = http.createServer app
 io = socket.listen server
 
 
-io.sockets.on 'connection', (client) ->
-	console.log 'client connected'
-
-
-
 app.get '/', (request, response) ->
 	console.log 'request sent'
 	ua = request.headers['user-agent']
@@ -28,5 +23,15 @@ app.get '/', (request, response) ->
 		app.use express.static(path.join(__dirname, ''))
 		response.sendfile __dirname + "/index.html"
 		console.log 'desktop'
+
+
+io.sockets.on 'connection', (client) ->
+	console.log 'a client connected'
+
+	client.on 'button-push', (which) ->
+		console.log which
+
+	client.on 'disconnect', (client) ->
+		console.log 'a client disconnect'
 
 server.listen 8080, '0.0.0.0'

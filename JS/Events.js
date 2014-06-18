@@ -1,5 +1,5 @@
 (function() {
-  var Signal;
+  var Signal, socket;
 
   Signal = signals.Signal;
 
@@ -46,5 +46,7 @@
     transform: new Signal(),
     angela: new Signal()
   };
+
+  socket = io();
 
 }).call(this);

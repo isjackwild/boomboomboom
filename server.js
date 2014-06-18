@@ -17,10 +17,6 @@
 
   io = socket.listen(server);
 
-  io.sockets.on('connection', function(client) {
-    return console.log('client connected');
-  });
-
   app.get('/', function(request, response) {
     var ua;
     console.log('request sent');
@@ -34,6 +30,16 @@
       response.sendfile(__dirname + "/index.html");
       return console.log('desktop');
     }
+  });
+
+  io.sockets.on('connection', function(client) {
+    console.log('a client connected');
+    client.on('button-push', function(which) {
+      return console.log(which);
+    });
+    return client.on('disconnect', function(client) {
+      return console.log('a client disconnect');
+    });
   });
 
   server.listen(8080, '0.0.0.0');

@@ -10,7 +10,19 @@
 <body>
 <script src="https://cdn.socket.io/socket.io-1.0.4.js"></script>
 <script>
-	var server = io.connect('http://192.168.1.15:8080')
+	var socket = io()
+	//make sure this is always a 4 digit number... e.g. 00000 will just show as 0
+	var key = 12345
+
+	document.onclick = function(){
+		button = {
+			button: 'a1',
+			key: key
+		}
+		socket.emit('button-push', button);
+		console.log('happening');
+	};
+
 </script>
 <h1>MOBILE VERSION</h1>
 
