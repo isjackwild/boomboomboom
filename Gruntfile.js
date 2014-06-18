@@ -51,7 +51,6 @@ module.exports = function(grunt){
 					'JS/KeyboardController.js' : 'CS/KeyboardController.coffee',
 					'JS/Events.js' : 'CS/Events.coffee',
 					'JS/VisualsEngine.js' : 'CS/VisualsEngine.coffee',
-					'JS/SocketsVisualiserSide.js' : 'CS/SocketsVisualiserSide.coffee',
 
 					'JS/MobileController/SocketsMobileControllerSide.js' : 'CS/MobileController/SocketsMobileControllerSide.coffee',
 					'JS/MobileController/mainMobileController.js' : 'CS/MobileController/*.coffee',

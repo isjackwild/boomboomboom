@@ -22,7 +22,22 @@ body {
 #instructions.hidden {
   display: none;
 }
-#instructions .continue {
+#ipadInstructions {
+  width: 100%;
+  height: 100%;
+  background: #008000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  color: #fff;
+  font-size: 2em;
+}
+#ipadInstructions.hidden {
+  display: none;
+}
+.continue,
+.connectipad {
   background: #f00;
   width: 200px;
   height: 200px;
