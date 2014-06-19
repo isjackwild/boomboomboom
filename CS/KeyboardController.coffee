@@ -1,5 +1,5 @@
 $ =>
-	window.keyboardController = new KeyboardController();
+	window.keyboardController = new KeyboardController()
 
 
 class KeyboardController
