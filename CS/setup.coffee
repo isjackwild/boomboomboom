@@ -12,11 +12,8 @@ clickContinue = () ->
 
 setupMic = (stream) ->
 	$('.accept').addClass 'hidden'
-
-	$('#instructions, #ipadInstructions').addClass 'transitionOut'
-
 	setTimeout () ->
-		$('#instructions, #ipadInstructions').addClass 'hidden'
+		$('#instructions').addClass 'hidden'
 	, 500
 
 	window.events.micAccepted.dispatch stream;
