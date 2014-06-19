@@ -60,7 +60,6 @@ class KeyboardController
 				when 79 then window.events.makeSpecial.dispatch 9
 				when 80 then window.events.makeSpecial.dispatch 0
 				when 219 then window.events.makeSpecial.dispatch 11
-				when 221 then window.events.makeSpecial.dispatch 12
 				#text
 				when 65 then window.events.showText.dispatch 'ber'
 				when 83 then window.events.showText.dispatch 'lin'

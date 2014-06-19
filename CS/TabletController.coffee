@@ -24,40 +24,40 @@ class window.TabletController
 			when "a6" then window.events.frequency.dispatch 6
 			when "a7" then window.events.frequency.dispatch 7
 			when "a8" then window.events.frequency.dispatch 8
-			when "a9" then window.events.inverseCols.dispatch()
+			when "a9" then window.events.frequency.dispatch 9
+			when "a10" then window.events.inverseCols.dispatch()
 
-			when "a10" then window.events.makeSpecial.dispatch 1
-			when "b1" then window.events.makeSpecial.dispatch 2
-			when "b2" then window.events.makeSpecial.dispatch 3
-			when "b3" then window.events.makeSpecial.dispatch 4
-			when "b4" then window.events.makeSpecial.dispatch 5
-			when "b5" then window.events.makeSpecial.dispatch 6
-			when "b6" then window.events.makeSpecial.dispatch 7
-			when "b7" then window.events.makeSpecial.dispatch 8
-			when "b8" then window.events.makeSpecial.dispatch 9
-			when "b9" then window.events.makeSpecial.dispatch 0
-			when "b10" then window.events.makeSpecial.dispatch 11
-			when "b11" then window.events.makeSpecial.dispatch 12
+			when "b1" then window.events.makeSpecial.dispatch 1
+			when "b2" then window.events.makeSpecial.dispatch 2
+			when "b3" then window.events.makeSpecial.dispatch 3
+			when "b4" then window.events.makeSpecial.dispatch 4
+			when "b5" then window.events.makeSpecial.dispatch 5
+			when "b6" then window.events.makeSpecial.dispatch 6
+			when "b7" then window.events.makeSpecial.dispatch 7
+			when "b8" then window.events.makeSpecial.dispatch 8
+			when "b9" then window.events.makeSpecial.dispatch 9
+			when "b10" then window.events.makeSpecial.dispatch 0
+			when "b11" then window.events.makeSpecial.dispatch 11
 
-			when "c1" then console.log 'a1'
-			when "c2" then console.log 'a1'
-			when "c3" then console.log 'a1'
-			when "c4" then console.log 'a1'
-			when "c5" then console.log 'a1'
-			when "c6" then console.log 'a1'
-			when "c7" then console.log 'a1'
-			when "c8" then console.log 'a1'
-			when "c9" then console.log 'a1'
+			when "c1" then window.events.showText.dispatch 'ber'
+			when "c2" then window.events.showText.dispatch 'lin'
+			when "c3" then window.events.showText.dispatch 'bisque'
+			when "c4" then window.events.showText.dispatch 'rage'
+			when "c5" then window.events.showText.dispatch 'putUpWall'
+			when "c6" then window.events.showText.dispatch 'tearDownWall'
+			when "c7" then window.events.showIllustration.dispatch 'food'
+			when "c8" then window.events.showIllustration.dispatch 'mascot'
+			when "c9" then window.events.showIllustration.dispatch 'landmark'
 
-			when "d1" then console.log 'a1'
-			when "d2" then console.log 'a1'
-			when "d3" then console.log 'a1'
-			when "d4" then console.log 'a1'
-			when "d5" then console.log 'a1'
-			when "d6" then console.log 'a1'
-			when "d7" then console.log 'a1'
-			when "d8" then console.log 'a1'
-			when "d9" then console.log 'a1'
+			when "d1" then window.events.angela.dispatch 'angela'
+			when "d2" then window.events.angela.dispatch 'kiss'
+			when "d3" then window.events.angela.dispatch 'wall'
+			when "d4" then window.events.angela.dispatch 'ruins'
+			when "d5" then window.events.bass.dispatch 'big'
+			when "d6" then window.events.bass.dispatch 'small'
+			when "d7" then window.events.filter.dispatch 'blur'
+			when "d8" then window.events.break.dispatch 'short'
+			when "d9" then window.events.break.dispatch 'long'
 
 
 	setAutoTimer: () =>
