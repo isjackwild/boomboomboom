@@ -5,12 +5,10 @@
 	 viewBox="0 0 365.7 365.7" enable-background="new 0 0 365.7 365.7" xml:space="preserve">
 <g id="Layer_1_1_">
 </g>
-<g id="Layer_5">
-	<path fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" d="M10.9,179.8
-		C110,40.7,275,50,354.7,179.8C293.9,309.6,66,309.6,10.9,179.8z"/>
+<g>
+	<path fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" d="M279,296
+		c0,12.2-9.8,22-22,22H106c-12.2,0-22-9.8-22-22V65c0-12.2,9.8-22,22-22h151c12.2,0,22,9.8,22,22V296z"/>
 	
-		<circle fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" cx="182.8" cy="178.4" r="67.4"/>
-	
-		<circle fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" cx="182.8" cy="178.4" r="27.7"/>
+		<rect x="115" y="74" fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" width="133" height="213"/>
 </g>
 </svg>

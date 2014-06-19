@@ -25,6 +25,7 @@ window.events = {
 	frequency: new Signal()
 	inverseCols: new Signal()
 	makeSpecial: new Signal()
+	makeShape: new Signal()
 	showText: new Signal()
 	showIllustration: new Signal()
 	filter: new Signal()

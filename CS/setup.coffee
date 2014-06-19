@@ -1,5 +1,11 @@
 clickContinue = () ->
+	$('.choice').addClass 'downAndOut'
 	$('.accept').removeClass 'hidden'
+	setTimeout () ->
+		$('#keyboardOrIpad').addClass 'hidden'
+		window.events.makeSpecial.dispatch 3
+	,666
+
 	navigator.webkitGetUserMedia
 			audio: true
 		,setupMic, onError
@@ -20,12 +26,6 @@ onError = (err) ->
 
 
 connectIpad = () ->
-	$('#instructions').addClass 'transitionOut'
-
-	setTimeout () ->
-		$('#instructions').addClass 'hidden'
-	, 500
-
 	$('#ipadInstructions').removeClass 'hidden'
 	console.log 'conect ipad'
 	window.key = 10000 + Math.floor Math.random()*89999
@@ -43,7 +43,9 @@ connectIpad = () ->
 
 
 $('.continue').on 'touchstart click', clickContinue
-$('.connectipad').on 'touchstart click', connectIpad
+$('#tablet').on 'touchstart click', connectIpad
+# $('.choice').on 'mouseenter click', ()->
+# 	window.events.makeSpecial.dispatch 9
 
 $ =>
 	#auto dowsn't work in visuals engine... why????
@@ -52,19 +54,25 @@ $ =>
 	
 	setTimeout () ->
 		$('#music').removeClass 'hidden'
-		window.events.peak.dispatch 'hard'
+		window.events.makeSpecial.dispatch 9
 	,500
 
 	setTimeout () ->
 		$('#visuals').removeClass 'hidden'
-		window.events.peak.dispatch 'hard'
+		window.events.makeSpecial.dispatch 9
 	,1250
 
 	setTimeout () ->
 		$('#play').removeClass 'hidden'
-		window.events.peak.dispatch 'hard'
+		window.events.makeSpecial.dispatch 9
 	,2000
 
 	setTimeout () ->
 		$('.instruction').addClass 'hidden'
-	,6000
+		$('#keyboardOrIpad').removeClass 'hidden'
+	,4000
+
+	setTimeout () ->
+		$('#instructions').addClass 'hidden'
+		$('.choice').removeClass 'upAndAway'
+	,5500

@@ -28,9 +28,9 @@ class VisualsEngine
 	_colourBucket: {
 		fg: []
 	}
-	_bgColFrom: {r: 50, g: 50, b: 50}
-	_bgColTo: {r: 80, g: 80, b: 80}
-	_bgColCurrent: {r: 100, g: 100, b: 100}
+	_bgColFrom: {r: 33, g: 33, b: 33}
+	_bgColTo: {r: 111, g: 111, b: 111}
+	_bgColCurrent: {r: 111, g: 111, b: 111}
 	_bgColLerp: 0
 	_bgColLerpSpeed: 0.005
 	_pauseBgLerp: false
@@ -63,6 +63,7 @@ class VisualsEngine
 		window.events.frequency.add @gotFrequency
 		window.events.inverseCols.add @inverseCols
 		window.events.makeSpecial.add @makeSpecial
+		window.events.makeShape.add @makeShape
 		window.events.showText.add @showText
 		window.events.showIllustration.add @showIllustration
 		window.events.angela.add @showPhoto
@@ -88,7 +89,7 @@ class VisualsEngine
 		@_foreGround = @_two.makeGroup()
 		@_foreGround.id = 'foreground'
 
-
+	#this isn't working... look into why
 	toggleAuto: (onOff) =>
 		console.log '?????????'
 		@_automatic = onOff
@@ -263,9 +264,28 @@ class VisualsEngine
 		circle.noStroke()
 		@_shapes.push circle
 
+		#make shapes if there's been a BPM jump recently. the duration should be set in bpm jump method
 		duration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
 		if @_peakCount % 2 is 0 and peakTime - @_bpmJumpTime < duration and @_bpm > 150
 			@makeSpecial Math.floor Math.random()*10
+
+
+	#move the shape creation from in onPeak into here
+	makeShape: (which) =>
+		if which is 'intro'
+			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
+			col = @_colourBucket.fg[whichCol]
+			col = @HSVtoRGB col.h, col.s, col.v
+			col = "rgb("+col.r+","+col.g+","+col.b+")"
+			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.43
+			@_middleGround.add circle
+			circle.fill = col
+			circle.noStroke()
+			circle.lifeSpan = 2000
+			circle.fadeOut = true
+			circle.fadeOutSpeed = 0.018
+			circle.creationTime = new Date().getTime()
+			@_shapes.push circle
 
 
 	makeSpecial: (which) =>
@@ -526,7 +546,10 @@ class VisualsEngine
 			if shape.lifeSpan
 				if time - shape.creationTime >= shape.lifeSpan
 					if shape.fadeOut is true
-						shape.opacity -= 0.01
+						if shape.fadeOutSpeed
+							shape.opacity -= shape.fadeOutSpeed
+						else
+							shape.opacity -= 0.01
 						if shape.opacity < 0
 							shape.remove()
 							@_shapes.splice i, 1
