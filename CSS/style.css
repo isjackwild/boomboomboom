@@ -12,7 +12,7 @@ body {
 #ipadInstructions {
   font-family: Helvetica, sans-serif;
   font-weight: normal;
-  width: 33%;
+  width: 45%;
   position: absolute;
   left: 0;
   right: 0;
@@ -37,7 +37,7 @@ body {
 #instructions .instruction.hidden,
 #ipadInstructions .instruction.hidden {
   opacity: 0;
-  -webkit-transition: opacity 1.3s;
+  -webkit-transition: opacity 1s;
 }
 #instructions .instruction img,
 #ipadInstructions .instruction img {
@@ -49,11 +49,11 @@ body {
 #ipadInstructions .instruction h1 {
   color: #fff;
   text-align: center;
-  font-size: 1.3vw;
+  font-size: 1.4vw;
   position: absolute;
   left: 0;
   right: 0;
-  letter-spacing: 0.005em;
+  letter-spacing: 0.05em;
 }
 .accept {
   background: #f00;

@@ -50,18 +50,22 @@
 
   $((function(_this) {
     return function() {
+      window.events.automatic.dispatch(false);
       setTimeout(function() {
-        return $('#music').removeClass('hidden');
+        $('#music').removeClass('hidden');
+        return window.events.peak.dispatch('hard');
       }, 500);
       setTimeout(function() {
-        return $('#visuals').removeClass('hidden');
+        $('#visuals').removeClass('hidden');
+        return window.events.peak.dispatch('hard');
       }, 1250);
       setTimeout(function() {
-        return $('#play').removeClass('hidden');
+        $('#play').removeClass('hidden');
+        return window.events.peak.dispatch('hard');
       }, 2000);
       return setTimeout(function() {
         return $('.instruction').addClass('hidden');
-      }, 4500);
+      }, 6000);
     };
   })(this));
 

@@ -88,21 +88,21 @@
     };
 
     VisualsEngine.prototype._bgColFrom = {
-      r: 130,
-      g: 130,
-      b: 130
+      r: 50,
+      g: 50,
+      b: 50
     };
 
     VisualsEngine.prototype._bgColTo = {
-      r: 150,
-      g: 150,
-      b: 150
+      r: 80,
+      g: 80,
+      b: 80
     };
 
     VisualsEngine.prototype._bgColCurrent = {
-      r: 130,
-      g: 130,
-      b: 130
+      r: 100,
+      g: 100,
+      b: 100
     };
 
     VisualsEngine.prototype._bgColLerp = 0;
@@ -197,6 +197,7 @@
     };
 
     VisualsEngine.prototype.toggleAuto = function(onOff) {
+      console.log('?????????');
       return this._automatic = onOff;
     };
 
@@ -326,6 +327,7 @@
 
     VisualsEngine.prototype.onPeak = function(type) {
       var circle, col, duration, illu, peakTime, special, v, whichCol;
+      console.log('on peak');
       this._peakCount++;
       peakTime = new Date().getTime();
       if (type === 'hard') {
@@ -342,7 +344,8 @@
         circle.fadeOut = true;
         circle.fadeOutSpeed = this.convertToRange(this._bpm, [60, 500], [0.1, 0.25]);
       }
-      if (this._automatic) {
+      if (this._automatic === true) {
+        console.log('auto');
         if (Math.random() > 0.92) {
           illu = Math.ceil(Math.random() * 3);
           switch (illu) {

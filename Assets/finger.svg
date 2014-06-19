@@ -8,14 +8,14 @@
 </g>
 <g id="Layer_5">
 	<g>
-		<path fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" d="M14.091,255.552
-			L233.966,35.677c26.236-26.236,68.771-26.236,95.007,0l0,0c26.237,26.236,26.237,68.772,0,95.008L109.098,349.6"/>
-		<path fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" d="M195.662,226.572
-			c0-31.826-25.755-57.582-57.582-57.582"/>
-		<path fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" d="M166.388,255.845
-			c-0.001-31.826-25.755-57.581-57.581-57.581"/>
-		<path fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" d="M275.599,138.242
-			l30.854-30.855c13.585-13.583,13.585-35.607,0-49.19l0,0c-13.584-13.584-35.607-13.584-49.191,0l-30.854,30.854L275.599,138.242z"
+		<path fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" d="M30.137,248.573
+			L228.921,49.789c23.72-23.719,62.174-23.719,85.894,0l0,0c23.721,23.72,23.721,62.176,0,85.895L116.031,333.6"/>
+		<path fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" d="M194.291,222.372
+			c0-28.771-23.284-52.058-52.058-52.058"/>
+		<path fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" d="M167.825,248.838
+			c0-28.773-23.285-52.058-52.058-52.058"/>
+		<path fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" stroke-miterlimit="10" d="M266.56,142.516
+			l27.895-27.896c12.282-12.28,12.282-32.192,0-44.472l0,0c-12.281-12.281-32.191-12.281-44.472,0l-27.896,27.895L266.56,142.516z"
 			/>
 	</g>
 </g>

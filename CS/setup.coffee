@@ -46,18 +46,25 @@ $('.continue').on 'touchstart click', clickContinue
 $('.connectipad').on 'touchstart click', connectIpad
 
 $ =>
+	#auto dowsn't work in visuals engine... why????
+	window.events.automatic.dispatch false
+	#make a method in visuals engine for showing intro shapes which last longer / fade out
+	
 	setTimeout () ->
 		$('#music').removeClass 'hidden'
+		window.events.peak.dispatch 'hard'
 	,500
 
 	setTimeout () ->
 		$('#visuals').removeClass 'hidden'
+		window.events.peak.dispatch 'hard'
 	,1250
 
 	setTimeout () ->
 		$('#play').removeClass 'hidden'
+		window.events.peak.dispatch 'hard'
 	,2000
 
 	setTimeout () ->
 		$('.instruction').addClass 'hidden'
-	,4500
+	,6000

@@ -28,9 +28,9 @@ class VisualsEngine
 	_colourBucket: {
 		fg: []
 	}
-	_bgColFrom: {r: 130, g: 130, b: 130}
-	_bgColTo: {r: 150, g: 150, b: 150}
-	_bgColCurrent: {r: 130, g: 130, b: 130}
+	_bgColFrom: {r: 50, g: 50, b: 50}
+	_bgColTo: {r: 80, g: 80, b: 80}
+	_bgColCurrent: {r: 100, g: 100, b: 100}
 	_bgColLerp: 0
 	_bgColLerpSpeed: 0.005
 	_pauseBgLerp: false
@@ -90,6 +90,7 @@ class VisualsEngine
 
 
 	toggleAuto: (onOff) =>
+		console.log '?????????'
 		@_automatic = onOff
 		
 
@@ -188,6 +189,7 @@ class VisualsEngine
 	
 
 	onPeak: (type) =>
+		console.log 'on peak'
 		@_peakCount++
 		peakTime = new Date().getTime()
 
@@ -206,7 +208,8 @@ class VisualsEngine
 			circle.fadeOutSpeed = @convertToRange(@_bpm, [60,500], [0.1, 0.25])
 
 
-		if @_automatic
+		if @_automatic is true
+			console.log 'auto'
 			if Math.random() > 0.92
 				illu = Math.ceil Math.random()*3
 				switch illu
