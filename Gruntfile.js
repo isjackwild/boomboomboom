@@ -38,6 +38,7 @@ module.exports = function(grunt){
 			compile: {
 				files: {
 					'CSS/style.css' : 'Styl/main.styl',
+					'CSS/mobile.css' : 'Styl/mobile.styl'
 				},
 			},
 		},
