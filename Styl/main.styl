@@ -55,6 +55,15 @@ html, body
 			right 0
 			letter-spacing 0.01em
 
+#ipadInstructions
+	-webkit-transform translateY(1px)
+	-webkit-transition -webkit-transform 0.33s
+	-webkit-transition-timing-function easeOutQuad
+	&.upAndAway
+		-webkit-transform translateY(-1000px)
+	&.downAndOut
+		-webkit-transform translateY(1000px)
+
 
 #keyboardOrIpad
 	margin-top -160px

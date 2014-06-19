@@ -24,16 +24,26 @@ onError = (err) ->
 
 connectIpad = () ->
 	$('#ipadInstructions').removeClass 'hidden'
+	
+	setTimeout () ->
+		$('#ipadInstructions').removeClass 'upAndAway'
+	,666
+
 	console.log 'conect ipad'
 	window.key = 10000 + Math.floor Math.random()*89999
 	window.key = window.key.toString()
 	console.log 'the key for this is ' + window.key
 	$('#key').html window.key
 	socket = io()
+
 	socket.on 'button-push', (which) ->
 		console.log 'ipad button pushed', which
 		if which.key is window.key
 			console.log 'im listening to this ipad'
+			$('#ipadInstructions').addClass 'downAndOut'
+			setTimeout () ->
+				$('#ipadInstructions').addClass 'hidden'
+			,666
 		else
 			console.log 'ignore'
 
