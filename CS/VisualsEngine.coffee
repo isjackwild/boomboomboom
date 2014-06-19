@@ -29,7 +29,7 @@ class VisualsEngine
 		fg: []
 	}
 	_bgColFrom: {r: 33, g: 33, b: 33}
-	_bgColTo: {r: 111, g: 111, b: 111}
+	_bgColTo: {r: 76, g: 56, b: 117}
 	_bgColCurrent: {r: 111, g: 111, b: 111}
 	_bgColLerp: 0
 	_bgColLerpSpeed: 0.005

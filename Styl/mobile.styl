@@ -2,28 +2,24 @@
 	-webkit-box-sizing: border-box
 	box-sizing: border-box
 
-.row
-	// position relative
-	height 25%
+
+#keypad
+	display table
 	width 100%
-	&#a
-		background red
-		.button
-			width 10%
-	&#b
-		background green
-		.button
-			width 9.09%
-	&#c
-		background blue
-		.button
-			width 11.11%
-	&#d
-		background orange
-		.button
-			width 11.11%
+	height 100%
+
+.row
+	display table
+	width 100%
+	height 25%
+	table-layout fixed
 
 .button
-	height 100%
-	border 1px solid black
-	float left
+	display table-cell
+	text-align center
+	vertial-align middle
+	width 100%
+	width auto
+	border-radius 5px
+	outline 1px solid black
+	outline-offset -10px
