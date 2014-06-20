@@ -1448,9 +1448,9 @@ var Backbone = Backbone || {};
     return;
   }
 
-  for(var x = 0; x < vendors.length && !root.requestAnimationFrame; ++x) {
+  for (var x = 0; x < vendors.length && !root.requestAnimationFrame; ++x) {
     root.requestAnimationFrame = root[vendors[x]+'RequestAnimationFrame'];
-    root.cancelAnimationFrame = 
+    root.cancelAnimationFrame =
       root[vendors[x]+'CancelAnimationFrame'] || root[vendors[x]+'CancelRequestAnimationFrame'];
   }
 
@@ -1471,6 +1471,7 @@ var Backbone = Backbone || {};
   }
 
 }());
+
 (function() {
 
   var root = this;
@@ -1612,7 +1613,7 @@ var Backbone = Backbone || {};
 
     Version: 'v0.4.0',
 
-    Identifier: 'two-',
+    Identifier: 'two_',
 
     Properties: {
       hierarchy: 'hierarchy',
@@ -1799,11 +1800,47 @@ var Backbone = Backbone || {};
         return matrix;
 
       },
+
+      deltaTransformPoint: function(matrix, x, y) {
+
+        var dx = x * matrix.a + y * matrix.c + 0;
+        var dy = x * matrix.b + y * matrix.d + 0;
+
+        return new Two.Vector(dx, dy);
+
+      },
+
+      /**
+       * https://gist.github.com/2052247
+       */
+      decomposeMatrix: function(matrix) {
+
+        // calculate delta transform point
+        var px = Two.Utils.deltaTransformPoint(matrix, 0, 1);
+        var py = Two.Utils.deltaTransformPoint(matrix, 1, 0);
+
+        // calculate skew
+        var skewX = ((180 / Math.PI) * Math.atan2(px.y, px.x) - 90);
+        var skewY = ((180 / Math.PI) * Math.atan2(py.y, py.x));
+
+        return {
+            translateX: matrix.e,
+            translateY: matrix.f,
+            scaleX: Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b),
+            scaleY: Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d),
+            skewX: skewX,
+            skewY: skewY,
+            rotation: skewX // rotation is the same as skew x
+        };
+
+      },
+
       /**
        * Walk through item properties and pick the ones of interest.
        * Will try to resolve styles applied via CSS
        */
       applySvgAttributes: function(node, elem) {
+
         var attributes = {}, styles = {};
 
         // Not available in non browser environments
@@ -1841,17 +1878,31 @@ var Backbone = Backbone || {};
           switch (key) {
             case 'transform':
 
-              // TODO:
-              // Need to figure out how to decompose matrix into
-              // translation, rotation, scale.
+              var m = node.getCTM();
+              var matrix = new Two.Matrix(m.a, m.b, m.c, m.d, m.e, m.f);
 
-              // var transforms = node[k].baseVal;
-              // var matrix = new Two.Matrix();
-              // _.each(_.range(transforms.numberOfItems), function(i) {
-              //   var m = transforms.getItem(i).matrix;
-              //   matrix.multiply(m.a, m.b, m.c, m.d, m.e, m.f);
-              // });
-              // elem.setMatrix(matrix);
+              // Option 1: edit the underlying matrix and don't force an auto calc.
+              // var m = node.getCTM();
+              // elem._matrix.manual = true;
+              // elem._matrix.set(m.a, m.b, m.c, m.d, m.e, m.f);
+
+              // Option 2: Decompose and infer Two.js related properties.
+              var transforms = Two.Utils.decomposeMatrix(node.getCTM());
+
+              elem.translation.set(transforms.translateX, transforms.translateY);
+              elem.rotation = transforms.rotation;
+              // Warning: Two.js elements only support uniform scalars...
+              elem.scale = transforms.scaleX;
+
+              // Override based on attributes.
+              if (styles.x) {
+                elem.translation.x = styles.x;
+              }
+
+              if (styles.y) {
+                elem.translation.y = styles.y;
+              }
+
               break;
             case 'visible':
               elem.visible = value;
@@ -1886,12 +1937,6 @@ var Backbone = Backbone || {};
                 elem.classList.push(cl);
               });
               break;
-            case 'class':
-              if (!elem.classList) elem.classList = [];
-              value.split(' ').forEach(function (cl) {
-                elem.classList.push(cl);
-              });
-              break;
           }
         });
 
@@ -1912,7 +1957,8 @@ var Backbone = Backbone || {};
 
           var group = new Two.Group();
 
-          this.add(group);
+          // Switched up order to inherit more specific styles
+          Two.Utils.applySvgAttributes(node, group);
 
           _.each(node.childNodes, function(n) {
 
@@ -1928,7 +1974,7 @@ var Backbone = Backbone || {};
 
           }, this);
 
-          return Two.Utils.applySvgAttributes(node, group);
+          return group;
 
         },
 
@@ -1957,11 +2003,67 @@ var Backbone = Backbone || {};
           var path = node.getAttribute('d');
 
           // Create a Two.Polygon from the paths.
+
           var coord, control;
           var coords, relative = false;
           var closed = false;
           var commands = path.match(/[a-df-z][^a-df-z]*/ig);
           var last = commands.length - 1;
+
+          // Go through commands and look for Inkscape irregularities
+
+          _.each(commands.slice(0), function(command, i) {
+
+            var type = command[0];
+            var lower = type.toLowerCase();
+            var items = command.slice(1).trim().split(/[\s,]+|(?=\s?[+\-])/);
+            var pre, post, result = [], bin;
+
+            if (i <= 0) {
+              commands = [];
+            }
+
+            switch (lower) {
+              case 'm':
+              case 'l':
+              case 'h':
+              case 'v':
+                if (items.length > 2) {
+                  bin = 2;
+                }
+                break;
+              case 'c':
+              case 's':
+              case 't':
+              case 'q':
+                if (items.length > 6) {
+                  bin = 6;
+                }
+                break;
+              case 'a':
+                // TODO: Handle Ellipses
+                break;
+            }
+
+            if (bin) {
+
+              for (var j = 0, l = items.length; j < l; j+=bin) {
+
+                result.push([type].concat(items.slice(j, j + bin)).join(' '));
+
+              }
+
+              commands = Array.prototype.concat.apply(commands, result);
+
+            } else {
+
+              commands.push(command);
+
+            }
+
+          });
+
+          // Create the vertices for our Two.Polygon
 
           var points = _.flatten(_.map(commands, function(command, i) {
 
@@ -2043,8 +2145,8 @@ var Backbone = Backbone || {};
                 coord = result;
                 break;
 
-              case 's':
               case 'c':
+              case 's':
 
                 x1 = coord.x;
                 y1 = coord.y;
@@ -2873,10 +2975,14 @@ var Backbone = Backbone || {};
     /**
      * Interpret an SVG Node and add it to this instance's scene. The
      * distinction should be made that this doesn't `import` svg's, it solely
-     * interprets them into something compatible for Two.js — this is slightly
+     * interprets them into something compatible for Two.js — this is slightly
      * different than a direct transcription.
+     *
+     * @param {Object} svgNode - The node to be parsed
+     * @param {Boolean} noWrappingGroup - Don't create a top-most group but
+     *                                    append all contents directly
      */
-    interpret: function(svgNode) {
+    interpret: function(svgNode, noWrapInGroup) {
 
       var tag = svgNode.tagName.toLowerCase();
 
@@ -2886,7 +2992,11 @@ var Backbone = Backbone || {};
 
       var node = Two.Utils.read[tag].call(this, svgNode);
 
-      this.add(node);
+      if (noWrapInGroup && node instanceof Two.Group) {
+        this.add(_.values(node.children));
+      } else {
+        this.add(node);
+      }
 
       return node;
 
@@ -3047,7 +3157,7 @@ var Backbone = Backbone || {};
     },
 
     distanceToSquared: function(v) {
-      var dx = this.x - v.x, 
+      var dx = this.x - v.x,
           dy = this.y - v.y;
       return dx * dx + dy * dy;
     },
@@ -3422,6 +3532,7 @@ var Backbone = Backbone || {};
   };
 
 })();
+
 (function() {
 
   /**
@@ -3634,8 +3745,8 @@ var Backbone = Backbone || {};
       // Calculate the determinant
       var det = a00 * b01 + a01 * b11 + a02 * b21;
 
-      if (!det) { 
-        return null; 
+      if (!det) {
+        return null;
       }
 
       det = 1.0 / det;
@@ -3979,7 +4090,7 @@ var Backbone = Backbone || {};
 
       // TODO: Can speed up.
       removeChild: function(id) {
-        var elem = this.domElement.querySelector('#' + id);
+        var elem = this.elem.querySelector('#' + id);
         if (elem) {
           this.elem.removeChild(elem);
         }
@@ -4103,6 +4214,7 @@ var Backbone = Backbone || {};
     this.domElement = params.domElement || svg.createElement('svg');
 
     this.scene = new Two.Group();
+    this.scene._renderer.elem = this.domElement;
     this.scene.parent = this;
 
   };
@@ -4182,9 +4294,9 @@ var Backbone = Backbone || {};
 
       render: function(ctx) {
         var matrix, stroke, linewidth, fill, opacity, visible, cap, join, miter,
-            closed, commands, length, last, next, prev, a, c, d, ux, uy, vx, vy, 
+            closed, commands, length, last, next, prev, a, c, d, ux, uy, vx, vy,
             ar, bl, br, cl, x, y;
-            
+
         // TODO: Add a check here to only invoke _update if need be.
         this._update();
 
@@ -5984,12 +6096,9 @@ var Backbone = Backbone || {};
         },
         set: function(v) {
           this[secret] = v;
-          // Is this really necessary?
-          // Imagine a group with opacity 0.5 and a few children.
-          // Setting the childrens opacity to 0.5 as well will changes the appearance.
-          // _.each(this.children, function(child) { // Trickle down styles
-          //   child[k] = v;
-          // });
+          _.each(this.children, function(child) { // Trickle down styles
+            child[k] = v;
+          });
         }
       });
 
@@ -6109,15 +6218,13 @@ var Backbone = Backbone || {};
      * Returns null if none found.
      */
     getById: function (id) {
-      var found;
       var search = function (node, id) {
-        if (node.id == id) {
-          found = node;
+        if (node.id === id) {
           return node;
         }
         for (var child in node.children) {
+          var found = search(node.children[child], id);
           if (found) return found;
-          search(node.children[child], id);
         }
       };
       return search(this, id) || null;
