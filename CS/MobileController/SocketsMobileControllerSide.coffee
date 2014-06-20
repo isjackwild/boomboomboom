@@ -27,5 +27,6 @@ $('.button').on 'touchstart', (event) =>
 		key: window.key
 	}
 	socket.emit 'button-push', button
-	console.log button
+
+
 
