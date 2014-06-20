@@ -38,6 +38,10 @@
       console.log(which);
       return io.emit('button-push', which);
     });
+    client.on('key-entered', function(which) {
+      console.log("key entered", which);
+      return io.emit('key-entered', which);
+    });
     return client.on('disconnect', function(client) {
       return console.log('a client disconnect');
     });

@@ -32,6 +32,10 @@ io.sockets.on 'connection', (client) ->
 		console.log which
 		io.emit 'button-push', which
 
+	client.on 'key-entered', (which) ->
+		console.log "key entered", which
+		io.emit 'key-entered', which
+
 	client.on 'disconnect', (client) ->
 		console.log 'a client disconnect'
 

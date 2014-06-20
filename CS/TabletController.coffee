@@ -7,9 +7,23 @@ class window.TabletController
 		window.onkeydown = @keydown
 
 		@_socket = io()
+
 		@_socket.on 'button-push', (which) =>
 			console.log 'ipad button pushed', which
-			@mapSocketEvents which.button
+			if which.key is window.key
+				@mapSocketEvents which.button
+
+
+		@_socket.on 'key-entered', (which) =>
+			console.log 'key-entered', which
+			if which is window.key
+				console.log 'correct key'
+				$('#ipadInstructions').addClass 'downAndOut'
+				setTimeout () ->
+					$('#ipadInstructions').addClass 'hidden'
+				,666
+			else
+				console.log 'incorrect key'
 
 
 	mapSocketEvents: (button) ->
