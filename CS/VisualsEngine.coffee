@@ -91,8 +91,11 @@ class VisualsEngine
 
 	#this isn't working... look into why
 	toggleAuto: (onOff) =>
-		console.log '?????????'
-		@_automatic = onOff
+		console.log '??????'
+		if onOff is 'on'
+			@_automatic = true
+		else if onOff is 'off'
+			@_automatic = false
 		
 
 	gotBPM: (BPM) =>

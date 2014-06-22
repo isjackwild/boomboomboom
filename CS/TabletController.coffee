@@ -75,7 +75,7 @@ class window.TabletController
 
 
 	setAutoTimer: () =>
-		window.events.automatic.dispatch false
+		window.events.automatic.dispatch 'off'
 		clearInterval @_autoTimer
 		@_timeSinceLastKeyPress = 0
 		console.log 'automatic off'
@@ -85,7 +85,7 @@ class window.TabletController
 			if @_timeSinceLastKeyPress > 10
 				clearInterval @_autoTimer
 				@_timeSinceLastKeyPress = 0
-				window.events.automatic.dispatch true
+				window.events.automatic.dispatch 'on'
 				console.log 'automatic ON'
 		,1000
 
