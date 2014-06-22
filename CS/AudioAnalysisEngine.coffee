@@ -51,8 +51,8 @@ class AudioAnalysisEngine
 	_averageFrequency: 0
 	_frequencyVariationCheck: []
 	_lastFrequencyVariation: null
-	_sensivitityForHighPeak: 2.5 #how much the peak has to be above average to be considered high
-	_sensivitityForLowPeak: 2.8 #how much the peak has to be above average to be considered low
+	_sensivitityForHighPeak: 1.8 #how much the peak has to be above average to be considered high
+	_sensivitityForLowPeak: 1.8 #how much the peak has to be above average to be considered low
 	_sensitivityForHighFrequencyVariation: 3 #how much the peaks have to differ from each other on average to trigger a hi freq variation zone
 
 	_lastPeakTime: null
@@ -142,7 +142,11 @@ class AudioAnalysisEngine
 
 
 	toggleAuto: (onOff) =>
-		@_automatic = onOff
+		console.log 'hahlkfjsdkj'
+		if onOff is 'on'
+			@_automatic = true
+		else if onOff is 'off'
+			@_automatic = false
 
 
 	analyse: =>
@@ -195,6 +199,7 @@ class AudioAnalysisEngine
 				@checkForFrequencyVariation()
 
 			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
+			console.log @_averageFrequency, @_frequencyOfPeak.freq
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
 				@eventLogger "hiPeak"
 				window.events.peak.dispatch 'hi'

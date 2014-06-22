@@ -89,7 +89,6 @@ class VisualsEngine
 		@_foreGround = @_two.makeGroup()
 		@_foreGround.id = 'foreground'
 
-	#this isn't working... look into why
 	toggleAuto: (onOff) =>
 		console.log '??????'
 		if onOff is 'on'
