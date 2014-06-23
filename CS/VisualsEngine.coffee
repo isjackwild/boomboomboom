@@ -386,50 +386,77 @@ class VisualsEngine
 
 		$(elem).addClass 'show'
 		@_textTimer = setTimeout =>
-			$(".show").removeClass 'show'
+			$("#text .show").removeClass 'show'
 		, hang
 
-	showIllustration: (which) =>
-		alreadyIllustration = false
-		for shape, i in @_shapes
-			console.log 'X'
-			if shape.isIllustration is true
-				alreadyIllustration = true
-				console.log 'already illu shown'
+	# showIllustration: (which) =>
+	# 	alreadyIllustration = false
+	# 	for shape, i in @_shapes
+	# 		console.log 'X'
+	# 		if shape.isIllustration is true
+	# 			alreadyIllustration = true
+	# 			console.log 'already illu shown'
 
-		console.log alreadyIllustration
+	# 	console.log alreadyIllustration
 
-		if alreadyIllustration is false
-			console.log 'show an illu'
-			switch which
-				when 'food'
-					if Math.random() > 0.49
-						id = 'currywurst'
-					else
-						id = 'pretzel'
-				when 'mascot'
-					if Math.random() > 0.49
-						id = 'ample'
-					else
-						id = 'bear'
-				when 'landmark'
-					if Math.random() > 0.49
-						id = 'tower'
-					else
-						id = 'tor'
+	# 	if alreadyIllustration is false
+	# 		console.log 'show an illu'
+	# 		switch which
+	# 			when 'food'
+	# 				if Math.random() > 0.49
+	# 					id = 'currywurst'
+	# 				else
+	# 					id = 'pretzel'
+	# 			when 'mascot'
+	# 				if Math.random() > 0.49
+	# 					id = 'ample'
+	# 				else
+	# 					id = 'bear'
+	# 			when 'landmark'
+	# 				if Math.random() > 0.49
+	# 					id = 'tower'
+	# 				else
+	# 					id = 'tor'
 					
-			illustration = @_two.interpret document.getElementById id
+	# 		illustration = @_two.interpret document.getElementById id
 			
-			if id is 'pretzel'
-				illustration.center().translation.set 12+(@_two.width / 2), @_two.height / 2
-			else
-				illustration.center().translation.set @_two.width / 2, @_two.height / 2
+	# 		if id is 'pretzel'
+	# 			illustration.center().translation.set 12+(@_two.width / 2), @_two.height / 2
+	# 		else
+	# 			illustration.center().translation.set @_two.width / 2, @_two.height / 2
 
-			@_foreGround.add illustration
-			illustration.lifeSpan = 100
-			illustration.creationTime = new Date().getTime()
-			illustration.isIllustration = true
-			@_shapes.push illustration
+	# 		@_foreGround.add illustration
+	# 		illustration.lifeSpan = 100
+	# 		illustration.creationTime = new Date().getTime()
+	# 		illustration.isIllustration = true
+	# 		@_shapes.push illustration
+
+
+	showIllustration: (which) =>
+		if @_illustrationTimer
+			clearTimeout @_illustrationTimer
+		hang = @convertToRange(@_bpm, [60,600], [200, 75])
+		switch which
+			when 'ear'
+				elem = "#ear"
+				$("#eye").removeClass 'show'
+				$("#mouth").removeClass 'show'
+			when 'eye'
+				elem = "#eye"
+				$("#ear").removeClass 'show'
+				$("#mouth").removeClass 'show'
+			when 'mouth'
+				elem = "#mouth"
+				$("#eye").removeClass 'show'
+				$("#ear").removeClass 'show'
+
+
+		$(elem).addClass 'show'
+		@_illustrationTimer = setTimeout =>
+			$("#illus .show").removeClass 'show'
+		, hang
+
+
 
 	showPhoto: (which) =>
 		$('#photo').removeClass()

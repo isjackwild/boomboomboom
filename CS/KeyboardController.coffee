@@ -68,9 +68,9 @@ class KeyboardController
 				# when 71 then window.events.showText.dispatch 'putUpWall'
 				# when 72 then window.events.showText.dispatch 'tearDownWall'
 				#illustrations
-				when 74 then window.events.showIllustration.dispatch 'food'
-				when 75 then window.events.showIllustration.dispatch 'mascot'
-				when 76 then window.events.showIllustration.dispatch 'landmark'
+				when 74 then window.events.showIllustration.dispatch 'ear'
+				when 75 then window.events.showIllustration.dispatch 'eye'
+				when 76 then window.events.showIllustration.dispatch 'mouth'
 				#filters
 				when 77 then window.events.filter.dispatch 'blur'
 				#flashes
