@@ -1,15 +1,15 @@
 #Maybe change this to use the backbone events module — it's already included in two.js
 Signal = signals.Signal
 
-# $(window).on 'blur', =>
-# 	console.log 'disable events'
-# 	for key of window.events
-# 		window.events[key].active = false
+$(window).on 'blur', =>
+	console.log 'disable events'
+	for key of window.events
+		window.events[key].active = false
 
-# $(window).on 'focus', =>
-# 	console.log 'enable events'
-# 	for key of window.events
-# 		window.events[key].active = true
+$(window).on 'focus', =>
+	console.log 'enable events'
+	for key of window.events
+		window.events[key].active = true
 
 window.events = {
 	micAccepted: new Signal()
