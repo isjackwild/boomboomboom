@@ -3,7 +3,7 @@ window.key = null
 $ =>
 	console.log 'setup controller'
 
-
+pressTimer = null;
 socket = io()
 
 
@@ -20,7 +20,12 @@ $('#inputForm').on 'submit', (e) =>
 
 
 $('.button').on 'touchstart', (event) =>
-	console.log 'touch'
+	$('body').addClass('press');
+	clearTimeout pressTimer
+	pressTimer = setTimeout () =>
+		$('body').removeClass('press')
+	,100
+
 	whichButton = event.currentTarget.id
 	button = {
 		button: whichButton.toString();

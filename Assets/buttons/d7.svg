@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 17.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+<path fill="#8E8E8E" d="M100,88c0,6.6-5.4,12-12,12H12c-6.6,0-12-5.4-12-12V12C0,5.4,5.4,0,12,0h76c6.6,0,12,5.4,12,12V88z"/>
+<g>
+	<defs>
+		<filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="8.8" y="8.7" width="82" height="82">
+			<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+			<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+		</filter>
+	</defs>
+	<mask maskUnits="userSpaceOnUse" x="8.8" y="8.7" width="82" height="82" id="SVGID_1_">
+		<g filter="url(#Adobe_OpacityMaskFilter)">
+			
+				<image overflow="visible" width="87" height="87" xlink:href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/7AARRHVja3kAAQAEAAAAHgAA/+4AIUFkb2JlAGTAAAAAAQMA
+EAMCAwYAAAIHAAADBgAAA8L/2wCEABALCwsMCxAMDBAXDw0PFxsUEBAUGx8XFxcXFx8eFxoaGhoX
+Hh4jJSclIx4vLzMzLy9AQEBAQEBAQEBAQEBAQEABEQ8PERMRFRISFRQRFBEUGhQWFhQaJhoaHBoa
+JjAjHh4eHiMwKy4nJycuKzU1MDA1NUBAP0BAQEBAQEBAQEBAQP/CABEIAFcAVwMBIgACEQEDEQH/
+xACLAAACAwEBAQAAAAAAAAAAAAAABgMEBQcBAgEBAAAAAAAAAAAAAAAAAAAAABAAAgMAAgICAwEB
+AAAAAAAAAQMCBAUAERASIBNQMhQVNREAAgEBBQYEBwAAAAAAAAAAAAECISARMVEDEEFxgSIyYZGh
+I9ESkrITM3MSAQAAAAAAAAAAAAAAAAAAAFD/2gAMAwEAAhEDEQAAAOfh6eSaDIK8zzOc4qdKxxJN
+LNAANTPdC+wmqQ/cvpVztr4EZN6oniUShaf0boAxWIpgADz0Kiq3LBz4lCu/81cjoNnF1iU89Dwj
+IVTZTReKYR6OcHQmLljGdBkUZxjzcbGLyeUAAAAJQLkoENMCMAAD/9oACAECAAEFAPwn/9oACAED
+AAEFAPwn/9oACAEBAAEFAPK67WcVkOnw4jOmZL4cYhqz8ACTQypNNLGACcgAHJj07IHV3GHV7Mmo
+kEHxlUC2WbmgCrRAEKsQPojxlWJFqiCNLNBGnRKZ8rr+xuNSAFGqAIQER5YsSF+qCNmkOpK9bGSv
+3fkJHVWAEfjbWDHYSOrSxHRxOvsyOvWv+vxs/rsdetz/AKWUwQfjvHVVgMfjbYBHYePWy320Es+t
+mNdHVC0CFsEh5a0RF+2ANq8Oiwl3M28UzzNMEVb4IXbiR/THjLcQLd8AaemANG4XT80dKaTS2R0n
+Yj1/sR6fsR6vbQ6uaM3H4rk8cVZ0Y8/s0uNs6EuMLifP/9oACAECAgY/ABP/2gAIAQMCBj8AE//a
+AAgBAQEGPwDb0xKm8oXSjzs3KrYpSV/gLpO07TtH0jcFyLnjtU5LHAVBUMNmA6DoOSXHZGJGgqWn
+QlQWnnJLzZeRFaZI0lnqRXqjmRtskaH9I/ci7MiK0yVTSeU4v1IyyI1FW06kqn5PFPy2KLdNwqiq
+YmJiOo6jinTfYUZPmLqO47h9Q+oai6Z2vb+Z8E2U0pvhGR+jU+mXwK6U1xiz3L+ausf/2Q==" transform="matrix(1 0 0 1 6 6)">
+			</image>
+		</g>
+	</mask>
+	<g mask="url(#SVGID_1_)">
+		<circle fill="#78E269" cx="49.8" cy="49.7" r="41"/>
+	</g>
+</g>
+</svg>

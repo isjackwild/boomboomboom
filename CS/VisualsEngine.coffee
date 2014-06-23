@@ -28,7 +28,7 @@ class VisualsEngine
 	_colourBucket: {
 		fg: []
 	}
-	_bgColFrom: {r: 33, g: 33, b: 33}
+	_bgColFrom: {r: 50, g: 50, b: 50}
 	_bgColTo: {r: 76, g: 56, b: 117}
 	_bgColCurrent: {r: 111, g: 111, b: 111}
 	_bgColLerp: 0
@@ -90,7 +90,6 @@ class VisualsEngine
 		@_foreGround.id = 'foreground'
 
 	toggleAuto: (onOff) =>
-		console.log '??????'
 		if onOff is 'on'
 			@_automatic = true
 		else if onOff is 'off'

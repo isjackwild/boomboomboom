@@ -80,7 +80,7 @@ class AudioAnalysisEngine
 		@_context = new webkitAudioContext()
 		@setupAnalyser()
 		@setupFilters()
-		@setupDebugEqualizer()
+		# @setupDebugEqualizer()
 		window.events.automatic.add @toggleAuto
 		window.events.micAccepted.add @setupMic
 
@@ -150,7 +150,7 @@ class AudioAnalysisEngine
 
 	analyse: =>
 		@_analyserNode.getByteFrequencyData @_frequencyData
-		@drawDebugEqualizer()
+		# @drawDebugEqualizer()
 		@_frequencyOfPeak.amp = 0
 
 		for i in [0...@_frequencyData.length] #check for highest peak over the whole range
@@ -339,21 +339,21 @@ class AudioAnalysisEngine
 					console.log 'currently low frequency variation'
 
 
-	setupDebugEqualizer: =>
-		@_debugCV = document.getElementById 'debugVisualiser'
-		@_debugCV.width = 600
-		@_debugCV.height = 150
-		@_debugCTX = @_debugCV.getContext "2d"
+	# setupDebugEqualizer: =>
+	# 	@_debugCV = document.getElementById 'debugVisualiser'
+	# 	@_debugCV.width = 600
+	# 	@_debugCV.height = 150
+	# 	@_debugCTX = @_debugCV.getContext "2d"
 
 
 
-	drawDebugEqualizer: =>
-		@_debugCTX.clearRect 0,0,@_debugCV.width,@_debugCV.height
-		for i in [0...@_frequencyData.length] by 2
-			@_debugCTX.beginPath()
-			@_debugCTX.moveTo i/2, @_debugCV.height
-			@_debugCTX.lineTo i/2, @_debugCV.height - @_frequencyData[i]/2
-			@_debugCTX.stroke()
+	# drawDebugEqualizer: =>
+	# 	@_debugCTX.clearRect 0,0,@_debugCV.width,@_debugCV.height
+	# 	for i in [0...@_frequencyData.length] by 2
+	# 		@_debugCTX.beginPath()
+	# 		@_debugCTX.moveTo i/2, @_debugCV.height
+	# 		@_debugCTX.lineTo i/2, @_debugCV.height - @_frequencyData[i]/2
+	# 		@_debugCTX.stroke()
 
 
 	convertToRange: (value, srcRange, dstRange) ->
