@@ -61,12 +61,12 @@ class KeyboardController
 				when 80 then window.events.makeSpecial.dispatch 0
 				when 219 then window.events.makeSpecial.dispatch 11
 				#text
-				when 65 then window.events.showText.dispatch 'ber'
-				when 83 then window.events.showText.dispatch 'lin'
-				when 68 then window.events.showText.dispatch 'bisque'
-				when 70 then window.events.showText.dispatch 'rage'
-				when 71 then window.events.showText.dispatch 'putUpWall'
-				when 72 then window.events.showText.dispatch 'tearDownWall'
+				when 65 then window.events.showText.dispatch 'boom'
+				when 83 then window.events.showText.dispatch 'tssk'
+				when 68 then window.events.showText.dispatch 'wobb'
+				# when 70 then window.events.showText.dispatch 'rage'
+				# when 71 then window.events.showText.dispatch 'putUpWall'
+				# when 72 then window.events.showText.dispatch 'tearDownWall'
 				#illustrations
 				when 74 then window.events.showIllustration.dispatch 'food'
 				when 75 then window.events.showIllustration.dispatch 'mascot'

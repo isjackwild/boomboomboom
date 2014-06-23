@@ -53,12 +53,12 @@ class window.TabletController
 			when "b10" then window.events.makeSpecial.dispatch 0
 			when "b11" then window.events.makeSpecial.dispatch 11
 
-			when "c1" then window.events.showText.dispatch 'ber'
-			when "c2" then window.events.showText.dispatch 'lin'
-			when "c3" then window.events.showText.dispatch 'bisque'
-			when "c4" then window.events.showText.dispatch 'rage'
-			when "c5" then window.events.showText.dispatch 'putUpWall'
-			when "c6" then window.events.showText.dispatch 'tearDownWall'
+			when "c1" then window.events.showText.dispatch 'boom'
+			when "c2" then window.events.showText.dispatch 'tssk'
+			when "c3" then window.events.showText.dispatch 'wobb'
+			# when "c4" then window.events.showText.dispatch 'rage'
+			# when "c5" then window.events.showText.dispatch 'putUpWall'
+			# when "c6" then window.events.showText.dispatch 'tearDownWall'
 			when "c7" then window.events.showIllustration.dispatch 'food'
 			when "c8" then window.events.showIllustration.dispatch 'mascot'
 			when "c9" then window.events.showIllustration.dispatch 'landmark'

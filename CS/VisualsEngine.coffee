@@ -370,42 +370,19 @@ class VisualsEngine
 			clearTimeout @_textTimer
 		hang = @convertToRange(@_bpm, [60,600], [1500, 800])
 		switch which
-			when 'ber'
-				elem = "#ber"
-				$("#bisque").removeClass 'show'
-				$("#putUpWall").removeClass 'show'
-				$("#tearDownWall").removeClass 'show'
-			when 'lin'
-				elem = "#lin"
-				$("#rage").removeClass 'show'
-				$("#putUpWall").removeClass 'show'
-				$("#tearDownWall").removeClass 'show'
-			when 'bisque'
-				elem = "#bisque"
-				$("#ber").removeClass 'show'
-				$("#putUpWall").removeClass 'show'
-				$("#tearDownWall").removeClass 'show'
-			when 'rage'
-				elem = "#rage"
-				$("#lin").removeClass 'show'
-				$("#putUpWall").removeClass 'show'
-				$("#tearDownWall").removeClass 'show'
-			when 'putUpWall'
-				elem = "#putUpWall"
-				hang = 3500
-				$("#bisque").removeClass 'show'
-				$("#rage").removeClass 'show'
-				$("#ber").removeClass 'show'
-				$("#lin").removeClass 'show'
-				$("#tearDownWall").removeClass 'show'
-			when 'tearDownWall'
-				elem = "#tearDownWall"
-				hang = 3500
-				$("#bisque").removeClass 'show'
-				$("#rage").removeClass 'show'
-				$("#ber").removeClass 'show'
-				$("#lin").removeClass 'show'
-				$("#putUpWall").removeClass 'show'
+			when 'boom'
+				elem = "#boom"
+				$("#tssk").removeClass 'show'
+				$("#wobb").removeClass 'show'
+			when 'tssk'
+				elem = "#tssk"
+				$("#boom").removeClass 'show'
+				$("#wobb").removeClass 'show'
+			when 'wobb'
+				elem = "#wobb"
+				$("#boom").removeClass 'show'
+				$("#tssk").removeClass 'show'
+
 
 		$(elem).addClass 'show'
 		@_textTimer = setTimeout =>
