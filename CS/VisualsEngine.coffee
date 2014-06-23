@@ -90,9 +90,10 @@ class VisualsEngine
 		@_foreGround.id = 'foreground'
 
 	toggleAuto: (onOff) =>
+		console.log onOff, "<<<<"
 		if onOff is 'on'
 			@_automatic = true
-		else if onOff is 'off'
+		else if onOff is 'offfff'
 			@_automatic = false
 		
 
@@ -107,11 +108,12 @@ class VisualsEngine
 
 	onBPMDrop: () =>
 		if @_automatic
-			random = Math.random()
-			if random < 0.1
-				@showText 'putUpWall'
-			else if random > 0.1 and random < 0.2
-				@showText 'tearDownWall'
+			photo = Math.ceil Math.random()*4
+			switch text
+				when 1 then @showPhoto 'angela'
+				when 2 then @showPhoto 'obama'
+				when 3 then @showPhoto 'queen'
+				when 4 then @showPhoto 'charles'
 
 
 	gotFrequency: (freq) =>
@@ -191,7 +193,6 @@ class VisualsEngine
 	
 
 	onPeak: (type) =>
-		console.log 'on peak'
 		@_peakCount++
 		peakTime = new Date().getTime()
 
@@ -212,19 +213,21 @@ class VisualsEngine
 
 		if @_automatic is true
 			console.log 'auto'
-			if Math.random() > 0.92
-				illu = Math.ceil Math.random()*3
+			if Math.random() > 0.9
+				illu = Math.ceil Math.random()*5
 				switch illu
-					when 1 then @showIllustration 'food'
-					when 2 then @showIllustration 'mascot'
-					when 3 then @showIllustration 'landmark'
+					when 1 then @showIllustration 'heart'
+					when 2 then @showIllustration 'hand'
+					when 3 then @showIllustration 'mouth'
+					when 4 then @showIllustration 'eye'
+					when 5 then @showIllustration 'ear'
 			if Math.random() > 0.995
-				if Math.random() > 0.6
-					@showText 'ber'
-					@showText 'lin'
-				else 
-					@showText 'bisque'
-					@showText 'rage'
+				text = Math.ceil Math.random()*4
+				switch text
+					when 4 then @showText 'boom'
+					when 4 then @showText 'tssk'
+					when 4 then @showText 'wobb'
+					when 4 then @showText 'clap'
 
 			if type is 'hard' or type is 'soft'
 				if Math.random() > 0.94

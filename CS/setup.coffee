@@ -55,7 +55,6 @@ $('#tablet').on 'touchstart click', connectIpad
 
 
 $ =>
-	window.events.automatic.dispatch false
 	
 	setTimeout () ->
 		$('#music').removeClass 'hidden'
