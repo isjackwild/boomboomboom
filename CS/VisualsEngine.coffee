@@ -374,13 +374,21 @@ class VisualsEngine
 				elem = "#boom"
 				$("#tssk").removeClass 'show'
 				$("#wobb").removeClass 'show'
+				$("#clap").removeClass 'show'
 			when 'tssk'
 				elem = "#tssk"
 				$("#boom").removeClass 'show'
 				$("#wobb").removeClass 'show'
+				$("#clap").removeClass 'show'
 			when 'wobb'
 				elem = "#wobb"
 				$("#boom").removeClass 'show'
+				$("#tssk").removeClass 'show'
+				$("#clap").removeClass 'show'
+			when 'clap'
+				elem = "#clap"
+				$("#boom").removeClass 'show'
+				$("#wobb").removeClass 'show'
 				$("#tssk").removeClass 'show'
 
 
@@ -389,64 +397,40 @@ class VisualsEngine
 			$("#text .show").removeClass 'show'
 		, hang
 
-	# showIllustration: (which) =>
-	# 	alreadyIllustration = false
-	# 	for shape, i in @_shapes
-	# 		console.log 'X'
-	# 		if shape.isIllustration is true
-	# 			alreadyIllustration = true
-	# 			console.log 'already illu shown'
-
-	# 	console.log alreadyIllustration
-
-	# 	if alreadyIllustration is false
-	# 		console.log 'show an illu'
-	# 		switch which
-	# 			when 'food'
-	# 				if Math.random() > 0.49
-	# 					id = 'currywurst'
-	# 				else
-	# 					id = 'pretzel'
-	# 			when 'mascot'
-	# 				if Math.random() > 0.49
-	# 					id = 'ample'
-	# 				else
-	# 					id = 'bear'
-	# 			when 'landmark'
-	# 				if Math.random() > 0.49
-	# 					id = 'tower'
-	# 				else
-	# 					id = 'tor'
-					
-	# 		illustration = @_two.interpret document.getElementById id
-			
-	# 		if id is 'pretzel'
-	# 			illustration.center().translation.set 12+(@_two.width / 2), @_two.height / 2
-	# 		else
-	# 			illustration.center().translation.set @_two.width / 2, @_two.height / 2
-
-	# 		@_foreGround.add illustration
-	# 		illustration.lifeSpan = 100
-	# 		illustration.creationTime = new Date().getTime()
-	# 		illustration.isIllustration = true
-	# 		@_shapes.push illustration
-
 
 	showIllustration: (which) =>
 		if @_illustrationTimer
 			clearTimeout @_illustrationTimer
 		hang = @convertToRange(@_bpm, [60,600], [200, 75])
 		switch which
+			when 'hand'
+				elem = "#hand"
+				$("#heart").removeClass 'show'
+				$("#mouth").removeClass 'show'
+				$("#eye").removeClass 'show'
+				$("#ear").removeClass 'show'
+			when 'heart'
+				elem = "#heart"
+				$("#hand").removeClass 'show'
+				$("#mouth").removeClass 'show'
+				$("#eye").removeClass 'show'
+				$("#ear").removeClass 'show'
 			when 'ear'
 				elem = "#ear"
+				$("#hand").removeClass 'show'
+				$("#heart").removeClass 'show'
 				$("#eye").removeClass 'show'
 				$("#mouth").removeClass 'show'
 			when 'eye'
 				elem = "#eye"
+				$("#hand").removeClass 'show'
+				$("#heart").removeClass 'show'
 				$("#ear").removeClass 'show'
 				$("#mouth").removeClass 'show'
 			when 'mouth'
 				elem = "#mouth"
+				$("#hand").removeClass 'show'
+				$("#heart").removeClass 'show'
 				$("#eye").removeClass 'show'
 				$("#ear").removeClass 'show'
 

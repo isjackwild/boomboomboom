@@ -40,9 +40,9 @@ class KeyboardController
 				when 66 then window.events.bass.dispatch 'big'
 				#angela
 				when 90 then window.events.angela.dispatch 'angela'
-				when 88 then window.events.angela.dispatch 'kiss'
-				when 67 then window.events.angela.dispatch 'wall'
-				when 86 then window.events.angela.dispatch 'ruins'
+				when 88 then window.events.angela.dispatch 'obama'
+				when 67 then window.events.angela.dispatch 'queen'
+				when 86 then window.events.angela.dispatch 'charles'
 				#peaks with up (high) down (low) left (soft) right (hard)
 				when 38 then window.events.peak.dispatch 'hi'
 				when 40 then window.events.peak.dispatch 'lo'
@@ -64,10 +64,10 @@ class KeyboardController
 				when 65 then window.events.showText.dispatch 'boom'
 				when 83 then window.events.showText.dispatch 'tssk'
 				when 68 then window.events.showText.dispatch 'wobb'
-				# when 70 then window.events.showText.dispatch 'rage'
-				# when 71 then window.events.showText.dispatch 'putUpWall'
-				# when 72 then window.events.showText.dispatch 'tearDownWall'
+				when 70 then window.events.showText.dispatch 'clap'
 				#illustrations
+				when 71 then window.events.showIllustration.dispatch 'hand'
+				when 72 then window.events.showIllustration.dispatch 'heart'
 				when 74 then window.events.showIllustration.dispatch 'ear'
 				when 75 then window.events.showIllustration.dispatch 'eye'
 				when 76 then window.events.showIllustration.dispatch 'mouth'

@@ -55,7 +55,6 @@ $('#tablet').on 'touchstart click', connectIpad
 
 
 $ =>
-	#auto dowsn't work in visuals engine... why????
 	window.events.automatic.dispatch false
 	
 	setTimeout () ->
