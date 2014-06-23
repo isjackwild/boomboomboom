@@ -95,6 +95,8 @@ class VisualsEngine
 			@_automatic = true
 		else if onOff is 'offfff'
 			@_automatic = false
+		else if onOff is 'offf'
+			@_automatic = false
 		
 
 	gotBPM: (BPM) =>
