@@ -39,4 +39,5 @@ io.sockets.on 'connection', (client) ->
 	client.on 'disconnect', (client) ->
 		console.log 'a client disconnect'
 
-server.listen 5000, '0.0.0.0'
+# server.listen 5000, '0.0.0.0'
+server.listen 5000
