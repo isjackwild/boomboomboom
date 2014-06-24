@@ -47,6 +47,6 @@
     });
   });
 
-  server.listen(5000);
+  server.listen(process.env.PORT);
 
 }).call(this);
