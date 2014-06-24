@@ -7,51 +7,73 @@ body, html
 		background-color #444444
 
 *
-	-webkit-box-sizing: border-box
-	box-sizing: border-box
+	-webkit-box-sizing border-box
+	box-sizing border-box
+	-webkit-touch-callout none
+    -webkit-user-select none
 
 #introWrapper
-	height 100%
-	width 100%
 	background #f7bb07
-	position absolute
-	z-index 3
-	text-align center
 	-webkit-transition -webkit-transform 0.3s
+	font-family 'Lato', Helvetica, sans-serif
+	z-index 3
 	&.downAndOut
 		-webkit-transform translateY(999px)
 	&.hidden
 		display none
-	#intro
-		position relative
-		top 50%
-		margin-top -200px
-		h1	
-			font-size 2.3em
-			color white
-			font-family 'Lato', Helvetica, sans-serif
-			margin-bottom 40px
-		#inputKey
-			font-size 3em
-			font-family 'Lato', Helvetica, sans-serif
-			text-align center
-			border-radius 0
-			border 20px solid black
-			width 33%
-			letter-spacing 0.02em
-			margin-bottom 25px
-		#submitKey
-			background none
-			border none
-			font-size 1.5em
-			font-family 'Lato', Helvetica, sans-serif
+	h1	
+		font-size 5.4vw
+		color white
+		font-weight 400
+		margin-bottom 4disable vh
+	#inputKey
+		font-size 7vw
+		font-weight 700
+		text-align center
+		border-radius 0
+		border 20px solid black
+		width 42%
+		letter-spacing 0.02em
+		margin-bottom 20px
+	#submitKey
+		background none
+		border none
+		font-size 4vw
+		font-weight 700
 
+.valignOuter
+	height 100%
+	width 100%
+	position absolute
+	top 0
+	left 0
+	z-index 11
+	.valign
+		height 100%
+		width 100%
+		position relative
+		z-index 10
+		text-align center
+		.valignWrap
+			margin-top 40px
+			display inline-block
+			vertical-align middle
+			width 100%
+	.valign:before
+		content ''
+		display inline-block
+		height 100%
+		vertical-align middle
+		margin-top -50px
+		margin-right -0.25em
 
 
 #keypadWrapper
 	width 100%
 	height 100%
-	position absolute
+	position fixed
+	top 0
+	left 0
 	z-index 2
 
 #keypad
@@ -76,6 +98,7 @@ body, html
 	outline-offset -10px
 	padding 5px
 	webkit-transition -webkit-transform 0.2s
+	z-index 1
 	&.pushed
 		-webkit-transform scale(0.93)
 	img

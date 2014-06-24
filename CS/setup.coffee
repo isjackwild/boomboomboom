@@ -6,6 +6,7 @@ clickContinue = () ->
 	$('.choice').addClass 'downAndOut'
 	$('.accept').removeClass 'hidden'
 
+
 	clearInterval window.box	
 
 	setTimeout () ->
@@ -23,6 +24,7 @@ clickContinue = () ->
 
 setupMic = (stream) ->
 	$('.accept').addClass 'hidden'
+	$('#about').removeClass 'solidBackground'
 	clearInterval window.stripe
 	setTimeout () ->
 		$('#instructions').addClass 'hidden'
@@ -45,13 +47,19 @@ connectIpad = () ->
 	window.key = 10000 + Math.floor Math.random()*89999
 	window.key = window.key.toString()
 	console.log 'the key for this is ' + window.key
-	$('#key').html window.key
+	$('.key').html window.key
+	$('#keyInAbout').removeClass 'hidden'
 
 	window.tabletController = new window.TabletController()
+
+showAbout = () ->
+	$('#about').toggleClass 'upAndAway'
+	$('#ipadInstructions').toggleClass 'faded'
 	
 
 $('.continue').on 'touchstart click', clickContinue
 $('#tablet').on 'touchstart click', connectIpad
+$('.showAbout').on 'touchstart click', showAbout
 
 
 $ =>

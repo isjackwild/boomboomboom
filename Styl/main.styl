@@ -10,36 +10,78 @@ html, body
 .dg
 	opacity 0.8
 
-// #about
-// 	width 100%
-// 	height 100%
-// 	background #09b35b
-// 	position relative
-// 	z-index 100
-// 	text-align center
-// 	display none
-// 	#aboutContent
-// 		display inline-block
-// 		vertical-align middle
-// 		width 66%
-// 		margin-top -30px
-// 		p
-// 			font-family 'Lato', Helvetica, sans-serif
-// 			font-weight 400
-// 			letter-spacing 0.008em
-// 			color white
-// 			font-size 1.8vw
-// 			line-height 1.4em
-// 			text-align left
-// #about:before
-// 	content ''
-// 	display inline-block
-// 	height 100%
-// 	vertical-align middle
-// 	margin-right -0.25em
+
+h1
+	font-family 'Lato', Helvetica, sans-serif
+	color white
+	text-align center
+	font-size 1.4vw
+	font-weight 400
+	letter-spacing 0.01em
+	span.key
+		font-size 3.5vw
+		letter-spacing 0.03em
+		font-weight 700
+		margin-top 20px
+		line-height 1.45em
+	a
+		color white
+		-webkit-transition color 0.3s
+		text-decoration none
+		&:hover
+			color black
+
+h2
+	font-family 'Lato', Helvetica, sans-serif
+	color white
+	text-align center
+	font-size 2.5vw
+	font-weight 700
+	letter-spacing 0.01em
+	line-height 1.33em
+	margin-bottom 70px
+	margin-top -15px
+
+p
+	font-family 'Lato', Helvetica, sans-serif
+	color white
+	text-align left
+	font-size 1.4vw
+	font-weight 400
+	letter-spacing 0.01em
+	line-height 1.45em
+	b
+		font-weight 700
+	a
+		color white
+		-webkit-transition color 0.3s
+		&:hover
+			color black
+	&#keyInAbout
+		text-align center
+		margin-top 60px
+	&.hidden
+		display none
+
+.showAbout
+	position absolute
+	top 0
+	left 20px
+	z-index 13
 
 #about
-	display none
+	z-index 12
+	background-color rgba(50, 50, 50, 0.5)
+	-webkit-transition -webkit-transform 0.28s
+	-webkit-transition-timing-function easeOutQuad
+	&.upAndAway
+		-webkit-transform translateY(-102vh)
+	&.downAndOut
+		-webkit-transform translateY(102vh)
+	&.hidden
+		display none
+	&.solidBackground
+		background-color #09b35b !important
 
 .valignOuter
 	height 100%
@@ -67,6 +109,8 @@ html, body
 		
 #instructions, #keyboardOrIpad	
 	z-index 11
+	&.hidden
+		display none
 	.instruction, .choice
 		float left
 		-webkit-transition opacity 0.75s
@@ -74,17 +118,8 @@ html, body
 			display block
 			width 66%
 			margin auto
-		h1
-			font-family 'Lato', Helvetica, sans-serif
-			color white
-			text-align center
-			font-size 1.4vw
-			font-weight 700
-			letter-spacing 0.01em
 
 #keyboardOrIpad
-	&.hidden
-		display none
 	.choice
 		width 50%
 		cursor pointer
@@ -102,25 +137,32 @@ html, body
 		&:hover
 			img
 				-webkit-transform scale(1.04)
-
-
 .instruction
 	width 33%
 	&.hidden
 		opacity 0
 		-webkit-transition opacity 1s
 
+#ipadInstructions
+	z-index 10
+	-webkit-transform translateY(1px)
+	-webkit-transition -webkit-transform 0.28s, opacity 0.33s
+	-webkit-transition-timing-function easeOutQuad
+	&.hidden
+		display none
+	&.upAndAway
+		-webkit-transform translateY(-102vh)
+	&.downAndOut
+		-webkit-transform translateY(102vh)
+	&.faded
+		opacity 0
+
 
 .accept
 	position absolute
-	top 10
+	top 0
 	right 10
 	z-index 12
-	font-family 'Lato', Helvetica, sans-serif
-	font-weight 700
-	letter-spacing 0.066em
-	font-size 1.5em
-	color white
 	-webkit-animation acceptFlash 2s infinite
 	&.hidden
 		display none

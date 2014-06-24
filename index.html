@@ -5,14 +5,21 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,400italic,700' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
 
-<div id="about" class='valign'>
-	<div id="aboutContent" class='valignWrap'>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ornare elit eget leo congue, quis rutrum ligula bibendum. Donec ac magna in urna ultricies porta at a nulla. Quisque vehicula ante felis, id consequat libero vestibulum et. Mauris euismod nisl pretium mi molestie suscipit. Pellentesque et nisi mi. Praesent elementum nibh quis eros tempor dignissim. Pellentesque gravida, massa et faucibus vehicula, nunc magna volutpat nulla, ac dictum tellus nisi non augue.</p>
+<div class="showAbout"><h1><a href='#'>About</a></h1></div>
+
+<div class='valignOuter'>
+	<div id="about" class='valign upAndAway solidBackground'>
+		<div id="aboutContent" class='valignWrap'>
+			<h2>Boom Boom Boom! is a audio visualisation and live-visuals Web App to liven up parties all over the world!</h2>
+			<p>The App uses web-technologies including the <i>Web Audio API</i> to access and analyse audio from the microphone, <i><a href="http://socket.io" target="blank">Web-Sockets</a></i> on a <i><a href="http://nodejs.org" target="blank">Node.js</a></i> server to handle device—desktop interaction, and <i>CSS3</i> and <i><a href="http://jonobr1.github.io/two.js/" target="blank">Two.js</a></i> to control animations.</p>
+			<p>It was built as a Chrome Experiment by <a href="http://www.isjackwild.com" target="blank">Jack Wild</a> in Summer 2014.</p>
+			<p id="keyInAbout" class="hidden">Your mobile device controller connection key is <b><span class="key"></span></b></p>
+		</div>
 	</div>
 </div>
 
@@ -48,7 +55,7 @@
 			<div id="tablet" class="choice continue upAndAway">
 				<img src='Assets/tablet.svg'></img>
 				<h1>
-					Connect Device
+					Connect Device Controller
 				</h1>
 			</div>
 			<div id="keyboard" class="choice continue upAndAway">
@@ -62,12 +69,15 @@
 </div>
 
 
-
-<div id="ipadInstructions" class='hidden upAndAway valign'>
-	<h2>Visit this site on your tablet and enter</br><span id="key"></span></h2>
+<div class='valignOuter'>
+	<div id="ipadInstructions" class='hidden upAndAway valign'>
+		<div class='valignWrap'>
+			<h1>Visit this site on your mobile device and enter</br><span class="key"></span></h1>
+		</div>
+	</div>
 </div>
 
-<div class="accept hidden">Allow microphone access. ^</div>
+<div class="accept hidden"><h1>Allow microphone access. ^</h1></div>
 
 <!-- <canvas id="debugVisualiser"></canvas> -->
 <div id="twoMagic"></div>
