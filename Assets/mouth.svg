@@ -5,9 +5,9 @@
 	 viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
 <g id="Layer_1_1_">
 </g>
-<path fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round" stroke-miterlimit="10" d="M3.5,41.3
-	C15.8,41.3,19.3,20,34.3,20c7.4,0,11,8.3,16,8.3c4.6,0,8.9-8.2,15.2-8.2c14.1,0,18.1,21.3,30.4,21.3c-5.9,0-9.4,37.7-45.4,37.7
-	S9.6,41.3,3.5,41.3z"/>
+<path fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="bevel" stroke-miterlimit="10" d="M3.5,41.3
+	C14.8,46.2,19.3,20,34.3,20c7.4,0,11,8.3,16,8.3c4.6,0,8.9-8.2,15.2-8.2c14.1,0,19.6,27.2,30.4,21.3c-5,2.7-9.4,37.7-45.4,37.7
+	S8.9,43.6,3.5,41.3z"/>
 <path fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round" stroke-miterlimit="10" d="M6.4,43
 	c0,0,14.2,17.6,43.8,17.6S91.5,43,91.5,43S67.6,40.7,50,40.4S6.4,43,6.4,43z"/>
 </svg>
