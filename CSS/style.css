@@ -243,6 +243,18 @@ p.hidden {
 .accept.hidden {
   display: none;
 }
+#makeFullScreen {
+  position: absolute;
+  bottom: 5px;
+  left: 20px;
+  text-align: center;
+  z-index: 12;
+  margin: auto;
+  cursor: pointer;
+}
+#makeFullScreen.hidden {
+  display: none;
+}
 @-webkit-keyframes acceptFlash {
   0% {
     opacity: 0;

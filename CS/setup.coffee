@@ -61,6 +61,10 @@ showAbout = () ->
 $('.continue').on 'touchstart click', clickContinue
 $('#tablet').on 'touchstart click', connectIpad
 $('.showAbout').on 'touchstart click', showAbout
+$('#makeFullScreen').on 'touchstart click', () ->
+	console.log 'requestFullscreen'
+	document.getElementById('fullscreen').webkitRequestFullscreen()
+	$('#makeFullScreen').addClass 'hidden'
 
 
 $ =>
@@ -94,7 +98,7 @@ $ =>
 		window.box = setInterval () ->
 			window.events.makeSpecial.dispatch 11
 		,2000
-	,5500
+	,4800
 
 	if is_chrome
 		$('#browserNotSupported').addClass 'hidden'

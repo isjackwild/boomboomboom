@@ -1835,6 +1835,12 @@
 
   $('.showAbout').on('touchstart click', showAbout);
 
+  $('#makeFullScreen').on('touchstart click', function() {
+    console.log('requestFullscreen');
+    document.getElementById('fullscreen').webkitRequestFullscreen();
+    return $('#makeFullScreen').addClass('hidden');
+  });
+
   $((function(_this) {
     return function() {
       setTimeout(function() {
@@ -1862,7 +1868,7 @@
         return window.box = setInterval(function() {
           return window.events.makeSpecial.dispatch(11);
         }, 2000);
-      }, 5500);
+      }, 4800);
       if (is_chrome) {
         return $('#browserNotSupported').addClass('hidden');
       }
