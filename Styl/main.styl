@@ -82,14 +82,32 @@ p
 	background-color rgba(50, 50, 50, 0.5)
 	-webkit-transition -webkit-transform 0.28s
 	-webkit-transition-timing-function easeOutQuad
+	-webkit-animation aboutBounce 0.5s
+	-webkit-animation-timing-function easeOutQuad
 	&.upAndAway
 		-webkit-transform translateY(-102vh)
+		-webkit-animation none
 	&.downAndOut
 		-webkit-transform translateY(102vh)
+		-webkit-animation none
 	&.hidden
 		display none
 	&.solidBackground
 		background-color #09b35b !important
+
+@-webkit-keyframes aboutBounce
+	0%
+		-webkit-transform translateY(-102vh)
+	40%
+		-webkit-transform translateY(0)
+	63%
+		-webkit-transform translateY(-5vh)
+	80%
+		-webkit-transform translateY(0)
+	91%
+		-webkit-transform translateY(-1.6vh)
+	100%
+		-webkit-transform translateY(0)
 
 #browserNotSupported
 	z-index 14
