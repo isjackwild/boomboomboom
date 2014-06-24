@@ -40,7 +40,7 @@ class VisualsEngine
 
 	
 	constructor: ->
-		console.log 'setup background generation'
+		# console.log 'setup background generation'
 		@setupListeners()
 		@setupTwoJs()
 		@updateColourBucket()
@@ -52,7 +52,7 @@ class VisualsEngine
 		
 
 	setupListeners: =>
-		console.log 'setup listeners'
+		# console.log 'setup listeners'
 		window.events.peak.add @onPeak
 		window.events.bass.add @onBass
 		window.events.break.add @onBreak
@@ -74,7 +74,7 @@ class VisualsEngine
 
 
 	setupTwoJs: ->
-		console.log 'setup two'
+		# console.log 'setup two'
 		@_twoElem = document.getElementById 'twoMagic'
 		params = {
 			fullscreen: true
@@ -90,7 +90,6 @@ class VisualsEngine
 		@_foreGround.id = 'foreground'
 
 	toggleAuto: (onOff) =>
-		console.log onOff, "<<<<"
 		if onOff is 'on'
 			@_automatic = true
 		else if onOff is 'offfff'
@@ -187,7 +186,6 @@ class VisualsEngine
 		if @_transformTimer
 			clearTimeout @_transformTimer
 		$('#twoMagic').removeClass()
-		console.log 'transform', type
 		$('#twoMagic').addClass type
 		@_transformTimer = setTimeout =>
 			$('#twoMagic').removeClass type
@@ -214,7 +212,6 @@ class VisualsEngine
 
 
 		if @_automatic is true
-			console.log 'auto'
 			if Math.random() > 0.9
 				illu = Math.ceil Math.random()*5
 				switch illu

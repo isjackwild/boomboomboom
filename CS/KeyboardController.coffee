@@ -9,11 +9,11 @@ class KeyboardController
 	_autoTimer: null
 
 	constructor: ->
-		console.log 'setup keyboard controller'
+		# console.log 'setup keyboard controller'
 		window.onkeydown = @keydown
 
 	keydown: (e) =>
-		console.log e.keyCode, e
+		# console.log e.keyCode, e
 		#do this only if any of the function keys are pressed
 		if e.keyCode >= 37 and e.keyCode <=40 or e.keyCode >= 48 and e.keyCode <= 57 or e.keyCode >= 65 and e.keyCode <= 90 or e.keyCode is 219 or e.keyCode is 221
 			@setAutoTimer()

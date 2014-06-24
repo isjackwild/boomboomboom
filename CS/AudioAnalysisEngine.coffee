@@ -110,7 +110,7 @@ class AudioAnalysisEngine
 		@_biquadFilter.gain.value = 5
 		
 	setupTestAudio: =>
-		console.log 'setup test audio', @_testAudio
+		# console.log 'setup test audio', @_testAudio
 		if (@_alreadySetup)
 			return
 		@_source = @_context.createMediaElementSource @_testAudio
@@ -122,7 +122,7 @@ class AudioAnalysisEngine
 		@_alreadySetup = true
 
 	setupMic: (stream) =>
-		console.log 'setup mic......'
+		# console.log 'setup mic......'
 		if (@_alreadySetup)
 			return
 		@_source = @_context.createMediaStreamSource stream
@@ -135,7 +135,7 @@ class AudioAnalysisEngine
 
 
 	startAnalysis: =>
-		console.log 'analysis started'
+		# console.log 'analysis started'
 		@_ticker = setInterval =>
 			@analyse()
 		, 1000 / @_samplesPerSecond
