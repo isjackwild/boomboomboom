@@ -1,5 +1,6 @@
 window.stripe = null
 window.box = null
+is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
 
 
 clickContinue = () ->
@@ -43,10 +44,10 @@ connectIpad = () ->
 		$('#ipadInstructions').removeClass 'upAndAway'
 	,666
 
-	console.log 'conect ipad'
+	# console.log 'conect ipad'
 	window.key = 10000 + Math.floor Math.random()*89999
 	window.key = window.key.toString()
-	console.log 'the key for this is ' + window.key
+	# console.log 'the key for this is ' + window.key
 	$('.key').html window.key
 	$('#keyInAbout').removeClass 'hidden'
 
@@ -94,3 +95,6 @@ $ =>
 			window.events.makeSpecial.dispatch 11
 		,2000
 	,5500
+
+	if is_chrome
+		$('#browserNotSupported').addClass 'hidden'

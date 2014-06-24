@@ -9,21 +9,19 @@ class window.TabletController
 		@_socket = io()
 
 		@_socket.on 'button-push', (which) =>
-			console.log 'ipad button pushed', which
 			if which.key is window.key
 				@mapSocketEvents which.button
 
 
 		@_socket.on 'key-entered', (which) =>
-			console.log 'key-entered', which
+			# console.log 'key-entered', which
 			if which is window.key
-				console.log 'correct key'
 				$('#ipadInstructions').addClass 'downAndOut'
 				setTimeout () ->
 					$('#ipadInstructions').addClass 'hidden'
 				,666
-			else
-				console.log 'incorrect key'
+			# else
+			# 	console.log 'incorrect key'
 
 
 	mapSocketEvents: (button) ->
@@ -80,7 +78,7 @@ class window.TabletController
 	setAutoTimer: () =>
 		clearInterval @_autoTimer
 		@_timeSinceLastKeyPress = 0
-		console.log 'automatic off'
+		# console.log 'automatic off'
 
 		@_autoTimer = setInterval =>
 			@_timeSinceLastKeyPress += 1
@@ -88,7 +86,7 @@ class window.TabletController
 				clearInterval @_autoTimer
 				@_timeSinceLastKeyPress = 0
 				window.events.automatic.dispatch 'on'
-				console.log 'automatic ON'
+				# console.log 'automatic ON'
 		,1000
 
-		console.log 'set auto timer'
+		# console.log 'set auto timer'
