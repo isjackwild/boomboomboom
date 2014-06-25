@@ -24,6 +24,7 @@ app.get '/', (request, response) ->
 		response.sendfile __dirname + "/index.html"
 		console.log 'desktop'
 
+port = Number(process.env.PORT || 8080)
 
 io.sockets.on 'connection', (client) ->
 	console.log 'a client connected'
@@ -40,4 +41,5 @@ io.sockets.on 'connection', (client) ->
 		console.log 'a client disconnect'
 
 # server.listen 5000, '0.0.0.0'
-server.listen process.env.PORT || 8080
+server.listen port, () ->
+	console.log 'listening on ' + port

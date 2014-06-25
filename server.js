@@ -1,5 +1,5 @@
 (function() {
-  var app, bodyParser, express, http, io, path, server, socket;
+  var app, bodyParser, express, http, io, path, port, server, socket;
 
   express = require('express');
 
@@ -32,6 +32,8 @@
     }
   });
 
+  port = Number(process.env.PORT || 8080);
+
   io.sockets.on('connection', function(client) {
     console.log('a client connected');
     client.on('button-push', function(which) {
@@ -47,6 +49,8 @@
     });
   });
 
-  server.listen(process.env.PORT || 8080);
+  server.listen(port, function() {
+    return console.log('listening on ' + port);
+  });
 
 }).call(this);
