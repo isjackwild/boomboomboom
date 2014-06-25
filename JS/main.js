@@ -424,30 +424,6 @@
 
   Signal = signals.Signal;
 
-  $(window).on('blur', (function(_this) {
-    return function() {
-      var key, _results;
-      console.log('disable events');
-      _results = [];
-      for (key in window.events) {
-        _results.push(window.events[key].active = false);
-      }
-      return _results;
-    };
-  })(this));
-
-  $(window).on('focus', (function(_this) {
-    return function() {
-      var key, _results;
-      console.log('enable events');
-      _results = [];
-      for (key in window.events) {
-        _results.push(window.events[key].active = true);
-      }
-      return _results;
-    };
-  })(this));
-
   window.events = {
     micAccepted: new Signal(),
     automatic: new Signal(),
@@ -1766,6 +1742,9 @@
   clickContinue = function() {
     $('.choice').addClass('downAndOut');
     $('.accept').removeClass('hidden');
+    setTimeout(function() {
+      return $('.accept').removeClass('offLeft');
+    }, 1200);
     clearInterval(window.box);
     setTimeout(function() {
       $('#keyboardOrIpad').addClass('hidden');
@@ -1773,7 +1752,7 @@
       return window.stripe = setInterval(function() {
         return window.events.makeSpecial.dispatch(3);
       }, 2000);
-    }, 1000);
+    }, 1500);
     return navigator.webkitGetUserMedia({
       audio: true
     }, setupMic, onError);
@@ -1851,7 +1830,6 @@
           return window.events.makeSpecial.dispatch(11);
         }, 2000);
       }, 4800);
-      console.log(navigator.userAgent.toLowerCase());
       if (!is_chrome) {
         return $('#browserNotSupported').removeClass('hidden');
       } else {

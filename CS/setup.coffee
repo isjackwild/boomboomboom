@@ -6,6 +6,9 @@ is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
 clickContinue = () ->
 	$('.choice').addClass 'downAndOut'
 	$('.accept').removeClass 'hidden'
+	setTimeout () ->
+		$('.accept').removeClass 'offLeft'
+	, 1200
 
 
 	clearInterval window.box	
@@ -16,7 +19,7 @@ clickContinue = () ->
 		window.stripe = setInterval () ->
 			window.events.makeSpecial.dispatch 3
 		,2000
-	,1000
+	,1500
 
 
 	navigator.webkitGetUserMedia
@@ -101,7 +104,6 @@ $ =>
 		,2000
 	,4800
 
-	console.log navigator.userAgent.toLowerCase()
 
 	if !is_chrome
 		$('#browserNotSupported').removeClass 'hidden'

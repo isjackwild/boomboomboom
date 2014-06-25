@@ -16,19 +16,22 @@ h1
 	font-family 'Lato', Helvetica, sans-serif
 	color white
 	text-align center
-	font-size 1.4vw
+	font-size 1.6vw
 	@media screen and (max-width: 1250px)
-		font-size 1.8vw !important
+		font-size 2vw !important
 	font-weight 700
 	letter-spacing 0.01em
 	span.key
-		font-size 5vw
+		font-size 10vw
 		letter-spacing 0.03em
-		font-weight 700
+		font-weight 900
 		margin-top 20px
 		line-height 1.45em
-	span.light
+	span.sidenote
 		font-weight 400
+		font-size 1.4vw
+		@media screen and (max-width: 1250px)
+			font-size 1.6vw
 	a
 		color white
 		-webkit-transition color 0.3s
@@ -40,9 +43,7 @@ h2
 	font-family 'Lato', Helvetica, sans-serif
 	color white
 	text-align center
-	font-size 2.7vw
-	@media screen and (max-width: 1250px)
-		font-size 3vw
+	font-size 3.9vw
 	font-weight 900
 	letter-spacing 0.01em
 	line-height 1.33em
@@ -112,6 +113,7 @@ p
 	-webkit-transition-timing-function easeOutQuad
 	-webkit-animation aboutBounce 0.66s
 	-webkit-animation-timing-function easeOutQuad
+	overflow hidden
 	&.upAndAway
 		-webkit-transform translateY(-102vh)
 		-webkit-animation none
@@ -225,12 +227,19 @@ p
 
 .accept
 	position absolute
-	top 0
-	right 10
+	top -5px
+	right 10px
 	z-index 12
+	-webkit-transition -webkit-transform 0.5s
+	-webkit-transition-timing-function easeOutQuad
 	-webkit-animation acceptFlash 2s infinite
+	-webkit-animation-delay 2.5s
 	&.hidden
 		display none
+	&.offLeft
+		-webkit-transform translateX(-102vw)
+	h1
+		font-size 2vw
 
 #makeFullScreen
 	position absolute
@@ -268,11 +277,11 @@ p
 
 @-webkit-keyframes acceptFlash
 	0%
-		opacity 0
-	50%
 		opacity 1
-	100%
+	50%
 		opacity 0
+	100%
+		opacity 1
 
 #magic
 	width 100%

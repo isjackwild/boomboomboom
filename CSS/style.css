@@ -13,24 +13,30 @@ h1 {
   font-family: 'Lato', Helvetica, sans-serif;
   color: #fff;
   text-align: center;
-  font-size: 1.4vw;
+  font-size: 1.6vw;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
 @media screen and (max-width: 1250px) {
   h1 {
-    font-size: 1.8vw !important;
+    font-size: 2vw !important;
   }
 }
 h1 span.key {
-  font-size: 5vw;
+  font-size: 10vw;
   letter-spacing: 0.03em;
-  font-weight: 700;
+  font-weight: 900;
   margin-top: 20px;
   line-height: 1.45em;
 }
-h1 span.light {
+h1 span.sidenote {
   font-weight: 400;
+  font-size: 1.4vw;
+}
+@media screen and (max-width: 1250px) {
+  h1 span.sidenote {
+    font-size: 1.6vw;
+  }
 }
 h1 a {
   color: #fff;
@@ -44,16 +50,11 @@ h2 {
   font-family: 'Lato', Helvetica, sans-serif;
   color: #fff;
   text-align: center;
-  font-size: 2.7vw;
+  font-size: 3.9vw;
   font-weight: 900;
   letter-spacing: 0.01em;
   line-height: 1.33em;
   margin-bottom: 70px;
-}
-@media screen and (max-width: 1250px) {
-  h2 {
-    font-size: 3vw;
-  }
 }
 p {
   font-family: 'Lato', Helvetica, sans-serif;
@@ -131,6 +132,7 @@ p.hidden {
   -webkit-transition-timing-function: easeOutQuad;
   -webkit-animation: aboutBounce 0.66s;
   -webkit-animation-timing-function: easeOutQuad;
+  overflow: hidden;
 }
 #about.upAndAway {
   -webkit-transform: translateY(-102vh);
@@ -281,13 +283,22 @@ p.hidden {
 }
 .accept {
   position: absolute;
-  top: 0;
-  right: 10;
+  top: -5px;
+  right: 10px;
   z-index: 12;
+  -webkit-transition: -webkit-transform 0.5s;
+  -webkit-transition-timing-function: easeOutQuad;
   -webkit-animation: acceptFlash 2s infinite;
+  -webkit-animation-delay: 2.5s;
 }
 .accept.hidden {
   display: none;
+}
+.accept.offLeft {
+  -webkit-transform: translateX(-102vw);
+}
+.accept h1 {
+  font-size: 2vw;
 }
 #makeFullScreen {
   position: absolute;
@@ -311,15 +322,15 @@ p.hidden {
 }
 @-webkit-keyframes acceptFlash {
   0% {
-    opacity: 0;
-  }
-
-  50% {
     opacity: 1;
   }
 
-  100% {
+  50% {
     opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
 #magic {
