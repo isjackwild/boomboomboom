@@ -93,9 +93,9 @@ html.press {
 }
 #keypadWrapper {
   width: 100%;
-  height: 100%;
+  height: 50vh;
   position: absolute;
-  top: 0;
+  top: 18vh;
   left: 0;
   z-index: 2;
 }
@@ -107,7 +107,7 @@ html.press {
 .row {
   display: table;
   width: 100%;
-  height: 25%;
+  height: 10vh;
   table-layout: fixed;
 }
 .button {
@@ -127,5 +127,4 @@ html.press {
 }
 .button img {
   width: 100%;
-  margin-top: 35%;
 }
