@@ -6,6 +6,7 @@ html, body
 	height 100%
 	padding 0
 	margin 0
+	-webkit-font-smoothing antialiased
 
 .dg
 	opacity 0.8
@@ -18,14 +19,16 @@ h1
 	font-size 1.4vw
 	@media screen and (max-width: 1250px)
 		font-size 1.8vw !important
-	font-weight 400
+	font-weight 700
 	letter-spacing 0.01em
 	span.key
-		font-size 3.5vw
+		font-size 5vw
 		letter-spacing 0.03em
 		font-weight 700
 		margin-top 20px
 		line-height 1.45em
+	span.light
+		font-weight 400
 	a
 		color white
 		-webkit-transition color 0.3s
@@ -40,7 +43,7 @@ h2
 	font-size 2.7vw
 	@media screen and (max-width: 1250px)
 		font-size 3vw
-	font-weight 700
+	font-weight 900
 	letter-spacing 0.01em
 	line-height 1.33em
 	margin-bottom 70px
@@ -53,8 +56,9 @@ p
 	@media screen and (max-width: 1250px)
 		font-size 1.8vw
 	font-weight 400
-	letter-spacing 0.01em
 	line-height 1.45em
+	span.key
+		letter-spacing 0.02em
 	b
 		font-weight 700
 	a
@@ -214,9 +218,9 @@ p
 		-webkit-transform translateY(102vh)
 	&.faded
 		opacity 0
-	h1
-		padding-left 15%
-		padding-right 15%
+	// h1
+	// 	padding-left 18%
+	// 	padding-right 18%
 
 
 .accept

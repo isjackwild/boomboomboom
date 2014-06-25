@@ -4,6 +4,7 @@ body {
   height: 100%;
   padding: 0;
   margin: 0;
+  -webkit-font-smoothing: antialiased;
 }
 .dg {
   opacity: 0.8;
@@ -13,7 +14,7 @@ h1 {
   color: #fff;
   text-align: center;
   font-size: 1.4vw;
-  font-weight: 400;
+  font-weight: 700;
   letter-spacing: 0.01em;
 }
 @media screen and (max-width: 1250px) {
@@ -22,11 +23,14 @@ h1 {
   }
 }
 h1 span.key {
-  font-size: 3.5vw;
+  font-size: 5vw;
   letter-spacing: 0.03em;
   font-weight: 700;
   margin-top: 20px;
   line-height: 1.45em;
+}
+h1 span.light {
+  font-weight: 400;
 }
 h1 a {
   color: #fff;
@@ -41,7 +45,7 @@ h2 {
   color: #fff;
   text-align: center;
   font-size: 2.7vw;
-  font-weight: 700;
+  font-weight: 900;
   letter-spacing: 0.01em;
   line-height: 1.33em;
   margin-bottom: 70px;
@@ -57,13 +61,15 @@ p {
   text-align: left;
   font-size: 1.4vw;
   font-weight: 400;
-  letter-spacing: 0.01em;
   line-height: 1.45em;
 }
 @media screen and (max-width: 1250px) {
   p {
     font-size: 1.8vw;
   }
+}
+p span.key {
+  letter-spacing: 0.02em;
 }
 p b {
   font-weight: 700;
@@ -272,10 +278,6 @@ p.hidden {
 }
 #ipadInstructions.faded {
   opacity: 0;
-}
-#ipadInstructions h1 {
-  padding-left: 15%;
-  padding-right: 15%;
 }
 .accept {
   position: absolute;
