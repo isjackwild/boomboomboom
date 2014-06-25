@@ -66,9 +66,10 @@ $('.continue').on 'touchstart click', clickContinue
 $('#tablet').on 'touchstart click', connectIpad
 $('.showAbout').on 'touchstart click', showAbout
 $('#makeFullScreen').on 'touchstart click', () ->
-	console.log 'requestFullscreen'
 	document.getElementById('fullscreen').webkitRequestFullscreen()
-	$('#makeFullScreen').addClass 'hidden'
+
+$('body').bind 'webkitfullscreenchange fullscreenchange', () ->
+	$('#makeFullScreen').toggleClass 'hidden'
 
 
 $ =>

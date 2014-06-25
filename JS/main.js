@@ -1804,9 +1804,12 @@
   $('.showAbout').on('touchstart click', showAbout);
 
   $('#makeFullScreen').on('touchstart click', function() {
-    console.log('requestFullscreen');
-    document.getElementById('fullscreen').webkitRequestFullscreen();
-    return $('#makeFullScreen').addClass('hidden');
+    return document.getElementById('fullscreen').webkitRequestFullscreen();
+  });
+
+  $('body').bind('webkitfullscreenchange fullscreenchange', function() {
+    console.log('?????');
+    return $('#makeFullScreen').toggleClass('hidden');
   });
 
   $((function(_this) {
