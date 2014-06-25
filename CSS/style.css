@@ -90,13 +90,33 @@ p.hidden {
   left: 20px;
   z-index: 13;
   cursor: pointer;
+  backface-visibility: hidden;
+  -webkit-transition: -webkit-transform 0.28s;
+  -webkit-transition-timing-function: easeOutQuad;
+}
+.showAbout .flipContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-backface-visibility: hidden;
+  -webkit-transition: -webkit-transform 0.28s;
+  -webkit-transition-timing-function: easeOutQuad;
+}
+.showAbout .flipContainer#closeIcon {
+  -webkit-transform: rotateY(180deg);
 }
 .showAbout img {
   -webkit-transition: -webkit-transform 0.28s;
   -webkit-transition-timing-function: easeOutQuad;
 }
-.showAbout:hover img {
+.showAbout:hover {
   -webkit-transform: scale(1.075);
+}
+.showAbout.aboutOpen #aboutIcon {
+  -webkit-transform: rotateY(180deg);
+}
+.showAbout.aboutOpen #closeIcon {
+  -webkit-transform: rotateY(360deg);
 }
 #about {
   z-index: 12;

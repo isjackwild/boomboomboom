@@ -1826,7 +1826,8 @@
 
   showAbout = function() {
     $('#about').toggleClass('upAndAway');
-    return $('#ipadInstructions').toggleClass('faded');
+    $('#ipadInstructions').toggleClass('faded');
+    return $('.showAbout').toggleClass('aboutOpen');
   };
 
   $('.continue').on('touchstart click', clickContinue);

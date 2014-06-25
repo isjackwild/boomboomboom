@@ -56,6 +56,7 @@ connectIpad = () ->
 showAbout = () ->
 	$('#about').toggleClass 'upAndAway'
 	$('#ipadInstructions').toggleClass 'faded'
+	$('.showAbout').toggleClass 'aboutOpen'
 	
 
 $('.continue').on 'touchstart click', clickContinue
