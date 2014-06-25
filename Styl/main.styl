@@ -16,6 +16,8 @@ h1
 	color white
 	text-align center
 	font-size 1.4vw
+	@media screen and (max-width: 1250px)
+		font-size 1.8vw !important
 	font-weight 400
 	letter-spacing 0.01em
 	span.key
@@ -36,6 +38,8 @@ h2
 	color white
 	text-align center
 	font-size 2.5vw
+	@media screen and (max-width: 1250px)
+		font-size 3vw
 	font-weight 700
 	letter-spacing 0.01em
 	line-height 1.33em
@@ -46,6 +50,8 @@ p
 	color white
 	text-align left
 	font-size 1.4vw
+	@media screen and (max-width: 1250px)
+		font-size 1.8vw
 	font-weight 400
 	letter-spacing 0.01em
 	line-height 1.45em
@@ -201,14 +207,37 @@ p
 
 #makeFullScreen
 	position absolute
-	bottom 5px
-	left 20px
+	bottom 1px
+	left 18px
+	width 35px
 	text-align center
 	z-index 12
 	margin auto
 	cursor pointer
 	&.hidden
 		display none
+	img
+		-webkit-transition -webkit-transform 0.28s
+		-webkit-transition-timing-function easeOutQuad
+	&:hover
+		img
+			-webkit-transform scale(1.075)
+
+
+// .showAbout
+// 	position absolute
+// 	height 30px
+// 	width 30px
+// 	top 20px
+// 	left 20px
+// 	z-index 13
+// 	cursor pointer
+// 	img
+// 		-webkit-transition -webkit-transform 0.28s
+// 		-webkit-transition-timing-function easeOutQuad
+// 	&:hover
+// 		img
+// 			-webkit-transform scale(1.075)
 
 @-webkit-keyframes acceptFlash
 	0%
@@ -269,16 +298,6 @@ p
 		&.show
 			opacity 1
 			display inline
-#quotes
-	span
-		-webkit-transition opacity 2s
-		margin-top 55px
-		colour white
-		font-size 15vw
-		line-height 28vh
-		letter-spacing -0.005em
-		&.show
-			opacity 0.66
 
 #illus
 	position absolute
