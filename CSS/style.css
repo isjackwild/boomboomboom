@@ -132,6 +132,7 @@ p.hidden {
   -webkit-transition-timing-function: easeOutQuad;
   -webkit-animation: aboutBounce 0.66s;
   -webkit-animation-timing-function: easeOutQuad;
+  -webkit-transform: translateY(0);
   overflow: hidden;
 }
 #about.upAndAway {
