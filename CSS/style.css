@@ -40,7 +40,7 @@ h2 {
   font-family: 'Lato', Helvetica, sans-serif;
   color: #fff;
   text-align: center;
-  font-size: 2.5vw;
+  font-size: 2.7vw;
   font-weight: 700;
   letter-spacing: 0.01em;
   line-height: 1.33em;
@@ -150,7 +150,7 @@ p.hidden {
   }
 
   60% {
-    -webkit-transform: translateY(-5vh);
+    -webkit-transform: translateY(-4.5vh);
   }
 
   76% {
@@ -189,6 +189,11 @@ p.hidden {
   display: inline-block;
   vertical-align: middle;
   width: 50%;
+}
+@media screen and (max-width: 1250px) {
+  .valignOuter .valign .valignWrap {
+    width: 66% !important;
+  }
 }
 .valignOuter .valign:before {
   content: '';
@@ -267,6 +272,10 @@ p.hidden {
 }
 #ipadInstructions.faded {
   opacity: 0;
+}
+#ipadInstructions h1 {
+  padding-left: 15%;
+  padding-right: 15%;
 }
 .accept {
   position: absolute;

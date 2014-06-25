@@ -37,7 +37,7 @@ h2
 	font-family 'Lato', Helvetica, sans-serif
 	color white
 	text-align center
-	font-size 2.5vw
+	font-size 2.7vw
 	@media screen and (max-width: 1250px)
 		font-size 3vw
 	font-weight 700
@@ -125,7 +125,7 @@ p
 	40%
 		-webkit-transform translateY(0)
 	60%
-		-webkit-transform translateY(-5vh)
+		-webkit-transform translateY(-4.5vh)
 	76%
 		-webkit-transform translateY(0)
 	88%
@@ -154,6 +154,8 @@ p
 			display inline-block
 			vertical-align middle
 			width 50%
+			@media screen and (max-width: 1250px)
+				width 66% !important
 	.valign:before
 		content ''
 		display inline-block
@@ -212,6 +214,9 @@ p
 		-webkit-transform translateY(102vh)
 	&.faded
 		opacity 0
+	h1
+		padding-left 15%
+		padding-right 15%
 
 
 .accept
