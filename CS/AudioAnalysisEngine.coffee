@@ -77,7 +77,12 @@ class window.AudioAnalysisEngine
 
 
 	constructor: ->
-		@_context = new webkitAudioContext()
+		try
+			window.AudioContext = window.AudioContext || window.webkitAudioContext
+			@_context = new window.AudioContext()
+		catch e
+			alert('Web Audio Not Supported')
+
 		@setupAnalyser()
 		@setupFilters()
 		# @setupDebugEqualizer()

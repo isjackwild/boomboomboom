@@ -104,6 +104,7 @@ $ =>
 		,2000
 	,4800
 
+	console.log navigator.userAgent.toLowerCase()
 
 	if !is_chrome
 		$('#browserNotSupported').removeClass 'hidden'

@@ -98,7 +98,14 @@
       this.setupTestAudio = __bind(this.setupTestAudio, this);
       this.setupFilters = __bind(this.setupFilters, this);
       this.setupAnalyser = __bind(this.setupAnalyser, this);
-      this._context = new webkitAudioContext();
+      var e;
+      try {
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        this._context = new window.AudioContext();
+      } catch (_error) {
+        e = _error;
+        alert('Web Audio Not Supported');
+      }
       this.setupAnalyser();
       this.setupFilters();
       window.events.automatic.add(this.toggleAuto);
@@ -1830,6 +1837,7 @@
           return window.events.makeSpecial.dispatch(11);
         }, 2000);
       }, 4800);
+      console.log(navigator.userAgent.toLowerCase());
       if (!is_chrome) {
         return $('#browserNotSupported').removeClass('hidden');
       } else {
