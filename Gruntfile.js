@@ -57,7 +57,6 @@ module.exports = function(grunt){
 					'JS/MobileController/SocketsMobileControllerSide.js' : 'CS/MobileController/SocketsMobileControllerSide.coffee',
 					'JS/MobileController/mainMobileController.js' : 'CS/MobileController/*.coffee',
 
-					'server.js' : 'server.coffee',
 				},
 			},
 		},
