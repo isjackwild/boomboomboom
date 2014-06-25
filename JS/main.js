@@ -1,14 +1,7 @@
 (function() {
-  var AudioAnalysisEngine,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  $((function(_this) {
-    return function() {
-      return window.audioAnalysisEngine = new AudioAnalysisEngine();
-    };
-  })(this));
-
-  AudioAnalysisEngine = (function() {
+  window.AudioAnalysisEngine = (function() {
     var _ticker;
 
     AudioAnalysisEngine.prototype._context = null;
@@ -480,16 +473,9 @@
 }).call(this);
 
 (function() {
-  var KeyboardController,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  $((function(_this) {
-    return function() {
-      return window.keyboardController = new KeyboardController();
-    };
-  })(this));
-
-  KeyboardController = (function() {
+  window.KeyboardController = (function() {
     KeyboardController.prototype._bpmCalcArray = [];
 
     KeyboardController.prototype._dropJumpBPMSensitivity = 50;
@@ -810,14 +796,9 @@
 }).call(this);
 
 (function() {
-  var VisualsEngine,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  $(function() {
-    return window.visualsEngine = new VisualsEngine();
-  });
-
-  VisualsEngine = (function() {
+  window.VisualsEngine = (function() {
     var _currentBlur, _targetBlur;
 
     VisualsEngine.prototype._automatic = true;
@@ -1870,8 +1851,13 @@
           return window.events.makeSpecial.dispatch(11);
         }, 2000);
       }, 4800);
-      if (is_chrome) {
-        return $('#browserNotSupported').addClass('hidden');
+      console.log(navigator.userAgent.toLowerCase());
+      if (!is_chrome) {
+        return $('#browserNotSupported').removeClass('hidden');
+      } else {
+        window.visualsEngine = new window.VisualsEngine();
+        window.audioAnalysisEngine = new window.AudioAnalysisEngine();
+        return window.keyboardController = new window.KeyboardController();
       }
     };
   })(this));

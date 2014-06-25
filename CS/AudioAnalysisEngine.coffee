@@ -1,6 +1,6 @@
 #Audio Analysis Engine
-$ =>
-	window.audioAnalysisEngine = new AudioAnalysisEngine();
+# $ =>
+	# window.audioAnalysisEngine = new AudioAnalysisEngine();
 
 	# gui = new dat.GUI()
 	# gui.add audioAnalysisEngine, '_samplesPerSecond'
@@ -21,7 +21,7 @@ $ =>
 
 
 
-class AudioAnalysisEngine
+class window.AudioAnalysisEngine
 	#some of these should probably be made as variables not properties. check which ones are only used in the functions and get rid of them
 	_context: null
 	_source: null

@@ -1,8 +1,8 @@
-$ ->
-	window.visualsEngine = new VisualsEngine();
+# $ ->
+# 	window.visualsEngine = new VisualsEngine();
 
 
-class VisualsEngine
+class window.VisualsEngine
 	_automatic: true
 	_visible: true
 

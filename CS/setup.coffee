@@ -101,5 +101,11 @@ $ =>
 		,2000
 	,4800
 
-	if is_chrome
-		$('#browserNotSupported').addClass 'hidden'
+	console.log navigator.userAgent.toLowerCase()
+
+	if !is_chrome
+		$('#browserNotSupported').removeClass 'hidden'
+	else
+		window.visualsEngine = new window.VisualsEngine();
+		window.audioAnalysisEngine = new window.AudioAnalysisEngine();
+		window.keyboardController = new window.KeyboardController()

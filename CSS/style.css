@@ -172,7 +172,7 @@ p.hidden {
   }
 }
 #browserNotSupported {
-  z-index: 14;
+  z-index: 20;
   background-color: #09b35b;
 }
 #browserNotSupported.hidden {

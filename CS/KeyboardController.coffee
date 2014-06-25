@@ -1,8 +1,8 @@
-$ =>
-	window.keyboardController = new KeyboardController()
+# $ =>
+# 	window.keyboardController = new KeyboardController()
 
 
-class KeyboardController
+class window.KeyboardController
 	_bpmCalcArray: []
 	_dropJumpBPMSensitivity: 50
 	_timeSinceLastKeyPress: 0
