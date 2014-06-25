@@ -1751,7 +1751,7 @@
     $('.accept').removeClass('hidden');
     setTimeout(function() {
       return $('.accept').removeClass('offLeft');
-    }, 1200);
+    }, 1500);
     clearInterval(window.box);
     setTimeout(function() {
       $('#keyboardOrIpad').addClass('hidden');
@@ -1808,7 +1808,6 @@
   });
 
   $('body').bind('webkitfullscreenchange fullscreenchange', function() {
-    console.log('?????');
     return $('#makeFullScreen').toggleClass('hidden');
   });
 
@@ -1840,7 +1839,6 @@
           return window.events.makeSpecial.dispatch(11);
         }, 2000);
       }, 4800);
-      console.log(navigator.userAgent.toLowerCase());
       if (!is_chrome) {
         return $('#browserNotSupported').removeClass('hidden');
       } else {

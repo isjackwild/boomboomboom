@@ -8,7 +8,7 @@ clickContinue = () ->
 	$('.accept').removeClass 'hidden'
 	setTimeout () ->
 		$('.accept').removeClass 'offLeft'
-	, 1200
+	, 1500
 
 
 	clearInterval window.box	
@@ -105,7 +105,7 @@ $ =>
 		,2000
 	,4800
 
-	console.log navigator.userAgent.toLowerCase()
+	# console.log navigator.userAgent.toLowerCase()
 
 	if !is_chrome
 		$('#browserNotSupported').removeClass 'hidden'
