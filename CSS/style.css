@@ -135,11 +135,11 @@ p.hidden {
   overflow: hidden;
 }
 #about.upAndAway {
-  -webkit-transform: translateY(-102vh);
+  -webkit-transform: translateY(-102%);
   -webkit-animation: none;
 }
 #about.downAndOut {
-  -webkit-transform: translateY(102vh);
+  -webkit-transform: translateY(102%);
   -webkit-animation: none;
 }
 #about.hidden {
@@ -150,7 +150,7 @@ p.hidden {
 }
 @-webkit-keyframes aboutBounce {
   0% {
-    -webkit-transform: translateY(-102vh);
+    -webkit-transform: translateY(-102%);
   }
 
   40% {
@@ -158,7 +158,7 @@ p.hidden {
   }
 
   60% {
-    -webkit-transform: translateY(-4.5vh);
+    -webkit-transform: translateY(-4.5%);
   }
 
   76% {
@@ -166,7 +166,7 @@ p.hidden {
   }
 
   88% {
-    -webkit-transform: translateY(-1vh);
+    -webkit-transform: translateY(-1%);
   }
 
   100% {
@@ -273,10 +273,10 @@ p.hidden {
   display: none;
 }
 #ipadInstructions.upAndAway {
-  -webkit-transform: translateY(-102vh);
+  -webkit-transform: translateY(-102%);
 }
 #ipadInstructions.downAndOut {
-  -webkit-transform: translateY(102vh);
+  -webkit-transform: translateY(102%);
 }
 #ipadInstructions.faded {
   opacity: 0;
