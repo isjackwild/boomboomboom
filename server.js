@@ -1,51 +1,56 @@
-var express = require('express');
+(function() {
+  var app, bodyParser, express, http, io, path, port, server, socket;
 
-var http = require('http');
+  express = require('express');
 
-var socket = require('socket.io');
+  http = require('http');
 
-var path = require('path');
+  socket = require('socket.io');
 
-var bodyParser = require('body-parser');
+  path = require('path');
 
-var app = express();
+  bodyParser = require('body-parser');
 
-var server = http.createServer(app);
+  app = express();
 
-var io = socket.listen(server);
+  server = http.createServer(app);
 
-app.get('/', function(request, response) {
-  var ua;
-  console.log('request sent');
-  ua = request.headers['user-agent'];
-  if (/mobile/i.test(ua)) {
-    console.log('mobile');
-    app.use(express["static"](path.join(__dirname, '')));
-    return response.sendfile(__dirname + "/mobile.html");
-  } else {
-    app.use(express["static"](path.join(__dirname, '')));
-    response.sendfile(__dirname + "/index.html");
-    return console.log('desktop');
-  }
-});
+  io = socket.listen(server);
 
-var port = Number(process.env.PORT || 8080);
-
-io.sockets.on('connection', function(client) {
-  console.log('a client connected');
-  client.on('button-push', function(which) {
-    console.log(which);
-    return io.emit('button-push', which);
+  app.get('/', function(request, response) {
+    var ua;
+    console.log('request sent');
+    ua = request.headers['user-agent'];
+    if (/mobile/i.test(ua)) {
+      console.log('mobile');
+      app.use(express["static"](path.join(__dirname, '')));
+      return response.sendfile(__dirname + "/mobile.html");
+    } else {
+      app.use(express["static"](path.join(__dirname, '')));
+      response.sendfile(__dirname + "/index.html");
+      return console.log('desktop');
+    }
   });
-  client.on('key-entered', function(which) {
-    console.log("key entered", which);
-    return io.emit('key-entered', which);
-  });
-  return client.on('disconnect', function(client) {
-    return console.log('a client disconnect');
-  });
-});
 
-server.listen(port, function() {
-  return console.log('listening on ' + port);
-});
+  port = Number(process.env.PORT || 8080);
+
+  io.sockets.on('connection', function(client) {
+    console.log('a client connected');
+    client.on('button-push', function(which) {
+      console.log(which);
+      return io.emit('button-push', which);
+    });
+    client.on('key-entered', function(which) {
+      console.log("key entered", which);
+      return io.emit('key-entered', which);
+    });
+    return client.on('disconnect', function(client) {
+      return console.log('a client disconnect');
+    });
+  });
+
+  server.listen(port, function() {
+    return console.log('listening on ' + port);
+  });
+
+}).call(this);
