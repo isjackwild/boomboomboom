@@ -57,10 +57,7 @@
         return $('body').removeClass('press');
       }, 100);
       whichButton = event.currentTarget.id;
-      button = {
-        button: whichButton.toString(),
-        key: window.key
-      };
+      button = whichButton.toString();
       return socket.emit('button-push', button);
     };
   })(this));

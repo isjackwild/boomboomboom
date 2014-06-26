@@ -8,18 +8,15 @@ class window.TabletController
 
 		@_socket = io()
 
-		@_socket.emit 'create-room', window.key
+		@_socket.emit 'new-desktop-client', window.key
 
-		@_socket.on 'button-push', (which) =>
-			if which.key is window.key
-				@mapSocketEvents which.button
-			else
-				console.log 'incorrect key'
+		@_socket.on 'button-push', (button) =>
+			@mapSocketEvents button
 
 
-		@_socket.on 'key-entered', (which) =>
+		@_socket.on 'key-entered', (key) =>
 			# console.log 'key-entered', which
-			if which is window.key
+			if key is window.key
 				$('#ipadInstructions').addClass 'downAndOut'
 				setTimeout () ->
 					$('#ipadInstructions').addClass 'hidden'

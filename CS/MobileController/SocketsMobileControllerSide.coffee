@@ -46,10 +46,7 @@ $('.button').on 'touchstart', (event) =>
 	,100
 
 	whichButton = event.currentTarget.id
-	button = {
-		button: whichButton.toString();
-		key: window.key
-	}
+	button = whichButton.toString();
 	socket.emit 'button-push', button
 
 

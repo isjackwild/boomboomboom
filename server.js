@@ -32,30 +32,30 @@ app.get('/', function(request, response) {
 var port = Number(process.env.PORT || 8080);
 
 
-var rooms = [];
+var desktopClients = [];
 
-function room(roomSocket, roomId){
-  console.log('new room', roomId);
-  this.roomSocket = roomSocket;
-  this.roomId = roomId;
+function desktopClient(desktopClientDetails, key){
+  console.log('new room', key);
+  this.desktopClientDetails = desktopClientDetails;
+  this.key = key;
 };
 
 
 io.sockets.on('connection', function(client) {
   console.log('a client connected');
 
-  client.on('create-room', function(roomId) {
-    console.log("create room", roomId);
-    rooms.push(new room(client, roomId));
+  client.on('new-desktop-client', function(key) {
+    console.log("create room", key);
+    desktopClients.push(new desktopClient(client, key));
   });
 
 
   client.on('key-entered', function(key) {
     console.log("key entered", key);
-    for (i=0; i<rooms.length; i++){
-      if (rooms[i].roomId == key){
+    for (i=0; i<desktopClients.length; i++){
+      if (desktopClients[i].key == key){
         console.log('room found');
-        client.desktopToTalkTo = rooms[i].roomSocket;
+        client.desktopToTalkTo = desktopClients[i].desktopClientDetails;
       }
     }
     if (client.desktopToTalkTo){
@@ -76,11 +76,11 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('disconnect', function() {
-    for (i=rooms.length-1; i>=0; i--){
-      if (rooms[i].roomSocket == client) {
+    for (i=desktopClients.length-1; i>=0; i--){
+      if (desktopClients[i].desktopClientDetails == client) {
         console.log('room deleted');
-        rooms[i];
-        rooms.splice (i, 1);
+        desktopClients[i];
+        desktopClients.splice (i, 1);
       }
     }
 

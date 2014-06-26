@@ -649,19 +649,15 @@
       console.log('setup tablet controller');
       window.onkeydown = this.keydown;
       this._socket = io();
-      this._socket.emit('create-room', window.key);
+      this._socket.emit('new-desktop-client', window.key);
       this._socket.on('button-push', (function(_this) {
-        return function(which) {
-          if (which.key === window.key) {
-            return _this.mapSocketEvents(which.button);
-          } else {
-            return console.log('incorrect key');
-          }
+        return function(button) {
+          return _this.mapSocketEvents(button);
         };
       })(this));
       this._socket.on('key-entered', (function(_this) {
-        return function(which) {
-          if (which === window.key) {
+        return function(key) {
+          if (key === window.key) {
             $('#ipadInstructions').addClass('downAndOut');
             return setTimeout(function() {
               return $('#ipadInstructions').addClass('hidden');
