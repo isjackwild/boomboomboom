@@ -31,19 +31,38 @@ app.get('/', function(request, response) {
 
 var port = Number(process.env.PORT || 8080);
 
+
+var rooms = [];
+function room(roomSocket, roomId){
+  console.log('new room', roomId);
+  this.roomSocket = roomSocket;  //Stores the socket for the desktop connection
+  this.roomId = roomId;          //The room id/name. A unique string that links desktop to mobile
+  this.mobileSockets = [];       //A list of all the mobile connections
+};
+
+
 io.sockets.on('connection', function(client) {
   console.log('a client connected');
+
   client.on('button-push', function(which) {
     console.log(which);
-    return io.emit('button-push', which);
+    io.emit('button-push', which);
   });
-  client.on('key-entered', function(which) {
-    console.log("key entered", which);
-    return io.emit('key-entered', which);
+
+  client.on('key-entered', function(key) {
+    console.log("key entered", key);
+    io.emit('key-entered', key);
   });
-  return client.on('disconnect', function(client) {
-    return console.log('a client disconnect');
+
+  client.on('create-room', function(roomId) {
+    console.log("create room", roomId);
+    rooms.push(new room(client, roomId));
   });
+
+  client.on('disconnect', function(client) {
+    console.log('a client disconnect');
+  });
+
 });
 
 server.listen(port, function() {

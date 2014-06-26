@@ -50,10 +50,8 @@ connectIpad = () ->
 		$('#ipadInstructions').removeClass 'upAndAway'
 	,666
 
-	# console.log 'conect ipad'
 	window.key = 10000 + Math.floor Math.random()*89999
 	window.key = window.key.toString()
-	# console.log 'the key for this is ' + window.key
 	$('.key').html window.key
 	$('#keyInAbout').removeClass 'hidden'
 

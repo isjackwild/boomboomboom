@@ -8,6 +8,8 @@ class window.TabletController
 
 		@_socket = io()
 
+		@_socket.emit 'create-room', window.key
+
 		@_socket.on 'button-push', (which) =>
 			if which.key is window.key
 				@mapSocketEvents which.button

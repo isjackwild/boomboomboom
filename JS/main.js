@@ -649,6 +649,7 @@
       console.log('setup tablet controller');
       window.onkeydown = this.keydown;
       this._socket = io();
+      this._socket.emit('create-room', window.key);
       this._socket.on('button-push', (function(_this) {
         return function(which) {
           if (which.key === window.key) {
