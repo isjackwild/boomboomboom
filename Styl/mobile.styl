@@ -3,6 +3,8 @@ body, html
 	margin 0
 	background-color black
 	-webkit-transition background-color 0.1s
+	&.intro
+		background-color #f7bb07
 	&.press
 		background-color #444444
 
@@ -12,21 +14,22 @@ body, html
 	-webkit-touch-callout none
     -webkit-user-select none
 
+h1	
+	font-family 'Lato', Helvetica, sans-serif
+	font-size 5.4vw
+	color white
+	font-weight 700
+	letter-spacing 0.01em
+	margin-bottom 5vh
+
 #introWrapper
 	background #f7bb07
 	-webkit-transition -webkit-transform 0.3s
-	font-family 'Lato', Helvetica, sans-serif
-	z-index 3
+	z-index 5 !important
 	&.downAndOut
 		-webkit-transform translateY(999px)
 	&.hidden
 		display none
-	h1	
-		font-size 5.4vw
-		color white
-		font-weight 700
-		letter-spacing 0.01em
-		margin-bottom 5vh
 	#inputKey
 		font-family 'Lato', Helvetica, sans-serif
 		font-size 7vw
@@ -49,13 +52,22 @@ body, html
 		height 15vw
 		background-image url('/Assets/tick.svg')
 
+#rotateDevice
+	background red
+	z-index 4
+	-webkit-transition opacity 0.3s
+	&.fadeOut
+		opacity 0
+	&.hidden
+		display none
+
 .valignOuter
 	height 100%
 	width 100%
 	position absolute
 	top 0
 	left 0
-	z-index 11
+	z-index 3
 	.valign
 		height 100%
 		width 100%
@@ -83,6 +95,8 @@ body, html
 	top 18vh
 	left 0
 	z-index 2
+	&.hidden
+		display none
 
 #keypad
 	display table

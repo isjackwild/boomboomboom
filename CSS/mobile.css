@@ -5,6 +5,10 @@ html {
   background-color: #000;
   -webkit-transition: background-color 0.1s;
 }
+body.intro,
+html.intro {
+  background-color: #f7bb07;
+}
 body.press,
 html.press {
   background-color: #444;
@@ -15,29 +19,25 @@ html.press {
   -webkit-touch-callout: none;
 }
 -webkit-user-select none,
-#introWrapper {
-  background: #f7bb07;
-  -webkit-transition: -webkit-transform 0.3s;
+h1 {
   font-family: 'Lato', Helvetica, sans-serif;
-  z-index: 3;
-}
--webkit-user-select none.downAndOut,
-#introWrapper.downAndOut {
-  -webkit-transform: translateY(999px);
-}
--webkit-user-select none.hidden,
-#introWrapper.hidden {
-  display: none;
-}
--webkit-user-select none h1,
-#introWrapper h1 {
   font-size: 5.4vw;
   color: #fff;
   font-weight: 700;
   letter-spacing: 0.01em;
   margin-bottom: 5vh;
 }
--webkit-user-select none #inputKey,
+#introWrapper {
+  background: #f7bb07;
+  -webkit-transition: -webkit-transform 0.3s;
+  z-index: 5 !important;
+}
+#introWrapper.downAndOut {
+  -webkit-transform: translateY(999px);
+}
+#introWrapper.hidden {
+  display: none;
+}
 #introWrapper #inputKey {
   font-family: 'Lato', Helvetica, sans-serif;
   font-size: 7vw;
@@ -51,7 +51,6 @@ html.press {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
--webkit-user-select none #submitKey,
 #introWrapper #submitKey {
   font-family: 'Lato', Helvetica, sans-serif;
   background: none;
@@ -62,13 +61,24 @@ html.press {
   height: 15vw;
   background-image: url("/Assets/tick.svg");
 }
+#rotateDevice {
+  background: #f00;
+  z-index: 4;
+  -webkit-transition: opacity 0.3s;
+}
+#rotateDevice.fadeOut {
+  opacity: 0;
+}
+#rotateDevice.hidden {
+  display: none;
+}
 .valignOuter {
   height: 100%;
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 11;
+  z-index: 3;
 }
 .valignOuter .valign {
   height: 100%;
@@ -98,6 +108,9 @@ html.press {
   top: 18vh;
   left: 0;
   z-index: 2;
+}
+#keypadWrapper.hidden {
+  display: none;
 }
 #keypad {
   display: table;
