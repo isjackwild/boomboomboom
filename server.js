@@ -33,11 +33,11 @@ var port = Number(process.env.PORT || 8080);
 
 
 var rooms = [];
+
 function room(roomSocket, roomId){
   console.log('new room', roomId);
   this.roomSocket = roomSocket;  //Stores the socket for the desktop connection
   this.roomId = roomId;          //The room id/name. A unique string that links desktop to mobile
-  this.mobileSockets = [];       //A list of all the mobile connections
 };
 
 
@@ -46,12 +46,27 @@ io.sockets.on('connection', function(client) {
 
   client.on('button-push', function(which) {
     console.log(which);
-    io.emit('button-push', which);
+    if (client.desktopToTalkTo){
+      client.desktopToTalkTo.emit('button-push', which);
+    } else {
+      console.log('there appears to have been some sort of mistake :(')
+    }
   });
+
 
   client.on('key-entered', function(key) {
     console.log("key entered", key);
-    io.emit('key-entered', key);
+    for (i=0; i<rooms.length; i++){
+      if (rooms[i].roomId == key){
+        console.log('room found');
+        client.desktopToTalkTo = rooms[i].roomSocket;
+      }
+    }
+    if (client.desktopToTalkTo){
+      client.desktopToTalkTo.emit('key-entered', key); //this makes the key disappear on the desktop site, but do this differently so that is's room based
+    } else {
+      console.log('incorrect Code');
+    }
   });
 
   client.on('create-room', function(roomId) {
@@ -59,8 +74,17 @@ io.sockets.on('connection', function(client) {
     rooms.push(new room(client, roomId));
   });
 
-  client.on('disconnect', function(client) {
-    console.log('a client disconnect');
+  client.on('disconnect', function() {
+    for (i=rooms.length-1; i>=0; i--){
+      if (rooms[i].roomSocket == client) {
+        console.log('that client owned a room');
+        rooms[i];
+        rooms.splice (i, 1);
+      } else {
+        console.log('that client didnt own a room')
+      }
+    }
+
   });
 
 });
