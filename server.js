@@ -54,24 +54,20 @@ io.sockets.on('connection', function(client) {
     console.log("key entered", key);
     for (i=0; i<desktopClients.length; i++){
       if (desktopClients[i].key == key){
-        console.log('room found');
         client.desktopToTalkTo = desktopClients[i].desktopClientDetails;
       }
     }
     if (client.desktopToTalkTo){
       client.desktopToTalkTo.emit('key-entered', key);
     } else {
-      console.log('incorrect Code');
+      console.log('incorrect Code'); // should show something on tablet screen in this case
     }
   });
 
 
   client.on('button-push', function(which) {
-    console.log(which);
     if (client.desktopToTalkTo){
       client.desktopToTalkTo.emit('button-push', which);
-    } else {
-      console.log('there appears to have been some sort of mistake :(')
     }
   });
 
