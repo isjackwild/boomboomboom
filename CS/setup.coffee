@@ -27,7 +27,10 @@ clickContinue = () ->
 		,setupMic, onError
 
 setupMic = (stream) ->
-	$('.accept').addClass 'hidden'
+	$('.accept').addClass 'offRight'
+	setTimeout () ->
+		$('.accept').addClass 'hidden'
+	, 500
 	$('#about').removeClass 'solidBackground'
 	clearInterval window.stripe
 	setTimeout () ->

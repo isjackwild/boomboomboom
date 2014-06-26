@@ -1766,7 +1766,10 @@
   };
 
   setupMic = function(stream) {
-    $('.accept').addClass('hidden');
+    $('.accept').addClass('offRight');
+    setTimeout(function() {
+      return $('.accept').addClass('hidden');
+    }, 500);
     $('#about').removeClass('solidBackground');
     clearInterval(window.stripe);
     setTimeout(function() {

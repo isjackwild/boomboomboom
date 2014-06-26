@@ -339,6 +339,9 @@ p.hidden {
   -webkit-animation: acceptFlash 2s infinite;
   -webkit-animation-delay: 2.5s;
 }
+.accept.offRight {
+  -webkit-transform: translateX(52vw);
+}
 .accept.hidden {
   display: none;
 }
