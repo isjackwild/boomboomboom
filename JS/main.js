@@ -654,6 +654,8 @@
         return function(which) {
           if (which.key === window.key) {
             return _this.mapSocketEvents(which.button);
+          } else {
+            return console.log('incorrect key');
           }
         };
       })(this));
@@ -664,6 +666,8 @@
             return setTimeout(function() {
               return $('#ipadInstructions').addClass('hidden');
             }, 666);
+          } else {
+            return console.log('incorrect key');
           }
         };
       })(this));

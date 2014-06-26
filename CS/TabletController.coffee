@@ -13,6 +13,8 @@ class window.TabletController
 		@_socket.on 'button-push', (which) =>
 			if which.key is window.key
 				@mapSocketEvents which.button
+			else
+				console.log 'incorrect key'
 
 
 		@_socket.on 'key-entered', (which) =>
@@ -22,8 +24,8 @@ class window.TabletController
 				setTimeout () ->
 					$('#ipadInstructions').addClass 'hidden'
 				,666
-			# else
-			# 	console.log 'incorrect key'
+			else
+				console.log 'incorrect key'
 
 
 	mapSocketEvents: (button) ->
