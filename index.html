@@ -15,6 +15,7 @@
 	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 	  ga('create', 'UA-43611103-6', 'auto');
+	  ga('require', 'displayfeatures');
 	  ga('send', 'pageview');
 	</script>
 </head>
@@ -27,7 +28,7 @@
 		<div id="aboutContent" class='valignWrap'>
 			<h2>Boom Boom Boom! is an app to brighten up parties all over the world.</h2>
 			<p>Throw up graphics, animations, text, photos and effects using your mobile device or keyboard as a controller, or leave it to play in time with the music.</p>
-			<p>The app uses web-technologies including the <i>Web Audio API</i> to analyse audio from the mic, <i><a href="http://socket.io" target="blank">Web-Sockets</a></i> on a <i><a href="http://nodejs.org" target="blank">Node.js</a></i> server to handle device—desktop interaction, and <i>CSS3</i> and <i><a href="http://jonobr1.github.io/two.js/" target="blank">Two.js</a></i> to control animations.</p>
+			<p>The app uses web-technologies including the <i>Web Audio API</i> to analyse audio from the mic, <i><a href="http://socket.io" target="blank">Web-Sockets</a></i> on a <i><a href="http://nodejs.org" target="blank">Node.js</a></i> server to handle device—desktop interaction, and <i>CSS3</i> and <i><a href="http://jonobr1.github.io/two.js/" target="blank">Two.js</a></i> to control visuals.</p>
 			<p>A Chrome Experiment by <a href="http://www.isjackwild.com" target="blank">Jack Wild</a> <i>(<a href="http://www.twitter.com/isjackwild" target="blank">@isjackwild</a>)</i>. Berlin, Summer 2014.</p>
 			<p id="keyInAbout" class="hidden">Your mobile device controller key is <b><span class="key"></span></b></p>
 		</div>
@@ -40,7 +41,7 @@
 			<h2>Sorry, you need Chrome!</h2>
 			<p>Throw up graphics, animations, text, photos and effects using your mobile device or keyboard as a controller, or leave it to play in time with the music.</p>
 			<p>The app uses web-technologies including the <i>Web Audio API</i>, <i>Web-Sockets</i> and <i>CSS3 Animations</i> and to make the most of these, please come back in <a href="http://www.google.com/chrome">Chrome.</a></p>
-			<p>A Chrome Experiment by <a href="http://www.isjackwild.com" target="blank">Jack Wild</a> <i>(<a href="http://www.twitter.com/isjackwild" target="blank">@isjackwild</a>)</i>. Berlin, Summer 2014.</p>
+			<p>By <a href="http://www.isjackwild.com" target="blank">Jack Wild</a> <i>(<a href="http://www.twitter.com/isjackwild" target="blank">@isjackwild</a>)</i>. Berlin, Summer 2014.</p>
 		</div>
 	</div>
 </div>
@@ -104,8 +105,13 @@
 	<div id='aboutIcon' class='flipContainer'><img src="Assets/info.svg"></img></div>
 	<div id='closeIcon' class='flipContainer'><img src="Assets/close.svg"></img></div>
 </div>
-<div class="accept hidden offLeft"><h1>Turn up some music and click <i>Allow</i> ^</h1></div>
-<div id="makeFullScreen"><h1><img src="Assets/fullscreen.svg"></img></h1></div>
+<div id="share">
+	<img src="Assets/share.svg"></img>
+	<a  id='facebook' href="http://www.facebook.com/sharer.php?u=http://www.bbboooooommm.com" target="blank"><img src="Assets/facebook.svg"></img></a>
+	<a id='twitter' href="http://ctt.ec/UTjo1" target="blank"><img src="Assets/twitter.svg"></img></a>
+</div>
+<div id="makeFullScreen"><img src="Assets/fullscreen.svg"></img></div>
+<div class="accept hidden offLeft"><h1>Now turn up some music and click <i>Allow</i> ^</h1></div>
 
 <!-- <canvas id="debugVisualiser"></canvas> -->
 <div id="twoMagic"></div>

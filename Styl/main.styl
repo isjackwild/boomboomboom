@@ -105,6 +105,44 @@ p
 		#closeIcon
 			-webkit-transform rotateY(360deg)
 
+#share
+	position absolute
+	height 30px
+	width 120px
+	top 68px
+	left 18px
+	z-index 13
+	cursor pointer
+	#facebook, #twitter
+		-webkit-transition -webkit-transform 0.25s, opacity 0.2s
+		-webkit-transition-timing-function easeOutQuad
+		opacity 0
+		z-index 14
+		img
+			-webkit-transform scale(0.95)
+		&:hover
+			img
+				-webkit-transform scale(1.07)
+	img
+		-webkit-transition -webkit-transform 0.22s
+		-webkit-transition-timing-function easeOutQuad
+	&:hover
+		img
+			-webkit-transform scale(1.085)
+	#facebook
+		position absolute
+		left 40px
+		-webkit-transform translateX(-39px)
+	#twitter
+		position absolute
+		left 80px
+		-webkit-transform translateX(-80px)
+		-webkit-transition-delay 0.15s
+	&:hover
+		#twitter, #facebook
+			-webkit-transform translateX(0)
+			opacity 1
+
 
 #about
 	z-index 12
@@ -125,6 +163,7 @@ p
 		display none
 	&.solidBackground
 		background-color #09b35b !important
+
 
 @-webkit-keyframes aboutBounce
 	0%
@@ -244,9 +283,9 @@ p
 
 #makeFullScreen
 	position absolute
-	bottom 1px
-	left 18px
-	width 35px
+	bottom 17px
+	left 17px
+	width 33px
 	text-align center
 	z-index 12
 	margin auto

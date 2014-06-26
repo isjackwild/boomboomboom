@@ -125,6 +125,53 @@ p.hidden {
 .showAbout.aboutOpen #closeIcon {
   -webkit-transform: rotateY(360deg);
 }
+#share {
+  position: absolute;
+  height: 30px;
+  width: 120px;
+  top: 68px;
+  left: 18px;
+  z-index: 13;
+  cursor: pointer;
+}
+#share #facebook,
+#share #twitter {
+  -webkit-transition: -webkit-transform 0.25s, opacity 0.2s;
+  -webkit-transition-timing-function: easeOutQuad;
+  opacity: 0;
+  z-index: 14;
+}
+#share #facebook img,
+#share #twitter img {
+  -webkit-transform: scale(0.95);
+}
+#share #facebook:hover img,
+#share #twitter:hover img {
+  -webkit-transform: scale(1.07);
+}
+#share img {
+  -webkit-transition: -webkit-transform 0.22s;
+  -webkit-transition-timing-function: easeOutQuad;
+}
+#share:hover img {
+  -webkit-transform: scale(1.085);
+}
+#share #facebook {
+  position: absolute;
+  left: 40px;
+  -webkit-transform: translateX(-39px);
+}
+#share #twitter {
+  position: absolute;
+  left: 80px;
+  -webkit-transform: translateX(-80px);
+  -webkit-transition-delay: 0.15s;
+}
+#share:hover #twitter,
+#share:hover #facebook {
+  -webkit-transform: translateX(0);
+  opacity: 1;
+}
 #about {
   z-index: 12;
   background-color: rgba(50,50,50,0.75);
@@ -303,9 +350,9 @@ p.hidden {
 }
 #makeFullScreen {
   position: absolute;
-  bottom: 1px;
-  left: 18px;
-  width: 35px;
+  bottom: 17px;
+  left: 17px;
+  width: 33px;
   text-align: center;
   z-index: 12;
   margin: auto;
