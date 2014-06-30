@@ -37,6 +37,7 @@ class window.VisualsEngine
 
 	
 	constructor: ->
+		console.log 'hey, cheeky'
 		@setupListeners()
 		@setupTwoJs()
 		@updateColourBucket()
@@ -259,7 +260,6 @@ class window.VisualsEngine
 			else if type is 'lo'
 				col = {r: 50, g: 50, b: 50}
 
-		#write code to use #ffffff colours
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
 		@_middleGround.add circle
 		circle.fill = col
@@ -274,7 +274,6 @@ class window.VisualsEngine
 			@makeSpecial Math.floor Math.random()*9
 
 
-	#move the shape creation from in onPeak into here
 	makeShape: (which) =>
 		if which is 'intro'
 			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)

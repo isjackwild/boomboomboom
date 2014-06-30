@@ -920,6 +920,7 @@
       this.gotBPM = __bind(this.gotBPM, this);
       this.toggleAuto = __bind(this.toggleAuto, this);
       this.setupListeners = __bind(this.setupListeners, this);
+      console.log('hey, cheeky');
       this.setupListeners();
       this.setupTwoJs();
       this.updateColourBucket();
@@ -1750,6 +1751,20 @@
 
   is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
 
+  window.focus = true;
+
+  $(window).on('blur', (function(_this) {
+    return function() {
+      return window.focus = false;
+    };
+  })(this));
+
+  $(window).on('focus', (function(_this) {
+    return function() {
+      return window.focus = true;
+    };
+  })(this));
+
   clickContinue = function() {
     $('.choice').addClass('downAndOut');
     $('.accept').removeClass('hidden');
@@ -1761,7 +1776,9 @@
       $('#keyboardOrIpad').addClass('hidden');
       window.events.makeSpecial.dispatch(3);
       return window.stripe = setInterval(function() {
-        window.events.makeSpecial.dispatch(3);
+        if (window.focus === true) {
+          window.events.makeSpecial.dispatch(3);
+        }
         return console.log('???');
       }, 2000);
     }, 1500);
@@ -1841,7 +1858,9 @@
         $('#instructions').addClass('hidden');
         $('.choice').removeClass('upAndAway');
         return window.box = setInterval(function() {
-          return window.events.makeSpecial.dispatch(11);
+          if (window.focus === true) {
+            return window.events.makeSpecial.dispatch(11);
+          }
         }, 2000);
       }, 4800);
       if (!is_chrome) {

@@ -1,6 +1,13 @@
 window.stripe = null
 window.box = null
 is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+window.focus = true
+
+$(window).on 'blur', =>
+	window.focus = false
+
+$(window).on 'focus', =>
+	window.focus = true
 
 
 clickContinue = () ->
@@ -17,7 +24,8 @@ clickContinue = () ->
 		$('#keyboardOrIpad').addClass 'hidden'
 		window.events.makeSpecial.dispatch 3
 		window.stripe = setInterval () ->
-			window.events.makeSpecial.dispatch 3
+			if window.focus is true
+				window.events.makeSpecial.dispatch 3
 			console.log '???'
 		,2000
 	,1500
@@ -99,7 +107,8 @@ $ =>
 		$('#instructions').addClass 'hidden'
 		$('.choice').removeClass 'upAndAway'
 		window.box = setInterval () ->
-			window.events.makeSpecial.dispatch 11
+			if window.focus is true
+				window.events.makeSpecial.dispatch 11
 		,2000
 	,4800
 
