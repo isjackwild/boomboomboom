@@ -102,7 +102,7 @@ class window.VisualsEngine
 		@_bpmJumpTime = new Date().getTime()
 
 	onBPMDrop: () =>
-		if @_automatic is true and Math.random() > 0.9
+		if @_automatic is true and Math.random() > 0.82
 			photo = Math.ceil Math.random()*4
 			switch photo
 				when 1 then @showPhoto 'angela'
@@ -222,13 +222,15 @@ class window.VisualsEngine
 				if Math.random() > 0.94
 					@makeSpecial 11
 			
-			if type is 'lo' and Math.random() > 0.97 and @_shapes.length < 4
+			if type is 'lo' and Math.random() > 0.95 and @_shapes.length < 4
+				@onBass 'big'
 				if Math.random() > 0.5
 					@showText 'boom'
 				else
 					@showText 'wobb'
 
-			if type is 'hi' and Math.random() > 0.97 and @_shapes.length < 4
+			if type is 'hi' and Math.random() > 0.95 and @_shapes.length < 4
+				@onBass()
 				if Math.random() > 0.5
 					@showText 'tssk'
 				else
@@ -467,13 +469,22 @@ class window.VisualsEngine
 				offset = 75
 				hang = @convertToRange(@_bpm, [60,600], [200, 80])
 				if @_automatic is true and Math.random() > 0.9
+					photo = Math.ceil Math.random()*4
+					switch photo
+						when 1 then @showPhoto 'angela'
+						when 2 then @showPhoto 'obama'
+						when 3 then @showPhoto 'queen'
+						when 4 then @showPhoto 'charles'
+				else if @_automatic is true and Math.random() > 0.5
+					@onBass 'big'
+			else if length is 'short'
+				offset = 20
+				hang = @convertToRange(@_bpm, [60,600], [200, 80])
+				if @_automatic is true and Math.random() > 0.9
 					if Math.random() > 0.5
 						@onTransform 'squashX'
 					else
 						@onTransform 'squashY'
-			else if length is 'short'
-				offset = 20
-				hang = @convertToRange(@_bpm, [60,600], [200, 80])
 			r = @_bgColCurrent.r + offset
 			g = @_bgColCurrent.g + offset
 			b = @_bgColCurrent.b + offset

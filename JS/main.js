@@ -994,7 +994,7 @@
 
     VisualsEngine.prototype.onBPMDrop = function() {
       var photo;
-      if (this._automatic === true && Math.random() > 0.9) {
+      if (this._automatic === true && Math.random() > 0.82) {
         photo = Math.ceil(Math.random() * 4);
         switch (photo) {
           case 1:
@@ -1157,14 +1157,16 @@
             this.makeSpecial(11);
           }
         }
-        if (type === 'lo' && Math.random() > 0.97 && this._shapes.length < 4) {
+        if (type === 'lo' && Math.random() > 0.95 && this._shapes.length < 4) {
+          this.onBass('big');
           if (Math.random() > 0.5) {
             this.showText('boom');
           } else {
             this.showText('wobb');
           }
         }
-        if (type === 'hi' && Math.random() > 0.97 && this._shapes.length < 4) {
+        if (type === 'hi' && Math.random() > 0.95 && this._shapes.length < 4) {
+          this.onBass();
           if (Math.random() > 0.5) {
             this.showText('tssk');
           } else {
@@ -1442,11 +1444,32 @@
     };
 
     VisualsEngine.prototype.onBreak = function(length) {
-      var b, breakTimer, col, g, hang, offset, r;
+      var b, breakTimer, col, g, hang, offset, photo, r;
       if (this._pauseBgLerp === false) {
         this._pauseBgLerp = true;
         if (length === 'long') {
           offset = 75;
+          hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
+          if (this._automatic === true && Math.random() > 0.9) {
+            photo = Math.ceil(Math.random() * 4);
+            switch (photo) {
+              case 1:
+                this.showPhoto('angela');
+                break;
+              case 2:
+                this.showPhoto('obama');
+                break;
+              case 3:
+                this.showPhoto('queen');
+                break;
+              case 4:
+                this.showPhoto('charles');
+            }
+          } else if (this._automatic === true && Math.random() > 0.5) {
+            this.onBass('big');
+          }
+        } else if (length === 'short') {
+          offset = 20;
           hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
           if (this._automatic === true && Math.random() > 0.9) {
             if (Math.random() > 0.5) {
@@ -1455,9 +1478,6 @@
               this.onTransform('squashY');
             }
           }
-        } else if (length === 'short') {
-          offset = 20;
-          hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
         }
         r = this._bgColCurrent.r + offset;
         g = this._bgColCurrent.g + offset;

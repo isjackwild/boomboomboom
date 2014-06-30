@@ -8,11 +8,15 @@ var path = require('path');
 
 var bodyParser = require('body-parser');
 
+var bounscale = require('bounscale');
+
 var app = express();
 
 var server = http.createServer(app);
 
 var io = socket.listen(server);
+
+app.use(bounscale);
 
 app.get('/', function(request, response) {
   var ua;
