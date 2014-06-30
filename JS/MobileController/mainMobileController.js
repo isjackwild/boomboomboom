@@ -43,7 +43,8 @@
   };
 
   onIncorrectKey = function() {
-    return alert('incorrect-key');
+    alert('incorrect-key');
+    return $('#inputKey').val('');
   };
 
   $('#inputForm').on('submit', (function(_this) {

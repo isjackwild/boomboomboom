@@ -35,6 +35,7 @@ onCorrectKey = () ->
 
 onIncorrectKey = () ->
 	alert 'incorrect-key'
+	$('#inputKey').val ''
 
 $('#inputForm').on 'submit', (e) =>
 	e.stopPropagation()
