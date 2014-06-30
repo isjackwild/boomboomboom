@@ -33,6 +33,11 @@
         }
       }
     },
+    "bounscale": {
+      "version": "0.0.2",
+      "from": "bounscale@",
+      "resolved": "https://registry.npmjs.org/bounscale/-/bounscale-0.0.2.tgz"
+    },
     "logger": {
       "version": "0.0.1",
       "from": "logger@",
