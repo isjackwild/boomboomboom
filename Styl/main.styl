@@ -44,6 +44,8 @@ h2
 	color white
 	text-align center
 	font-size 3.9vw
+	@media screen and (max-width: 1250px)
+		font-size 5.2vw
 	font-weight 900
 	letter-spacing 0.01em
 	line-height 1.2em
@@ -147,7 +149,7 @@ p
 #about
 	z-index 12
 	background-color rgba(50, 50, 50, 0.75)
-	-webkit-transition -webkit-transform 0.28s
+	-webkit-transition -webkit-transform 0.28s, background-color 0.3s
 	-webkit-transition-timing-function easeOutQuad
 	-webkit-animation aboutBounce 0.66s
 	-webkit-animation-timing-function easeOutQuad
@@ -197,6 +199,7 @@ p
 		position relative
 		text-align center
 		.valignWrap
+			margin-top 25px
 			display inline-block
 			vertical-align middle
 			width 50%
