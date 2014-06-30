@@ -1,5 +1,5 @@
 (function() {
-  var doOnOrientationChange, pressTimer, socket;
+  var doOnOrientationChange, onCorrectKey, onIncorrectKey, pressTimer, socket;
 
   window.key = null;
 
@@ -32,19 +32,28 @@
     }
   };
 
+  onCorrectKey = function() {
+    $("#inputKey").blur();
+    $('body, intro').removeClass('intro');
+    $('#keypadWrapper').removeClass('hidden');
+    $('#introWrapper').addClass('downAndOut');
+    return setTimeout(function() {
+      return $('#introWrapper').addClass('hidden');
+    }, 666);
+  };
+
+  onIncorrectKey = function() {
+    return alert('incorrect-key');
+  };
+
   $('#inputForm').on('submit', (function(_this) {
     return function(e) {
       e.stopPropagation();
       e.preventDefault();
       window.key = $('#inputKey').val().toString();
       socket.emit('key-entered', window.key);
-      $("#inputKey").blur();
-      $('body, intro').removeClass('intro');
-      $('#keypadWrapper').removeClass('hidden');
-      $('#introWrapper').addClass('downAndOut');
-      return setTimeout(function() {
-        return $('#introWrapper').addClass('hidden');
-      }, 666);
+      socket.on('correct-key', onCorrectKey);
+      return socket.on('incorrect-key', onIncorrectKey);
     };
   })(this));
 

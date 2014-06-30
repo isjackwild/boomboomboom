@@ -57,7 +57,9 @@ io.sockets.on('connection', function(client) {
       desktopClients.push(new desktopClient(client, key));
       client.emit('key-accepted')
     } else {
-      client.emit('key-unaccepted')
+      setTimeout(function(){
+        client.emit('key-unaccepted')
+      },200) //just safety to stop crashing JUST IN CASE max num of rooms was reached
     }
   });
 
@@ -71,8 +73,9 @@ io.sockets.on('connection', function(client) {
     }
     if (client.desktopToTalkTo){
       client.desktopToTalkTo.emit('key-entered', key);
+      client.emit('correct-key');
     } else {
-      console.log('incorrect Code'); // should show something on tablet screen in this case
+      client.emit('incorrect-key');
     }
   });
 

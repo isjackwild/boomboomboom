@@ -23,12 +23,7 @@ doOnOrientationChange = () ->
 			$('#rotateDevice').removeClass 'fadeOut'
 		, 50
 
-
-$('#inputForm').on 'submit', (e) =>
-	e.stopPropagation()
-	e.preventDefault()
-	window.key = $('#inputKey').val().toString()
-	socket.emit 'key-entered', window.key
+onCorrectKey = () ->
 	$("#inputKey").blur()
 	$('body, intro').removeClass 'intro'
 	$('#keypadWrapper').removeClass 'hidden'
@@ -36,6 +31,18 @@ $('#inputForm').on 'submit', (e) =>
 	setTimeout ()->
 		$('#introWrapper').addClass 'hidden'
 	,666
+
+
+onIncorrectKey = () ->
+	alert 'incorrect-key'
+
+$('#inputForm').on 'submit', (e) =>
+	e.stopPropagation()
+	e.preventDefault()
+	window.key = $('#inputKey').val().toString()
+	socket.emit 'key-entered', window.key
+	socket.on 'correct-key', onCorrectKey
+	socket.on 'incorrect-key', onIncorrectKey
 
 
 $('.button').on 'touchstart', (event) =>
