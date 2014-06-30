@@ -209,7 +209,7 @@ class window.VisualsEngine
 
 
 		if @_automatic is true
-			if @_shapes.length < 3 and Math.random() > 0.92
+			if @_shapes.length < 3 and Math.random() > 0.88
 				illu = Math.ceil Math.random()*5
 				switch illu
 					when 1 then @showIllustration 'heart'
@@ -236,9 +236,6 @@ class window.VisualsEngine
 				else
 					@showText 'clap' 
 
-			if type is 'hard' and @_peakCount % 4 is 0 and @_currentFreqVar is 'low'
-				@makeSpecial 9
-				@makeSpecial 0
 
 
 		if @_negativeColours is false
@@ -272,8 +269,12 @@ class window.VisualsEngine
 
 		#make shapes if there's been a BPM jump recently. the duration should be set in bpm jump method
 		duration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
-		if @_peakCount % 2 is 0 and peakTime - @_bpmJumpTime < duration and @_bpm > 150
-			@makeSpecial Math.floor Math.random()*9
+		if peakTime - @_bpmJumpTime < duration and @_bpm > 280
+			if @_peakCount % 2 is 0
+				@makeSpecial Math.floor Math.random()*9
+		else if type is 'hard' and @_peakCount % 4 is 0 and @_currentFreqVar is 'low' and @_bpm < 450
+				@makeSpecial 9
+				@makeSpecial 0
 
 
 	makeShape: (which) =>
@@ -338,7 +339,7 @@ class window.VisualsEngine
 			when 11
 				line = @_two.makeRectangle @_two.width/2,  @_two.height/2, @_two.width-40, @_two.height-40
 
-		animationSpeed = @convertToRange(@_bpm, [60,600], [0.1, 0.17])
+		animationSpeed = @convertToRange(@_bpm, [60,600], [0.08, 0.17])
 		if which >= 1 and which <= 4
 			line.type = 'stripeX'
 			line.beginning = 0
@@ -465,6 +466,11 @@ class window.VisualsEngine
 	onBreak: (length) =>
 		if @_pauseBgLerp is false
 			@_pauseBgLerp = true
+			if @_automatic is true and Math.random() > 0.9
+				if Math.random() > 0.5
+					@onTransform 'squashX'
+				else
+					@onTransform 'squashY'
 			if length is 'long'
 				offset = 75
 				hang = @convertToRange(@_bpm, [60,600], [200, 80])
@@ -480,11 +486,6 @@ class window.VisualsEngine
 			else if length is 'short'
 				offset = 20
 				hang = @convertToRange(@_bpm, [60,600], [200, 80])
-				if @_automatic is true and Math.random() > 0.9
-					if Math.random() > 0.5
-						@onTransform 'squashX'
-					else
-						@onTransform 'squashY'
 			r = @_bgColCurrent.r + offset
 			g = @_bgColCurrent.g + offset
 			b = @_bgColCurrent.b + offset

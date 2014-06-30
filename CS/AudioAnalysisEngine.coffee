@@ -15,7 +15,7 @@ class window.AudioAnalysisEngine
 	_lastAverageAmp: null
 
 	_waitingForPeak: false
-	_peakSensitivityOffset: 1 #how much the amp. has to fall by to register a peak
+	_peakSensitivityOffset: 1.5 #how much the amp. has to fall by to register a peak
 	_bassWaitingForPeak: false
 	_bassCutoff: 1000 #will be overridde... which frequencies in the spectogram aree considered bass
 	_frequencyOfPeak: {
@@ -42,7 +42,7 @@ class window.AudioAnalysisEngine
 	_bpmCalcArray: []
 	_approxBPM: 0
 	_lastBPM: null
-	_dropJumpBPMSensitivity: 75 #how much the bpm has to drop by on each sample to registera drop / jump
+	_dropJumpBPMSensitivity: 100 #how much the bpm has to drop by on each sample to registera drop / jump
 
 	_volCalcArray: []
 	_averageVol: 0
@@ -165,13 +165,12 @@ class window.AudioAnalysisEngine
 			else if @_averageFrequency and @_frequencyOfPeak.freq < @_averageFrequency-@_sensivitityForLowPeak
 				@eventLogger "loPeak"
 				window.events.peak.dispatch 'lo'
-			else if @_averageAmp+@_peakSensitivityOffset*2 < @_lastAverageAmp
+			else if @_averageAmp+@_peakSensitivityOffset*3 < @_lastAverageAmp
 				@eventLogger 'hardPeak'
 				window.events.peak.dispatch 'hard'
 			else
 				@eventLogger "softPeak"
 				window.events.peak.dispatch 'soft'
-
 
 
 	checkForBassPeak: => #would be good if this was based on a peak much lower than the average. At the moment a very bassy song would set this off every time a peak was detected.

@@ -28,7 +28,7 @@
 
     AudioAnalysisEngine.prototype._waitingForPeak = false;
 
-    AudioAnalysisEngine.prototype._peakSensitivityOffset = 1;
+    AudioAnalysisEngine.prototype._peakSensitivityOffset = 1.5;
 
     AudioAnalysisEngine.prototype._bassWaitingForPeak = false;
 
@@ -70,7 +70,7 @@
 
     AudioAnalysisEngine.prototype._lastBPM = null;
 
-    AudioAnalysisEngine.prototype._dropJumpBPMSensitivity = 75;
+    AudioAnalysisEngine.prototype._dropJumpBPMSensitivity = 100;
 
     AudioAnalysisEngine.prototype._volCalcArray = [];
 
@@ -216,7 +216,7 @@
         } else if (this._averageFrequency && this._frequencyOfPeak.freq < this._averageFrequency - this._sensivitityForLowPeak) {
           this.eventLogger("loPeak");
           return window.events.peak.dispatch('lo');
-        } else if (this._averageAmp + this._peakSensitivityOffset * 2 < this._lastAverageAmp) {
+        } else if (this._averageAmp + this._peakSensitivityOffset * 3 < this._lastAverageAmp) {
           this.eventLogger('hardPeak');
           return window.events.peak.dispatch('hard');
         } else {
@@ -1133,7 +1133,7 @@
         circle.fadeOutSpeed = this.convertToRange(this._bpm, [60, 500], [0.1, 0.25]);
       }
       if (this._automatic === true) {
-        if (this._shapes.length < 3 && Math.random() > 0.92) {
+        if (this._shapes.length < 3 && Math.random() > 0.88) {
           illu = Math.ceil(Math.random() * 5);
           switch (illu) {
             case 1:
@@ -1172,10 +1172,6 @@
           } else {
             this.showText('clap');
           }
-        }
-        if (type === 'hard' && this._peakCount % 4 === 0 && this._currentFreqVar === 'low') {
-          this.makeSpecial(9);
-          this.makeSpecial(0);
         }
       }
       if (this._negativeColours === false) {
@@ -1225,8 +1221,13 @@
       circle.noStroke();
       this._shapes.push(circle);
       duration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
-      if (this._peakCount % 2 === 0 && peakTime - this._bpmJumpTime < duration && this._bpm > 150) {
-        return this.makeSpecial(Math.floor(Math.random() * 9));
+      if (peakTime - this._bpmJumpTime < duration && this._bpm > 280) {
+        if (this._peakCount % 2 === 0) {
+          return this.makeSpecial(Math.floor(Math.random() * 9));
+        }
+      } else if (type === 'hard' && this._peakCount % 4 === 0 && this._currentFreqVar === 'low' && this._bpm < 450) {
+        this.makeSpecial(9);
+        return this.makeSpecial(0);
       }
     };
 
@@ -1305,7 +1306,7 @@
         case 11:
           line = this._two.makeRectangle(this._two.width / 2, this._two.height / 2, this._two.width - 40, this._two.height - 40);
       }
-      animationSpeed = this.convertToRange(this._bpm, [60, 600], [0.1, 0.17]);
+      animationSpeed = this.convertToRange(this._bpm, [60, 600], [0.08, 0.17]);
       if (which >= 1 && which <= 4) {
         line.type = 'stripeX';
         line.beginning = 0;
@@ -1447,6 +1448,13 @@
       var b, breakTimer, col, g, hang, offset, photo, r;
       if (this._pauseBgLerp === false) {
         this._pauseBgLerp = true;
+        if (this._automatic === true && Math.random() > 0.9) {
+          if (Math.random() > 0.5) {
+            this.onTransform('squashX');
+          } else {
+            this.onTransform('squashY');
+          }
+        }
         if (length === 'long') {
           offset = 75;
           hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
@@ -1471,13 +1479,6 @@
         } else if (length === 'short') {
           offset = 20;
           hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
-          if (this._automatic === true && Math.random() > 0.9) {
-            if (Math.random() > 0.5) {
-              this.onTransform('squashX');
-            } else {
-              this.onTransform('squashY');
-            }
-          }
         }
         r = this._bgColCurrent.r + offset;
         g = this._bgColCurrent.g + offset;
