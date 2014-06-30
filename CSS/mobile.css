@@ -61,6 +61,9 @@ h1 {
   height: 15vw;
   background-image: url("/Assets/tick.svg");
 }
+#introWrapper img {
+  width: 33%;
+}
 #incorrectKey {
   background: #f00;
   z-index: 6 !important;
@@ -71,6 +74,9 @@ h1 {
 }
 #incorrectKey.faded {
   opacity: 0;
+}
+#incorrectKey img {
+  width: 33%;
 }
 #rotateDevice {
   background: #f00;
