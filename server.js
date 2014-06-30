@@ -59,7 +59,7 @@ io.sockets.on('connection', function(client) {
     } else {
       setTimeout(function(){
         client.emit('key-unaccepted')
-      },200) //just safety to stop crashing JUST IN CASE max num of rooms was reached
+      },200) //just safety to stop crashing JUST IN CASE max num of rooms was reached, which is super unlikely!
     }
   });
 

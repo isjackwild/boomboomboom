@@ -1,7 +1,3 @@
-# $ ->
-# 	window.visualsEngine = new VisualsEngine();
-
-
 class window.VisualsEngine
 	_automatic: true
 	_visible: true
@@ -41,7 +37,6 @@ class window.VisualsEngine
 
 	
 	constructor: ->
-		# console.log 'setup background generation'
 		@setupListeners()
 		@setupTwoJs()
 		@updateColourBucket()
@@ -53,7 +48,6 @@ class window.VisualsEngine
 		
 
 	setupListeners: =>
-		# console.log 'setup listeners'
 		window.events.peak.add @onPeak
 		window.events.bass.add @onBass
 		window.events.break.add @onBreak
@@ -75,7 +69,6 @@ class window.VisualsEngine
 
 
 	setupTwoJs: ->
-		# console.log 'setup two'
 		@_twoElem = document.getElementById 'twoMagic'
 		params = {
 			fullscreen: true

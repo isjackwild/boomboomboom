@@ -95,7 +95,6 @@
       this.toggleAuto = __bind(this.toggleAuto, this);
       this.startAnalysis = __bind(this.startAnalysis, this);
       this.setupMic = __bind(this.setupMic, this);
-      this.setupTestAudio = __bind(this.setupTestAudio, this);
       this.setupFilters = __bind(this.setupFilters, this);
       this.setupAnalyser = __bind(this.setupAnalyser, this);
       var e;
@@ -110,7 +109,6 @@
       this.setupFilters();
       window.events.automatic.add(this.toggleAuto);
       window.events.micAccepted.add(this.setupMic);
-      this._testAudio = document.getElementById('test_audio');
     }
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
@@ -131,19 +129,6 @@
       this._biquadFilter.type = "lowshelf";
       this._biquadFilter.frequency.value = 300;
       return this._biquadFilter.gain.value = 5;
-    };
-
-    AudioAnalysisEngine.prototype.setupTestAudio = function() {
-      if (this._alreadySetup) {
-        return;
-      }
-      this._source = this._context.createMediaElementSource(this._testAudio);
-      this._source.connect(this._biquadFilter);
-      this._biquadFilter.connect(this._analyserNode);
-      this._analyserNode.connect(this._context.destination);
-      this._testAudio.play();
-      this.startAnalysis();
-      return this._alreadySetup = true;
     };
 
     AudioAnalysisEngine.prototype.setupMic = function(stream) {
@@ -611,7 +596,7 @@
     KeyboardController.prototype.setAutoTimer = function() {
       clearInterval(this._autoTimer);
       this._timeSinceLastKeyPress = 0;
-      this._autoTimer = setInterval((function(_this) {
+      return this._autoTimer = setInterval((function(_this) {
         return function() {
           _this._timeSinceLastKeyPress += 1;
           if (_this._timeSinceLastKeyPress > 10) {
@@ -622,7 +607,6 @@
           }
         };
       })(this), 1000);
-      return console.log('set auto timer');
     };
 
     return KeyboardController;
@@ -782,7 +766,8 @@
           if (_this._timeSinceLastKeyPress > 10) {
             clearInterval(_this._autoTimer);
             _this._timeSinceLastKeyPress = 0;
-            return window.events.automatic.dispatch('on');
+            window.events.automatic.dispatch('on');
+            return console.log('automatic ON');
           }
         };
       })(this), 1000);

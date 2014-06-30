@@ -1,28 +1,4 @@
-#Audio Analysis Engine
-# $ =>
-	# window.audioAnalysisEngine = new AudioAnalysisEngine();
-
-	# gui = new dat.GUI()
-	# gui.add audioAnalysisEngine, '_samplesPerSecond'
-	# gui.add audioAnalysisEngine, '_peakSensitivityOffset'
-	# gui.add audioAnalysisEngine, '_sensivitityForHighPeak'
-	# gui.add audioAnalysisEngine, '_sensivitityForLowPeak'
-	# gui.add audioAnalysisEngine, '_longBreakLength'
-	# gui.add audioAnalysisEngine, '_shortBreakLength'
-	# gui.add audioAnalysisEngine, '_breakSensitivity'
-	# gui.add audioAnalysisEngine, '_dropJumpBPMSensitivity'
-	# gui.add audioAnalysisEngine, '_sensitivityForHighFrequencyVariation'
-	# gui.add audioAnalysisEngine._analyserNode, 'smoothingTimeConstant'
-	# gui.add audioAnalysisEngine._analyserNode, 'fftSize'
-	# gui.add(audioAnalysisEngine, '_bassCutoff').listen()
-	# gui.add(audioAnalysisEngine, '_approxBPM').listen()
-	# gui.add(audioAnalysisEngine, '_averageFrequency').listen()
-	# gui.add(audioAnalysisEngine, '_averageVol').listen()
-
-
-
 class window.AudioAnalysisEngine
-	#some of these should probably be made as variables not properties. check which ones are only used in the functions and get rid of them
 	_context: null
 	_source: null
 	_testAudio: null
@@ -85,13 +61,8 @@ class window.AudioAnalysisEngine
 
 		@setupAnalyser()
 		@setupFilters()
-		# @setupDebugEqualizer()
 		window.events.automatic.add @toggleAuto
 		window.events.micAccepted.add @setupMic
-
-
-		@_testAudio = document.getElementById('test_audio')
-		# document.onclick = => @setupTestAudio()
 
 
 	setupAnalyser: =>
@@ -114,33 +85,19 @@ class window.AudioAnalysisEngine
 		@_biquadFilter.frequency.value = 300
 		@_biquadFilter.gain.value = 5
 		
-	setupTestAudio: =>
-		# console.log 'setup test audio', @_testAudio
-		if (@_alreadySetup)
-			return
-		@_source = @_context.createMediaElementSource @_testAudio
-		@_source.connect @_biquadFilter
-		@_biquadFilter.connect @_analyserNode
-		@_analyserNode.connect @_context.destination
-		@_testAudio.play()
-		@startAnalysis()
-		@_alreadySetup = true
 
 	setupMic: (stream) =>
-		# console.log 'setup mic......'
 		if (@_alreadySetup)
 			return
 		@_source = @_context.createMediaStreamSource stream
 		@_source.connect @_dynamicsCompressor
 		@_dynamicsCompressor.connect @_biquadFilter
 		@_biquadFilter.connect @_analyserNode
-		# @_analyserNode.connect @_context.destination
 		@startAnalysis()
 		@_alreadySetup = true
 
 
 	startAnalysis: =>
-		# console.log 'analysis started'
 		@_ticker = setInterval =>
 			@analyse()
 		, 1000 / @_samplesPerSecond
@@ -155,7 +112,6 @@ class window.AudioAnalysisEngine
 
 	analyse: =>
 		@_analyserNode.getByteFrequencyData @_frequencyData
-		# @drawDebugEqualizer()
 		@_frequencyOfPeak.amp = 0
 
 		for i in [0...@_frequencyData.length] #check for highest peak over the whole range
@@ -344,23 +300,6 @@ class window.AudioAnalysisEngine
 					console.log 'currently low frequency variation'
 
 
-	# setupDebugEqualizer: =>
-	# 	@_debugCV = document.getElementById 'debugVisualiser'
-	# 	@_debugCV.width = 600
-	# 	@_debugCV.height = 150
-	# 	@_debugCTX = @_debugCV.getContext "2d"
-
-
-
-	# drawDebugEqualizer: =>
-	# 	@_debugCTX.clearRect 0,0,@_debugCV.width,@_debugCV.height
-	# 	for i in [0...@_frequencyData.length] by 2
-	# 		@_debugCTX.beginPath()
-	# 		@_debugCTX.moveTo i/2, @_debugCV.height
-	# 		@_debugCTX.lineTo i/2, @_debugCV.height - @_frequencyData[i]/2
-	# 		@_debugCTX.stroke()
-
-
 	convertToRange: (value, srcRange, dstRange) ->
 		if value < srcRange[0]
 			return dstRange[0]
@@ -372,16 +311,6 @@ class window.AudioAnalysisEngine
 			adjValue = value  - srcRange[0]
 			return (adjValue * dstMax / srcMax) + dstRange[0]
 
-
-
-
-#clean-up / comment out the methods i don't end up using in the graphics
-
-#if using mic for parties etc, should write a setup method to normalise the volumes etc.
-
-#should probably try and re-write pretty much all the methods to make them more accurate... look into this after experimenting with the graphics
-
-#two modes: music controlled and ipad / iphone controlled
 
 
 

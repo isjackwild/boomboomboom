@@ -24,7 +24,6 @@ class window.TabletController
 		@_socket.on 'button-push', (button) =>
 			@mapSocketEvents button
 
-		#move this into the sever side... only send key if correct, send error to mobie if incorrect
 		@_socket.on 'key-entered', (key) =>
 			if key is window.key
 				$('#ipadInstructions').addClass 'downAndOut'
@@ -37,7 +36,6 @@ class window.TabletController
 	mapSocketEvents: (button) =>
 		@setAutoTimer()
 		window.events.automatic.dispatch 'off'
-		#need to have the auto timer thing here also. AND move this to a new file.
 		switch button
 			when "a1" then window.events.frequency.dispatch 1
 			when "a2" then window.events.frequency.dispatch 2
@@ -88,7 +86,6 @@ class window.TabletController
 	setAutoTimer: () =>
 		clearInterval @_autoTimer
 		@_timeSinceLastKeyPress = 0
-		# console.log 'automatic off'
 
 		@_autoTimer = setInterval =>
 			@_timeSinceLastKeyPress += 1
@@ -96,7 +93,5 @@ class window.TabletController
 				clearInterval @_autoTimer
 				@_timeSinceLastKeyPress = 0
 				window.events.automatic.dispatch 'on'
-				# console.log 'automatic ON'
+				console.log 'automatic ON'
 		,1000
-
-		# console.log 'set auto timer'
