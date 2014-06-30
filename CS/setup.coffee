@@ -50,11 +50,6 @@ connectIpad = () ->
 		$('#ipadInstructions').removeClass 'upAndAway'
 	,666
 
-	window.key = 10000 + Math.floor Math.random()*89999
-	window.key = window.key.toString()
-	$('.key').html window.key
-	$('#keyInAbout').removeClass 'hidden'
-
 	window.tabletController = new window.TabletController()
 
 showAbout = () ->

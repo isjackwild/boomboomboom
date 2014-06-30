@@ -44,9 +44,21 @@ function desktopClient(desktopClientDetails, key){
 io.sockets.on('connection', function(client) {
   console.log('a client connected');
 
+
   client.on('new-desktop-client', function(key) {
+    var keyExists = false;
     console.log("create room", key);
-    desktopClients.push(new desktopClient(client, key));
+    for (i=0; i<desktopClients.length; i++){
+      if (desktopClients[i].key == key){
+        keyExists = true;
+      }
+    }
+    if (keyExists == false){
+      desktopClients.push(new desktopClient(client, key));
+      client.emit('key-accepted')
+    } else {
+      client.emit('key-unaccepted')
+    }
   });
 
 

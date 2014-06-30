@@ -646,16 +646,31 @@
 
     function TabletController() {
       this.setAutoTimer = __bind(this.setAutoTimer, this);
+      this.mapSocketEvents = __bind(this.mapSocketEvents, this);
+      this.onKeyAccepted = __bind(this.onKeyAccepted, this);
+      this.generateKey = __bind(this.generateKey, this);
       console.log('setup tablet controller');
-      window.onkeydown = this.keydown;
       this._socket = io();
+      this.generateKey();
+    }
+
+    TabletController.prototype.generateKey = function() {
+      window.key = 10000 + Math.floor(Math.random() * 89999);
+      window.key = window.key.toString();
       this._socket.emit('new-desktop-client', window.key);
+      this._socket.on('key-accepted', this.onKeyAccepted);
+      return this._socket.on('key-unaccepted', this.generateKey);
+    };
+
+    TabletController.prototype.onKeyAccepted = function() {
+      $('.key').html(window.key);
+      $('#keyInAbout').removeClass('hidden');
       this._socket.on('button-push', (function(_this) {
         return function(button) {
           return _this.mapSocketEvents(button);
         };
       })(this));
-      this._socket.on('key-entered', (function(_this) {
+      return this._socket.on('key-entered', (function(_this) {
         return function(key) {
           if (key === window.key) {
             $('#ipadInstructions').addClass('downAndOut');
@@ -667,7 +682,7 @@
           }
         };
       })(this));
-    }
+    };
 
     TabletController.prototype.mapSocketEvents = function(button) {
       this.setAutoTimer();
@@ -1788,10 +1803,6 @@
     setTimeout(function() {
       return $('#ipadInstructions').removeClass('upAndAway');
     }, 666);
-    window.key = 10000 + Math.floor(Math.random() * 89999);
-    window.key = window.key.toString();
-    $('.key').html(window.key);
-    $('#keyInAbout').removeClass('hidden');
     return window.tabletController = new window.TabletController();
   };
 

@@ -4,18 +4,28 @@ class window.TabletController
 
 	constructor: ->
 		console.log 'setup tablet controller'
-		window.onkeydown = @keydown
-
 		@_socket = io()
 
+		@generateKey()
+
+	generateKey: =>
+		window.key = 10000 + Math.floor Math.random()*89999
+		window.key = window.key.toString()
+
 		@_socket.emit 'new-desktop-client', window.key
+
+		@_socket.on 'key-accepted', @onKeyAccepted
+		@_socket.on 'key-unaccepted', @generateKey
+
+	onKeyAccepted: =>
+		$('.key').html window.key
+		$('#keyInAbout').removeClass 'hidden'
 
 		@_socket.on 'button-push', (button) =>
 			@mapSocketEvents button
 
-
+		#move this into the sever side... only send key if correct, send error to mobie if incorrect
 		@_socket.on 'key-entered', (key) =>
-			# console.log 'key-entered', which
 			if key is window.key
 				$('#ipadInstructions').addClass 'downAndOut'
 				setTimeout () ->
@@ -24,8 +34,7 @@ class window.TabletController
 			else
 				console.log 'incorrect key'
 
-
-	mapSocketEvents: (button) ->
+	mapSocketEvents: (button) =>
 		@setAutoTimer()
 		window.events.automatic.dispatch 'offf'
 		#need to have the auto timer thing here also. AND move this to a new file.
