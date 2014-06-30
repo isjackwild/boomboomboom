@@ -43,8 +43,17 @@
   };
 
   onIncorrectKey = function() {
-    alert('incorrect-key');
-    return $('#inputKey').val('');
+    $('#incorrectKey').removeClass('hidden');
+    setTimeout(function() {
+      $('#incorrectKey').removeClass('faded');
+      return $('#inputKey').val('');
+    }, 10);
+    return setTimeout(function() {
+      $('#incorrectKey').addClass('faded');
+      return setTimeout(function() {
+        return $('#incorrectKey').addClass('hidden');
+      }, 333);
+    }, 2200);
   };
 
   $('#inputForm').on('submit', (function(_this) {

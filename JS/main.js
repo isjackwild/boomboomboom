@@ -477,7 +477,7 @@
     KeyboardController.prototype.keydown = function(e) {
       if (e.keyCode >= 37 && e.keyCode <= 40 || e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90 || e.keyCode === 219 || e.keyCode === 221) {
         this.setAutoTimer();
-        window.events.automatic.dispatch('offfff');
+        window.events.automatic.dispatch('off');
       }
       if (e.metaKey === false) {
         e.preventDefault();
@@ -686,7 +686,7 @@
 
     TabletController.prototype.mapSocketEvents = function(button) {
       this.setAutoTimer();
-      window.events.automatic.dispatch('offf');
+      window.events.automatic.dispatch('off');
       switch (button) {
         case "a1":
           return window.events.frequency.dispatch(1);
@@ -988,12 +988,11 @@
 
     VisualsEngine.prototype.toggleAuto = function(onOff) {
       if (onOff === 'on') {
-        return this._automatic = true;
-      } else if (onOff === 'offfff') {
-        return this._automatic = false;
-      } else if (onOff === 'offf') {
-        return this._automatic = false;
+        this._automatic = true;
+      } else if (onOff === 'off') {
+        this._automatic = false;
       }
+      return console.log('toggle auto', onOff, this._automatic);
     };
 
     VisualsEngine.prototype.gotBPM = function(BPM) {
@@ -1008,9 +1007,9 @@
 
     VisualsEngine.prototype.onBPMDrop = function() {
       var photo;
-      if (this._automatic) {
+      if (this._automatic === true && Math.random() > 0.8) {
         photo = Math.ceil(Math.random() * 4);
-        switch (text) {
+        switch (photo) {
           case 1:
             return this.showPhoto('angela');
           case 2:
@@ -1030,6 +1029,9 @@
     };
 
     VisualsEngine.prototype.onChangeFrequencyVariation = function(currentVar) {
+      if (this._automatic === true && Math.random() > 0.75) {
+        this.addFilter('blur');
+      }
       if (currentVar === 'high') {
         this._negativeColours = true;
       } else if (currentVar === 'low') {
@@ -1049,6 +1051,7 @@
     };
 
     VisualsEngine.prototype.gotVolume = function(vol) {
+      console.log(vol);
       this._volume = vol;
       return this.updateColourBucket();
     };
@@ -1466,6 +1469,13 @@
         if (length === 'long') {
           offset = 75;
           hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
+          if (this._automatic === true && Math.random() > 0.8) {
+            if (Math.random() > 0.5) {
+              this.onTransform('squashX');
+            } else {
+              this.onTransform('squashY');
+            }
+          }
         } else if (length === 'short') {
           offset = 20;
           hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
@@ -1769,11 +1779,12 @@
       return $('.accept').removeClass('offLeft');
     }, 1500);
     clearInterval(window.box);
-    setTimeout(function() {
+    window.pester = setTimeout(function() {
       $('#keyboardOrIpad').addClass('hidden');
       window.events.makeSpecial.dispatch(3);
       return window.stripe = setInterval(function() {
-        return window.events.makeSpecial.dispatch(3);
+        window.events.makeSpecial.dispatch(3);
+        return console.log('???');
       }, 2000);
     }, 1500);
     return navigator.webkitGetUserMedia({
@@ -1782,12 +1793,13 @@
   };
 
   setupMic = function(stream) {
+    clearInterval(window.stripe);
+    clearTimeout(window.pester);
     $('.accept').addClass('offRight');
     setTimeout(function() {
       return $('.accept').addClass('hidden');
     }, 500);
     $('#about').removeClass('solidBackground');
-    clearInterval(window.stripe);
     setTimeout(function() {
       return $('#instructions').addClass('hidden');
     }, 500);

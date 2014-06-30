@@ -13,11 +13,12 @@ clickContinue = () ->
 
 	clearInterval window.box	
 
-	setTimeout () ->
+	window.pester = setTimeout () ->
 		$('#keyboardOrIpad').addClass 'hidden'
 		window.events.makeSpecial.dispatch 3
 		window.stripe = setInterval () ->
 			window.events.makeSpecial.dispatch 3
+			console.log '???'
 		,2000
 	,1500
 
@@ -27,12 +28,13 @@ clickContinue = () ->
 		,setupMic, onError
 
 setupMic = (stream) ->
+	clearInterval window.stripe
+	clearTimeout window.pester
 	$('.accept').addClass 'offRight'
 	setTimeout () ->
 		$('.accept').addClass 'hidden'
 	, 500
 	$('#about').removeClass 'solidBackground'
-	clearInterval window.stripe
 	setTimeout () ->
 		$('#instructions').addClass 'hidden'
 	, 500

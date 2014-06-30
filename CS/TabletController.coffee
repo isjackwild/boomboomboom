@@ -36,7 +36,7 @@ class window.TabletController
 
 	mapSocketEvents: (button) =>
 		@setAutoTimer()
-		window.events.automatic.dispatch 'offf'
+		window.events.automatic.dispatch 'off'
 		#need to have the auto timer thing here also. AND move this to a new file.
 		switch button
 			when "a1" then window.events.frequency.dispatch 1

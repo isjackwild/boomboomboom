@@ -34,8 +34,17 @@ onCorrectKey = () ->
 
 
 onIncorrectKey = () ->
-	alert 'incorrect-key'
-	$('#inputKey').val ''
+	$('#incorrectKey').removeClass 'hidden'
+	setTimeout () ->
+		$('#incorrectKey').removeClass 'faded'
+		$('#inputKey').val ''
+	, 10
+	setTimeout () ->
+		$('#incorrectKey').addClass 'faded'
+		setTimeout () ->
+			$('#incorrectKey').addClass 'hidden'
+		,333
+	, 2200
 
 $('#inputForm').on 'submit', (e) =>
 	e.stopPropagation()

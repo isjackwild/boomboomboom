@@ -92,10 +92,10 @@ class window.VisualsEngine
 	toggleAuto: (onOff) =>
 		if onOff is 'on'
 			@_automatic = true
-		else if onOff is 'offfff'
+		else if onOff is 'off'
 			@_automatic = false
-		else if onOff is 'offf'
-			@_automatic = false
+
+		console.log 'toggle auto', onOff, @_automatic
 		
 
 	gotBPM: (BPM) =>
@@ -108,9 +108,9 @@ class window.VisualsEngine
 		@_bpmJumpTime = new Date().getTime()
 
 	onBPMDrop: () =>
-		if @_automatic
+		if @_automatic is true and Math.random() > 0.8
 			photo = Math.ceil Math.random()*4
-			switch text
+			switch photo
 				when 1 then @showPhoto 'angela'
 				when 2 then @showPhoto 'obama'
 				when 3 then @showPhoto 'queen'
@@ -124,6 +124,8 @@ class window.VisualsEngine
 
 
 	onChangeFrequencyVariation: (currentVar) =>
+		if @_automatic is true and Math.random() > 0.75
+			@addFilter 'blur'
 		if currentVar is 'high'
 			@_negativeColours = true
 		else if currentVar is 'low'
@@ -139,6 +141,7 @@ class window.VisualsEngine
 		@updateBackgroundColour()
 
 	gotVolume: (vol) =>
+		console.log vol
 		@_volume = vol
 		@updateColourBucket()
 
@@ -466,6 +469,11 @@ class window.VisualsEngine
 			if length is 'long'
 				offset = 75
 				hang = @convertToRange(@_bpm, [60,600], [200, 80])
+				if @_automatic is true and Math.random() > 0.8
+					if Math.random() > 0.5
+						@onTransform 'squashX'
+					else
+						@onTransform 'squashY'
 			else if length is 'short'
 				offset = 20
 				hang = @convertToRange(@_bpm, [60,600], [200, 80])
@@ -479,6 +487,8 @@ class window.VisualsEngine
 				@_twoElem.style.background = "rgb("+@_bgColCurrent.r+","+@_bgColCurrent.g+","+@_bgColCurrent.b+")"
 				@_pauseBgLerp = false
 			, hang
+
+
 
 	onBass: (bigOrSmall = 'small') =>
 		if @_middleGround.isScaling is false

@@ -17,7 +17,7 @@ class window.KeyboardController
 		#do this only if any of the function keys are pressed
 		if e.keyCode >= 37 and e.keyCode <=40 or e.keyCode >= 48 and e.keyCode <= 57 or e.keyCode >= 65 and e.keyCode <= 90 or e.keyCode is 219 or e.keyCode is 221
 			@setAutoTimer()
-			window.events.automatic.dispatch 'offfff'
+			window.events.automatic.dispatch 'off'
 
 		if e.metaKey is false
 			e.preventDefault()

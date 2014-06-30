@@ -19,13 +19,16 @@ html.press {
   -webkit-touch-callout: none;
 }
 -webkit-user-select none,
+-webkit-font-smoothing antialiased,
 h1 {
   font-family: 'Lato', Helvetica, sans-serif;
   font-size: 5.4vw;
   color: #fff;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.01em;
   margin-bottom: 5vh;
+  padding-left: 5%;
+  padding-right: 5%;
 }
 #introWrapper {
   background: #f7bb07;
@@ -40,8 +43,8 @@ h1 {
 }
 #introWrapper #inputKey {
   font-family: 'Lato', Helvetica, sans-serif;
-  font-size: 7vw;
-  font-weight: 700;
+  font-size: 12vw;
+  font-weight: 900;
   text-align: center;
   border-radius: 0;
   border: 20px solid #000;
@@ -52,14 +55,22 @@ h1 {
   box-shadow: none;
 }
 #introWrapper #submitKey {
-  font-family: 'Lato', Helvetica, sans-serif;
   background: none;
   border: none;
-  font-size: 4vw;
-  font-weight: 900;
   width: 15vw;
   height: 15vw;
   background-image: url("/Assets/tick.svg");
+}
+#incorrectKey {
+  background: #f00;
+  z-index: 6 !important;
+  -webkit-transition: opacity 0.33s;
+}
+#incorrectKey.hidden {
+  display: none;
+}
+#incorrectKey.faded {
+  opacity: 0;
 }
 #rotateDevice {
   background: #f00;
