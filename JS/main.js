@@ -820,6 +820,8 @@
 
     VisualsEngine.prototype._frequency = 5;
 
+    VisualsEngine.prototype._currentFreqVar = 'low';
+
     VisualsEngine.prototype._bpm = 333;
 
     VisualsEngine.prototype._bpmJumpTime = new Date().getTime();
@@ -988,11 +990,10 @@
 
     VisualsEngine.prototype.toggleAuto = function(onOff) {
       if (onOff === 'on') {
-        this._automatic = true;
+        return this._automatic = true;
       } else if (onOff === 'off') {
-        this._automatic = false;
+        return this._automatic = false;
       }
-      return console.log('toggle auto', onOff, this._automatic);
     };
 
     VisualsEngine.prototype.gotBPM = function(BPM) {
@@ -1007,7 +1008,7 @@
 
     VisualsEngine.prototype.onBPMDrop = function() {
       var photo;
-      if (this._automatic === true && Math.random() > 0.8) {
+      if (this._automatic === true && Math.random() > 0.9) {
         photo = Math.ceil(Math.random() * 4);
         switch (photo) {
           case 1:
@@ -1029,6 +1030,7 @@
     };
 
     VisualsEngine.prototype.onChangeFrequencyVariation = function(currentVar) {
+      this._currentFreqVar = currentVar;
       if (this._automatic === true && Math.random() > 0.75) {
         this.addFilter('blur');
       }
@@ -1051,7 +1053,6 @@
     };
 
     VisualsEngine.prototype.gotVolume = function(vol) {
-      console.log(vol);
       this._volume = vol;
       return this.updateColourBucket();
     };
@@ -1128,7 +1129,7 @@
     };
 
     VisualsEngine.prototype.onPeak = function(type) {
-      var circle, col, duration, illu, peakTime, special, text, v, whichCol;
+      var circle, col, duration, illu, peakTime, v, whichCol;
       this._peakCount++;
       peakTime = new Date().getTime();
       if (type === 'hard') {
@@ -1146,7 +1147,7 @@
         circle.fadeOutSpeed = this.convertToRange(this._bpm, [60, 500], [0.1, 0.25]);
       }
       if (this._automatic === true) {
-        if (Math.random() > 0.9) {
+        if (this._shapes.length < 3 && Math.random() > 0.92) {
           illu = Math.ceil(Math.random() * 5);
           switch (illu) {
             case 1:
@@ -1165,36 +1166,28 @@
               this.showIllustration('ear');
           }
         }
-        if (Math.random() > 0.995) {
-          text = Math.ceil(Math.random() * 4);
-          switch (text) {
-            case 4:
-              this.showText('boom');
-              break;
-            case 4:
-              this.showText('tssk');
-              break;
-            case 4:
-              this.showText('wobb');
-              break;
-            case 4:
-              this.showText('clap');
-          }
-        }
         if (type === 'hard' || type === 'soft') {
           if (Math.random() > 0.94) {
-            special = Math.ceil(Math.random() * 3);
-            switch (special) {
-              case 1:
-                this.makeSpecial(9);
-                break;
-              case 2:
-                this.makeSpecial(0);
-                break;
-              case 3:
-                this.makeSpecial(11);
-            }
+            this.makeSpecial(11);
           }
+        }
+        if (type === 'lo' && Math.random() > 0.97 && this._shapes.length < 4) {
+          if (Math.random() > 0.5) {
+            this.showText('boom');
+          } else {
+            this.showText('wobb');
+          }
+        }
+        if (type === 'hi' && Math.random() > 0.97 && this._shapes.length < 4) {
+          if (Math.random() > 0.5) {
+            this.showText('tssk');
+          } else {
+            this.showText('clap');
+          }
+        }
+        if (type === 'hard' && this._peakCount % 4 === 0 && this._currentFreqVar === 'low') {
+          this.makeSpecial(9);
+          this.makeSpecial(0);
         }
       }
       if (this._negativeColours === false) {
@@ -1245,7 +1238,7 @@
       this._shapes.push(circle);
       duration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
       if (this._peakCount % 2 === 0 && peakTime - this._bpmJumpTime < duration && this._bpm > 150) {
-        return this.makeSpecial(Math.floor(Math.random() * 10));
+        return this.makeSpecial(Math.floor(Math.random() * 9));
       }
     };
 
@@ -1324,7 +1317,7 @@
         case 11:
           line = this._two.makeRectangle(this._two.width / 2, this._two.height / 2, this._two.width - 40, this._two.height - 40);
       }
-      animationSpeed = this.convertToRange(this._bpm, [60, 600], [0.05, 0.12]);
+      animationSpeed = this.convertToRange(this._bpm, [60, 600], [0.1, 0.17]);
       if (which >= 1 && which <= 4) {
         line.type = 'stripeX';
         line.beginning = 0;
@@ -1469,7 +1462,7 @@
         if (length === 'long') {
           offset = 75;
           hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
-          if (this._automatic === true && Math.random() > 0.8) {
+          if (this._automatic === true && Math.random() > 0.9) {
             if (Math.random() > 0.5) {
               this.onTransform('squashX');
             } else {

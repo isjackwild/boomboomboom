@@ -16,6 +16,7 @@ class window.VisualsEngine
 
 	_volume: 20
 	_frequency: 5
+	_currentFreqVar: 'low'
 	_bpm: 333
 	_bpmJumpTime: new Date().getTime()
 
@@ -95,7 +96,6 @@ class window.VisualsEngine
 		else if onOff is 'off'
 			@_automatic = false
 
-		console.log 'toggle auto', onOff, @_automatic
 		
 
 	gotBPM: (BPM) =>
@@ -108,7 +108,7 @@ class window.VisualsEngine
 		@_bpmJumpTime = new Date().getTime()
 
 	onBPMDrop: () =>
-		if @_automatic is true and Math.random() > 0.8
+		if @_automatic is true and Math.random() > 0.9
 			photo = Math.ceil Math.random()*4
 			switch photo
 				when 1 then @showPhoto 'angela'
@@ -124,6 +124,7 @@ class window.VisualsEngine
 
 
 	onChangeFrequencyVariation: (currentVar) =>
+		@_currentFreqVar = currentVar
 		if @_automatic is true and Math.random() > 0.75
 			@addFilter 'blur'
 		if currentVar is 'high'
@@ -141,7 +142,6 @@ class window.VisualsEngine
 		@updateBackgroundColour()
 
 	gotVolume: (vol) =>
-		console.log vol
 		@_volume = vol
 		@updateColourBucket()
 
@@ -215,7 +215,7 @@ class window.VisualsEngine
 
 
 		if @_automatic is true
-			if Math.random() > 0.9
+			if @_shapes.length < 3 and Math.random() > 0.92
 				illu = Math.ceil Math.random()*5
 				switch illu
 					when 1 then @showIllustration 'heart'
@@ -223,21 +223,26 @@ class window.VisualsEngine
 					when 3 then @showIllustration 'mouth'
 					when 4 then @showIllustration 'eye'
 					when 5 then @showIllustration 'ear'
-			if Math.random() > 0.995
-				text = Math.ceil Math.random()*4
-				switch text
-					when 4 then @showText 'boom'
-					when 4 then @showText 'tssk'
-					when 4 then @showText 'wobb'
-					when 4 then @showText 'clap'
 
 			if type is 'hard' or type is 'soft'
 				if Math.random() > 0.94
-					special = Math.ceil Math.random()*3
-					switch special
-						when 1 then @makeSpecial 9
-						when 2 then @makeSpecial 0
-						when 3 then @makeSpecial 11
+					@makeSpecial 11
+			
+			if type is 'lo' and Math.random() > 0.97 and @_shapes.length < 4
+				if Math.random() > 0.5
+					@showText 'boom'
+				else
+					@showText 'wobb'
+
+			if type is 'hi' and Math.random() > 0.97 and @_shapes.length < 4
+				if Math.random() > 0.5
+					@showText 'tssk'
+				else
+					@showText 'clap' 
+
+			if type is 'hard' and @_peakCount % 4 is 0 and @_currentFreqVar is 'low'
+				@makeSpecial 9
+				@makeSpecial 0
 
 
 		if @_negativeColours is false
@@ -273,7 +278,7 @@ class window.VisualsEngine
 		#make shapes if there's been a BPM jump recently. the duration should be set in bpm jump method
 		duration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
 		if @_peakCount % 2 is 0 and peakTime - @_bpmJumpTime < duration and @_bpm > 150
-			@makeSpecial Math.floor Math.random()*10
+			@makeSpecial Math.floor Math.random()*9
 
 
 	#move the shape creation from in onPeak into here
@@ -339,7 +344,7 @@ class window.VisualsEngine
 			when 11
 				line = @_two.makeRectangle @_two.width/2,  @_two.height/2, @_two.width-40, @_two.height-40
 
-		animationSpeed = @convertToRange(@_bpm, [60,600], [0.05, 0.12])
+		animationSpeed = @convertToRange(@_bpm, [60,600], [0.1, 0.17])
 		if which >= 1 and which <= 4
 			line.type = 'stripeX'
 			line.beginning = 0
@@ -469,7 +474,7 @@ class window.VisualsEngine
 			if length is 'long'
 				offset = 75
 				hang = @convertToRange(@_bpm, [60,600], [200, 80])
-				if @_automatic is true and Math.random() > 0.8
+				if @_automatic is true and Math.random() > 0.9
 					if Math.random() > 0.5
 						@onTransform 'squashX'
 					else
