@@ -505,6 +505,7 @@ class window.VisualsEngine
 				@_middleGround.targetScale = 1.05
 
 	squishy: =>
+		@squashShape()
 		@_squishy = true
 		clearTimeout @_squishyTimer
 		@_squishyTimer = setTimeout () =>

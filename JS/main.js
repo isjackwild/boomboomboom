@@ -1527,6 +1527,7 @@
     };
 
     VisualsEngine.prototype.squishy = function() {
+      this.squashShape();
       this._squishy = true;
       clearTimeout(this._squishyTimer);
       return this._squishyTimer = setTimeout((function(_this) {
