@@ -195,6 +195,9 @@ class window.VisualsEngine
 		@_peakCount++
 		peakTime = new Date().getTime()
 
+		if @_squishy is true
+			@squashShape()
+
 		if type is 'hard'
 			@updateBackgroundColour()
 			circle = @_two.makeCircle @_two.width/2, @_two.height/2, @_two.height*0.43
@@ -208,34 +211,6 @@ class window.VisualsEngine
 			circle = @_two.makeCircle @_two.width, @_two.height, @_two.height*0.75
 			circle.fadeOut = true
 			circle.fadeOutSpeed = @convertToRange(@_bpm, [60,500], [0.1, 0.25])
-
-		if @_automatic is true
-			if @_shapes.length < 3 and Math.random() > 0.88
-				illu = Math.ceil Math.random()*5
-				switch illu
-					when 1 then @showIllustration 'heart'
-					when 2 then @showIllustration 'hand'
-					when 3 then @showIllustration 'mouth'
-					when 4 then @showIllustration 'eye'
-					when 5 then @showIllustration 'ear'
-
-			if type is 'hard' or type is 'soft'
-				if Math.random() > 0.94
-					@makeSpecial 11
-			
-			if type is 'lo' and Math.random() > 0.95 and @_shapes.length < 4
-				@onBass 'big'
-				if Math.random() > 0.5
-					@showText 'boom'
-				else
-					@showText 'wobb'
-
-			if type is 'hi' and Math.random() > 0.95 and @_shapes.length < 4
-				@onBass()
-				if Math.random() > 0.5
-					@showText 'tssk'
-				else
-					@showText 'clap' 
 
 		if @_negativeColours is false
 			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
@@ -267,8 +242,35 @@ class window.VisualsEngine
 		circle.type = 'blob'
 		@_shapes.push circle
 		
+
 		#make shapes if there's been a BPM jump recently. the duration should be set in bpm jump method
 		if @_automatic is true
+			if @_shapes.length < 3 and Math.random() > 0.88
+				illu = Math.ceil Math.random()*5
+				switch illu
+					when 1 then @showIllustration 'heart'
+					when 2 then @showIllustration 'hand'
+					when 3 then @showIllustration 'mouth'
+					when 4 then @showIllustration 'eye'
+					when 5 then @showIllustration 'ear'
+
+			if type is 'hard' or type is 'soft'
+				if Math.random() > 0.94
+					@makeSpecial 11
+			
+			if type is 'lo' and Math.random() > 0.95 and @_shapes.length < 4
+				@onBass 'big'
+				if Math.random() > 0.5
+					@showText 'boom'
+				else
+					@showText 'wobb'
+
+			if type is 'hi' and Math.random() > 0.95 and @_shapes.length < 4
+				@onBass()
+				if Math.random() > 0.5
+					@showText 'tssk'
+				else
+					@showText 'clap' 
 			duration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
 			if peakTime - @_bpmJumpTime < duration and @_bpm > 280
 				if @_peakCount % 2 is 0
@@ -276,8 +278,10 @@ class window.VisualsEngine
 			else if type is 'hard' and @_peakCount % 4 is 0 and @_currentFreqVar is 'low' and @_bpm < 450
 					@makeSpecial 9
 					@makeSpecial 0
-			if (@_currentFreqVar is 'low' and peakTime - @_bpmDropTime < 7000) or @_squishy is true
+			if @_currentFreqVar is 'low' and peakTime - @_bpmDropTime < 7000
 				@squashShape()
+
+
 
 	makeShape: (which) =>
 		if which is 'intro'
@@ -514,8 +518,8 @@ class window.VisualsEngine
 				shape.squashSpeed = @convertToRange(@_bpm, [60,600], [100, 25]) + (Math.random()*20) - 10
 				for v in shape._vertices
 					copy = {}
-					copy.x = v.x + Math.random()*@_two.width/8 - 50
-					copy.y = v.y + Math.random()*@_two.width/8 - 50
+					copy.x = v.x + Math.random()*@_two.width/8 - @_two.width/16
+					copy.y = v.y + Math.random()*@_two.width/8 - @_two.width/16
 					shape.squashDestination.push copy
 
 	onTwoUpdate: () =>

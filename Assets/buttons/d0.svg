@@ -11,7 +11,7 @@
 	<clipPath id="SVGID_2_">
 		<use xlink:href="#SVGID_1_"  overflow="visible"/>
 	</clipPath>
-	<rect x="49.5" y="-10.8" opacity="0.3" clip-path="url(#SVGID_2_)" fill="#FFFFFF" width="62" height="117.5"/>
+	<rect x="49.5" y="-10.8" opacity="0.7" clip-path="url(#SVGID_2_)" fill="#FFFFFF" width="62" height="117.5"/>
 </g>
 <line fill="none" stroke="#020202" stroke-width="3" stroke-miterlimit="10" x1="230.2" y1="23" x2="230.2" y2="23"/>
 </svg>

@@ -36,6 +36,7 @@ class window.TabletController
 	mapSocketEvents: (button) =>
 		@setAutoTimer()
 		window.events.automatic.dispatch 'off'
+		console.log button
 		switch button
 			when "a1" then window.events.frequency.dispatch 1
 			when "a2" then window.events.frequency.dispatch 2
@@ -79,8 +80,9 @@ class window.TabletController
 			when "d5" then window.events.bass.dispatch 'big'
 			when "d6" then window.events.bass.dispatch 'small'
 			when "d7" then window.events.filter.dispatch 'blur'
-			when "d8" then window.events.break.dispatch 'short'
-			when "d9" then window.events.break.dispatch 'long'
+			when "d8" then window.events.squishy.dispatch()
+			when "d9" then window.events.break.dispatch 'short'
+			when "d0" then window.events.break.dispatch 'long'
 
 
 	setAutoTimer: () =>

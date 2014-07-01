@@ -672,6 +672,7 @@
     TabletController.prototype.mapSocketEvents = function(button) {
       this.setAutoTimer();
       window.events.automatic.dispatch('off');
+      console.log(button);
       switch (button) {
         case "a1":
           return window.events.frequency.dispatch(1);
@@ -752,8 +753,10 @@
         case "d7":
           return window.events.filter.dispatch('blur');
         case "d8":
-          return window.events["break"].dispatch('short');
+          return window.events.squishy.dispatch();
         case "d9":
+          return window.events["break"].dispatch('short');
+        case "d0":
           return window.events["break"].dispatch('long');
       }
     };
@@ -1125,6 +1128,9 @@
       var circle, col, duration, illu, peakTime, v, whichCol;
       this._peakCount++;
       peakTime = new Date().getTime();
+      if (this._squishy === true) {
+        this.squashShape();
+      }
       if (type === 'hard') {
         this.updateBackgroundColour();
         circle = this._two.makeCircle(this._two.width / 2, this._two.height / 2, this._two.height * 0.43);
@@ -1138,48 +1144,6 @@
         circle = this._two.makeCircle(this._two.width, this._two.height, this._two.height * 0.75);
         circle.fadeOut = true;
         circle.fadeOutSpeed = this.convertToRange(this._bpm, [60, 500], [0.1, 0.25]);
-      }
-      if (this._automatic === true) {
-        if (this._shapes.length < 3 && Math.random() > 0.88) {
-          illu = Math.ceil(Math.random() * 5);
-          switch (illu) {
-            case 1:
-              this.showIllustration('heart');
-              break;
-            case 2:
-              this.showIllustration('hand');
-              break;
-            case 3:
-              this.showIllustration('mouth');
-              break;
-            case 4:
-              this.showIllustration('eye');
-              break;
-            case 5:
-              this.showIllustration('ear');
-          }
-        }
-        if (type === 'hard' || type === 'soft') {
-          if (Math.random() > 0.94) {
-            this.makeSpecial(11);
-          }
-        }
-        if (type === 'lo' && Math.random() > 0.95 && this._shapes.length < 4) {
-          this.onBass('big');
-          if (Math.random() > 0.5) {
-            this.showText('boom');
-          } else {
-            this.showText('wobb');
-          }
-        }
-        if (type === 'hi' && Math.random() > 0.95 && this._shapes.length < 4) {
-          this.onBass();
-          if (Math.random() > 0.5) {
-            this.showText('tssk');
-          } else {
-            this.showText('clap');
-          }
-        }
       }
       if (this._negativeColours === false) {
         whichCol = Math.ceil(Math.random() * (this._colourBucket.fg.length - 1));
@@ -1229,6 +1193,46 @@
       circle.type = 'blob';
       this._shapes.push(circle);
       if (this._automatic === true) {
+        if (this._shapes.length < 3 && Math.random() > 0.88) {
+          illu = Math.ceil(Math.random() * 5);
+          switch (illu) {
+            case 1:
+              this.showIllustration('heart');
+              break;
+            case 2:
+              this.showIllustration('hand');
+              break;
+            case 3:
+              this.showIllustration('mouth');
+              break;
+            case 4:
+              this.showIllustration('eye');
+              break;
+            case 5:
+              this.showIllustration('ear');
+          }
+        }
+        if (type === 'hard' || type === 'soft') {
+          if (Math.random() > 0.94) {
+            this.makeSpecial(11);
+          }
+        }
+        if (type === 'lo' && Math.random() > 0.95 && this._shapes.length < 4) {
+          this.onBass('big');
+          if (Math.random() > 0.5) {
+            this.showText('boom');
+          } else {
+            this.showText('wobb');
+          }
+        }
+        if (type === 'hi' && Math.random() > 0.95 && this._shapes.length < 4) {
+          this.onBass();
+          if (Math.random() > 0.5) {
+            this.showText('tssk');
+          } else {
+            this.showText('clap');
+          }
+        }
         duration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
         if (peakTime - this._bpmJumpTime < duration && this._bpm > 280) {
           if (this._peakCount % 2 === 0) {
@@ -1238,7 +1242,7 @@
           this.makeSpecial(9);
           this.makeSpecial(0);
         }
-        if ((this._currentFreqVar === 'low' && peakTime - this._bpmDropTime < 7000) || this._squishy === true) {
+        if (this._currentFreqVar === 'low' && peakTime - this._bpmDropTime < 7000) {
           return this.squashShape();
         }
       }
@@ -1548,8 +1552,8 @@
             for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
               v = _ref1[_j];
               copy = {};
-              copy.x = v.x + Math.random() * this._two.width / 8 - 50;
-              copy.y = v.y + Math.random() * this._two.width / 8 - 50;
+              copy.x = v.x + Math.random() * this._two.width / 8 - this._two.width / 16;
+              copy.y = v.y + Math.random() * this._two.width / 8 - this._two.width / 16;
               _results1.push(shape.squashDestination.push(copy));
             }
             return _results1;
