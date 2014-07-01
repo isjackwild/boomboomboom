@@ -133,25 +133,28 @@ p.hidden {
 #share {
   position: absolute;
   height: 30px;
-  width: 120px;
+  width: 150px;
   top: 68px;
   left: 18px;
   z-index: 13;
   cursor: pointer;
 }
 #share #facebook,
-#share #twitter {
+#share #twitter,
+#share #github {
   -webkit-transition: -webkit-transform 0.25s, opacity 0.2s;
   -webkit-transition-timing-function: easeOutQuad;
   opacity: 0;
   z-index: 14;
 }
 #share #facebook img,
-#share #twitter img {
+#share #twitter img,
+#share #github img {
   -webkit-transform: scale(0.95);
 }
 #share #facebook:hover img,
-#share #twitter:hover img {
+#share #twitter:hover img,
+#share #github:hover img {
   -webkit-transform: scale(1.07);
 }
 #share img {
@@ -168,12 +171,19 @@ p.hidden {
 }
 #share #twitter {
   position: absolute;
-  left: 80px;
+  left: 81px;
   -webkit-transform: translateX(-80px);
   -webkit-transition-delay: 0.15s;
 }
+#share #github {
+  position: absolute;
+  left: 120px;
+  -webkit-transform: translateX(-120px);
+  -webkit-transition-delay: 0.3s;
+}
 #share:hover #twitter,
-#share:hover #facebook {
+#share:hover #facebook,
+#share:hover #github {
   -webkit-transform: translateX(0);
   opacity: 1;
 }
@@ -434,6 +444,9 @@ p.hidden {
   width: 100%;
   float: left;
   font-family: 'Oswald', Helvetica, sans-serif;
+  -webkit-text-stroke-width: 5px;
+  -webkit-text-stroke-color: #000;
+  -webkit-text-fill-color: rgba(0,0,0,0);
   font-weight: bold;
   text-transform: uppercase;
   font-size: 66vh;
