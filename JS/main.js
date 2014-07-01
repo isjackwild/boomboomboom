@@ -1233,16 +1233,16 @@
             this.showText('clap');
           }
         }
-        duration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
+        duration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2000, 3200]));
         if (peakTime - this._bpmJumpTime < duration && this._bpm > 280) {
-          if (this._peakCount % 2 === 0) {
+          if (this._peakCount % 3 === 0) {
             this.makeSpecial(Math.floor(Math.random() * 9));
           }
         } else if (type === 'hard' && this._peakCount % 4 === 0 && this._currentFreqVar === 'low' && this._bpm < 450) {
           this.makeSpecial(9);
           this.makeSpecial(0);
         }
-        if (this._currentFreqVar === 'low' && peakTime - this._bpmDropTime < 7000) {
+        if (this._currentFreqVar === 'low' && peakTime - this._bpmDropTime < 3500 && this._bpm < 480) {
           return this.squashShape();
         }
       }
@@ -1544,7 +1544,7 @@
         shape = _ref[_i];
         if (shape.type === 'blob') {
           shape.squashDestination = [];
-          shape.squashSpeed = this.convertToRange(this._bpm, [60, 600], [100, 25]) + (Math.random() * 20) - 10;
+          shape.squashSpeed = this.convertToRange(this._bpm, [60, 600], [100, 22]) + (Math.random() * 20) - 10;
           _results.push((function() {
             var _j, _len1, _ref1, _results1;
             _ref1 = shape._vertices;

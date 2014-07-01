@@ -271,14 +271,14 @@ class window.VisualsEngine
 					@showText 'tssk'
 				else
 					@showText 'clap' 
-			duration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
+			duration = Math.floor @convertToRange(@_bpm, [100,600], [2000, 3200])
 			if peakTime - @_bpmJumpTime < duration and @_bpm > 280
-				if @_peakCount % 2 is 0
+				if @_peakCount % 3 is 0
 					@makeSpecial Math.floor Math.random()*9
 			else if type is 'hard' and @_peakCount % 4 is 0 and @_currentFreqVar is 'low' and @_bpm < 450
 					@makeSpecial 9
 					@makeSpecial 0
-			if @_currentFreqVar is 'low' and peakTime - @_bpmDropTime < 7000
+			if @_currentFreqVar is 'low' and peakTime - @_bpmDropTime < 3500 and @_bpm < 480
 				@squashShape()
 
 
@@ -515,7 +515,7 @@ class window.VisualsEngine
 		for shape in @_shapes
 			if shape.type is 'blob'
 				shape.squashDestination = []
-				shape.squashSpeed = @convertToRange(@_bpm, [60,600], [100, 25]) + (Math.random()*20) - 10
+				shape.squashSpeed = @convertToRange(@_bpm, [60,600], [100, 22]) + (Math.random()*20) - 10
 				for v in shape._vertices
 					copy = {}
 					copy.x = v.x + Math.random()*@_two.width/8 - @_two.width/16
