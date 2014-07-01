@@ -276,7 +276,6 @@ p
 	z-index 12
 	-webkit-transition -webkit-transform 0.5s
 	-webkit-transition-timing-function easeOutQuad
-	-webkit-animation acceptFlash 2s infinite
 	-webkit-animation-delay 2.5s
 	&.offRight
 		-webkit-transform translateX(52vw)
@@ -284,8 +283,9 @@ p
 		display none
 	&.offLeft
 		-webkit-transform translateX(-102vw)
-	h1
-		font-size 2.5vw
+	&.flash
+		-webkit-animation acceptFlash 2s infinite
+		
 
 #makeFullScreen
 	position absolute

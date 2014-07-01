@@ -1875,6 +1875,9 @@
     setTimeout(function() {
       return $('.accept').removeClass('offLeft');
     }, 1500);
+    setTimeout(function() {
+      return $('.accept').addClass('flash');
+    }, 6500);
     clearInterval(window.box);
     window.pester = setTimeout(function() {
       $('#keyboardOrIpad').addClass('hidden');

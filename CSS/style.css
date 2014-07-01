@@ -352,7 +352,6 @@ p.hidden {
   z-index: 12;
   -webkit-transition: -webkit-transform 0.5s;
   -webkit-transition-timing-function: easeOutQuad;
-  -webkit-animation: acceptFlash 2s infinite;
   -webkit-animation-delay: 2.5s;
 }
 .accept.offRight {
@@ -364,8 +363,8 @@ p.hidden {
 .accept.offLeft {
   -webkit-transform: translateX(-102vw);
 }
-.accept h1 {
-  font-size: 2.5vw;
+.accept.flash {
+  -webkit-animation: acceptFlash 2s infinite;
 }
 #makeFullScreen {
   position: absolute;

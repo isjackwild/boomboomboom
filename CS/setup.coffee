@@ -16,6 +16,9 @@ clickContinue = () ->
 	setTimeout () ->
 		$('.accept').removeClass 'offLeft'
 	, 1500
+	setTimeout () ->
+		$('.accept').addClass 'flash'
+	, 6500
 
 
 	clearInterval window.box	
