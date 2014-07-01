@@ -236,7 +236,7 @@ class window.VisualsEngine
 		col = "rgb("+col.r+","+col.g+","+col.b+")"
 		@_middleGround.add circle
 		circle.fill = col
-		circle.lifeSpan = Math.floor @convertToRange(@_bpm, [60,600], [1000, 400])
+		circle.lifeSpan = Math.floor @convertToRange(@_bpm, [60,600], [1300, 500])
 		circle.creationTime = new Date().getTime()
 		circle.noStroke()
 		circle.type = 'blob'
@@ -245,7 +245,7 @@ class window.VisualsEngine
 
 		#make shapes if there's been a BPM jump recently. the duration should be set in bpm jump method
 		if @_automatic is true
-			if @_shapes.length < 3 and Math.random() > 0.88
+			if @_shapes.length < 4 and Math.random() > 0.84
 				illu = Math.ceil Math.random()*5
 				switch illu
 					when 1 then @showIllustration 'heart'
@@ -278,7 +278,7 @@ class window.VisualsEngine
 			else if type is 'hard' and @_peakCount % 4 is 0 and @_currentFreqVar is 'low' and @_bpm < 450
 					@makeSpecial 9
 					@makeSpecial 0
-			if @_currentFreqVar is 'low' and peakTime - @_bpmDropTime < 3500 and @_bpm < 480
+			if @_currentFreqVar is 'low' and peakTime - @_bpmDropTime < 3500 and @_negativeColours is false
 				@squashShape()
 
 
@@ -519,8 +519,8 @@ class window.VisualsEngine
 				shape.squashSpeed = @convertToRange(@_bpm, [60,600], [100, 22]) + (Math.random()*20) - 10
 				for v in shape._vertices
 					copy = {}
-					copy.x = v.x + Math.random()*@_two.width/8 - @_two.width/16
-					copy.y = v.y + Math.random()*@_two.width/8 - @_two.width/16
+					copy.x = v.x + Math.random()*@_two.width/6 - @_two.width/12
+					copy.y = v.y + Math.random()*@_two.width/6 - @_two.width/12
 					shape.squashDestination.push copy
 
 	onTwoUpdate: () =>

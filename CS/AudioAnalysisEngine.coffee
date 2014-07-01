@@ -188,7 +188,7 @@ class window.AudioAnalysisEngine
 	calculateAveragePeakFrequency: =>
 		@_averageFreqCalcArray.push @_frequencyOfPeak.freq #get ten peaks
 		if @_averageFreqCalcArray.length is 10
-			tempAvFreq = 0
+			bAvFreq = 0
 			for i in [0...@_averageFreqCalcArray.length]
 				tempAvFreq += @_averageFreqCalcArray[i]
 				if i is @_averageFreqCalcArray.length-1
@@ -262,7 +262,6 @@ class window.AudioAnalysisEngine
 				window.events.BPMDrop.dispatch @_approxBPM
 				@eventLogger 'BPMDrop'
 			@_lastBPM = @_approxBPM
-
 
 
 	#Do logic which detects when there has been a significant change in the averages over the last few averages

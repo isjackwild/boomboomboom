@@ -476,6 +476,9 @@ p.hidden {
   display: inline;
   opacity: 1;
 }
+#illus img#heart {
+  -webkit-transform: translateY(2%);
+}
 #photo {
   width: 100%;
   height: 100%;

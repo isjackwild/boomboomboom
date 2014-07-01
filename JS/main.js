@@ -240,10 +240,10 @@
     };
 
     AudioAnalysisEngine.prototype.calculateAveragePeakFrequency = function() {
-      var i, tempAvFreq, _i, _ref, _results;
+      var bAvFreq, i, _i, _ref, _results;
       this._averageFreqCalcArray.push(this._frequencyOfPeak.freq);
       if (this._averageFreqCalcArray.length === 10) {
-        tempAvFreq = 0;
+        bAvFreq = 0;
         _results = [];
         for (i = _i = 0, _ref = this._averageFreqCalcArray.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
           tempAvFreq += this._averageFreqCalcArray[i];
@@ -461,7 +461,7 @@
     }
 
     KeyboardController.prototype.keydown = function(e) {
-      if (e.keyCode >= 37 && e.keyCode <= 40 || e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90 || e.keyCode === 219 || e.keyCode === 221) {
+      if (e.keyCode >= 37 && e.keyCode <= 40 || e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90 || e.keyCode === 219 || e.keyCode === 221 || e.keyCode === 32) {
         this.setAutoTimer();
         window.events.automatic.dispatch('off');
       }
@@ -1187,13 +1187,13 @@
       col = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
       this._middleGround.add(circle);
       circle.fill = col;
-      circle.lifeSpan = Math.floor(this.convertToRange(this._bpm, [60, 600], [1000, 400]));
+      circle.lifeSpan = Math.floor(this.convertToRange(this._bpm, [60, 600], [1300, 500]));
       circle.creationTime = new Date().getTime();
       circle.noStroke();
       circle.type = 'blob';
       this._shapes.push(circle);
       if (this._automatic === true) {
-        if (this._shapes.length < 3 && Math.random() > 0.88) {
+        if (this._shapes.length < 4 && Math.random() > 0.84) {
           illu = Math.ceil(Math.random() * 5);
           switch (illu) {
             case 1:
@@ -1242,7 +1242,7 @@
           this.makeSpecial(9);
           this.makeSpecial(0);
         }
-        if (this._currentFreqVar === 'low' && peakTime - this._bpmDropTime < 3500 && this._bpm < 480) {
+        if (this._currentFreqVar === 'low' && peakTime - this._bpmDropTime < 3500 && this._negativeColours === false) {
           return this.squashShape();
         }
       }
@@ -1553,8 +1553,8 @@
             for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
               v = _ref1[_j];
               copy = {};
-              copy.x = v.x + Math.random() * this._two.width / 8 - this._two.width / 16;
-              copy.y = v.y + Math.random() * this._two.width / 8 - this._two.width / 16;
+              copy.x = v.x + Math.random() * this._two.width / 6 - this._two.width / 12;
+              copy.y = v.y + Math.random() * this._two.width / 6 - this._two.width / 12;
               _results1.push(shape.squashDestination.push(copy));
             }
             return _results1;

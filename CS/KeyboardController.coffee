@@ -8,7 +8,7 @@ class window.KeyboardController
 		window.onkeydown = @keydown
 
 	keydown: (e) =>
-		if e.keyCode >= 37 and e.keyCode <=40 or e.keyCode >= 48 and e.keyCode <= 57 or e.keyCode >= 65 and e.keyCode <= 90 or e.keyCode is 219 or e.keyCode is 221
+		if e.keyCode >= 37 and e.keyCode <=40 or e.keyCode >= 48 and e.keyCode <= 57 or e.keyCode >= 65 and e.keyCode <= 90 or e.keyCode is 219 or e.keyCode is 221 or e.keyCode is 32
 			@setAutoTimer()
 			window.events.automatic.dispatch 'off'
 
