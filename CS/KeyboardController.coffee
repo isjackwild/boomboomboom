@@ -27,8 +27,7 @@ class window.KeyboardController
 				when 55 then window.events.frequency.dispatch 7
 				when 56 then window.events.frequency.dispatch 8
 				when 57 then window.events.frequency.dispatch 9
-				#set BPM by tapping spacebar
-				when 32 then @getBPM()
+
 				#bass with B
 				when 78 then window.events.bass.dispatch 'small'
 				when 66 then window.events.bass.dispatch 'big'
@@ -66,6 +65,7 @@ class window.KeyboardController
 				when 75 then window.events.showIllustration.dispatch 'eye'
 				when 76 then window.events.showIllustration.dispatch 'mouth'
 				#filters
+				when 32 then window.events.squishy.dispatch()
 				when 77 then window.events.filter.dispatch 'blur'
 				#flashes
 				when 188 then window.events.break.dispatch 'long'

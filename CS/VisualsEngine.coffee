@@ -15,6 +15,7 @@ class window.VisualsEngine
 	_currentFreqVar: 'low'
 	_bpm: 333
 	_bpmJumpTime: new Date().getTime()
+	_bpmDropTime: new Date().getTime()
 
 
 	_coloursSetup: false
@@ -32,8 +33,9 @@ class window.VisualsEngine
 	_bgColLerpSpeed: 0.005
 	_pauseBgLerp: false
 
-	_targetBlur = 0
-	_currentBlur = 0
+	_targetBlur: 0
+	_currentBlur: 0
+	_squishy: false
 
 	
 	constructor: ->
@@ -66,6 +68,7 @@ class window.VisualsEngine
 		window.events.filter.add @addFilter
 		window.events.changeFreqVar.add @onChangeFrequencyVariation
 		window.events.transform.add @onTransform
+		window.events.squishy.add @squishy
 		window.events.automatic.add @toggleAuto
 
 
@@ -102,6 +105,7 @@ class window.VisualsEngine
 		@_bpmJumpTime = new Date().getTime()
 
 	onBPMDrop: () =>
+		@_bpmDropTime = new Date().getTime()
 		if @_automatic is true and Math.random() > 0.82
 			photo = Math.ceil Math.random()*4
 			switch photo
@@ -155,7 +159,6 @@ class window.VisualsEngine
 				if @_colourBucket.fg[i].s < 25 then @_colourBucket.fg[i].s = 25
 				@_colourBucket.fg[i].v -= vOffset
 
-
 	updateBackgroundColour: =>
 		if @_negativeColours is false
 			col = Math.floor(@convertToRange(@_frequency, [1,9], [30, 190])+Math.random()*33)
@@ -188,7 +191,6 @@ class window.VisualsEngine
 			$('#twoMagic').removeClass type
 		,400
 	
-
 	onPeak: (type) =>
 		@_peakCount++
 		peakTime = new Date().getTime()
@@ -206,7 +208,6 @@ class window.VisualsEngine
 			circle = @_two.makeCircle @_two.width, @_two.height, @_two.height*0.75
 			circle.fadeOut = true
 			circle.fadeOutSpeed = @convertToRange(@_bpm, [60,500], [0.1, 0.25])
-
 
 		if @_automatic is true
 			if @_shapes.length < 3 and Math.random() > 0.88
@@ -236,8 +237,6 @@ class window.VisualsEngine
 				else
 					@showText 'clap' 
 
-
-
 		if @_negativeColours is false
 			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
 			col = @_colourBucket.fg[whichCol]
@@ -265,8 +264,9 @@ class window.VisualsEngine
 		circle.lifeSpan = Math.floor @convertToRange(@_bpm, [60,600], [1000, 400])
 		circle.creationTime = new Date().getTime()
 		circle.noStroke()
+		circle.type = 'blob'
 		@_shapes.push circle
-
+		
 		#make shapes if there's been a BPM jump recently. the duration should be set in bpm jump method
 		if @_automatic is true
 			duration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
@@ -276,7 +276,8 @@ class window.VisualsEngine
 			else if type is 'hard' and @_peakCount % 4 is 0 and @_currentFreqVar is 'low' and @_bpm < 450
 					@makeSpecial 9
 					@makeSpecial 0
-
+			if (@_currentFreqVar is 'low' and peakTime - @_bpmDropTime < 7000) or @_squishy is true
+				@squashShape()
 
 	makeShape: (which) =>
 		if which is 'intro'
@@ -293,7 +294,6 @@ class window.VisualsEngine
 			circle.fadeOutSpeed = 0.018
 			circle.creationTime = new Date().getTime()
 			@_shapes.push circle
-
 
 	makeSpecial: (which) =>
 		switch which
@@ -369,7 +369,6 @@ class window.VisualsEngine
 			@_foreGround.add line
 			@_shapes.push line
 	
-
 	showText: (which) =>
 		if @_textTimer
 			clearTimeout @_textTimer
@@ -401,7 +400,6 @@ class window.VisualsEngine
 		@_textTimer = setTimeout =>
 			$("#text .show").removeClass 'show'
 		, hang
-
 
 	showIllustration: (which) =>
 		if @_illustrationTimer
@@ -445,8 +443,6 @@ class window.VisualsEngine
 			$("#illus .show").removeClass 'show'
 		, hang
 
-
-
 	showPhoto: (which) =>
 		$('#photo').removeClass()
 
@@ -461,8 +457,6 @@ class window.VisualsEngine
 		@_angelaTimer2 = setTimeout =>
 			$('#photo').removeClass which
 		, 2500
-
-
 
 	onBreak: (length) =>
 		if @_pauseBgLerp is false
@@ -498,8 +492,6 @@ class window.VisualsEngine
 				@_pauseBgLerp = false
 			, hang
 
-
-
 	onBass: (bigOrSmall = 'small') =>
 		if @_middleGround.isScaling is false
 			@_middleGround.isScaling = true
@@ -508,6 +500,23 @@ class window.VisualsEngine
 			else
 				@_middleGround.targetScale = 1.05
 
+	squishy: =>
+		@_squishy = true
+		clearTimeout @_squishyTimer
+		@_squishyTimer = setTimeout () =>
+			@_squishy = false
+		, 2000
+
+	squashShape: =>
+		for shape in @_shapes
+			if shape.type is 'blob'
+				shape.squashDestination = []
+				shape.squashSpeed = @convertToRange(@_bpm, [60,600], [100, 25]) + (Math.random()*20) - 10
+				for v in shape._vertices
+					copy = {}
+					copy.x = v.x + Math.random()*@_two.width/8 - 50
+					copy.y = v.y + Math.random()*@_two.width/8 - 50
+					shape.squashDestination.push copy
 
 	onTwoUpdate: () =>
 		if @_bgColLerp < 1 and @_pauseBgLerp is false
@@ -525,13 +534,19 @@ class window.VisualsEngine
 			@_currentBlur = 0
 			$('#twoMagic svg').css "-webkit-filter", "initial"
 
+		for shape in @_shapes
+			if shape.squashDestination
+				for v, i in shape._vertices
+					if shape.squashDestination[i]
+						#work on this so it morphs
+						v.x += (shape.squashDestination[i].x - v.x)/shape.squashSpeed
+						v.y += (shape.squashDestination[i].y - v.y)/shape.squashSpeed
 
 	lerpBackground: () =>
 		@_bgColLerp  += @_bgColLerpSpeed
 		@_bgColCurrent = @lerpColour @_bgColFrom, @_bgColTo, @_bgColLerp
 		col = "rgb("+@_bgColCurrent.r+","+@_bgColCurrent.g+","+@_bgColCurrent.b+")"
 		@_twoElem.style.background = col
-
 
 	animateMiddleGroundFlux: () =>
 		if @_middleGround.targetScale > @_middleGround.scale

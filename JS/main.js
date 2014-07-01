@@ -435,7 +435,8 @@
     showIllustration: new Signal(),
     filter: new Signal(),
     transform: new Signal(),
-    angela: new Signal()
+    angela: new Signal(),
+    squishy: new Signal()
   };
 
 }).call(this);
@@ -487,8 +488,6 @@
             return window.events.frequency.dispatch(8);
           case 57:
             return window.events.frequency.dispatch(9);
-          case 32:
-            return this.getBPM();
           case 78:
             return window.events.bass.dispatch('small');
           case 66:
@@ -549,6 +548,8 @@
             return window.events.showIllustration.dispatch('eye');
           case 76:
             return window.events.showIllustration.dispatch('mouth');
+          case 32:
+            return window.events.squishy.dispatch();
           case 77:
             return window.events.filter.dispatch('blur');
           case 188:
@@ -783,8 +784,6 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   window.VisualsEngine = (function() {
-    var _currentBlur, _targetBlur;
-
     VisualsEngine.prototype._automatic = true;
 
     VisualsEngine.prototype._visible = true;
@@ -810,6 +809,8 @@
     VisualsEngine.prototype._bpm = 333;
 
     VisualsEngine.prototype._bpmJumpTime = new Date().getTime();
+
+    VisualsEngine.prototype._bpmDropTime = new Date().getTime();
 
     VisualsEngine.prototype._coloursSetup = false;
 
@@ -889,9 +890,11 @@
 
     VisualsEngine.prototype._pauseBgLerp = false;
 
-    _targetBlur = 0;
+    VisualsEngine.prototype._targetBlur = 0;
 
-    _currentBlur = 0;
+    VisualsEngine.prototype._currentBlur = 0;
+
+    VisualsEngine.prototype._squishy = false;
 
     function VisualsEngine() {
       this.HSVtoRGB = __bind(this.HSVtoRGB, this);
@@ -900,6 +903,8 @@
       this.animateMiddleGroundFlux = __bind(this.animateMiddleGroundFlux, this);
       this.lerpBackground = __bind(this.lerpBackground, this);
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
+      this.squashShape = __bind(this.squashShape, this);
+      this.squishy = __bind(this.squishy, this);
       this.onBass = __bind(this.onBass, this);
       this.onBreak = __bind(this.onBreak, this);
       this.showPhoto = __bind(this.showPhoto, this);
@@ -954,6 +959,7 @@
       window.events.filter.add(this.addFilter);
       window.events.changeFreqVar.add(this.onChangeFrequencyVariation);
       window.events.transform.add(this.onTransform);
+      window.events.squishy.add(this.squishy);
       return window.events.automatic.add(this.toggleAuto);
     };
 
@@ -994,6 +1000,7 @@
 
     VisualsEngine.prototype.onBPMDrop = function() {
       var photo;
+      this._bpmDropTime = new Date().getTime();
       if (this._automatic === true && Math.random() > 0.82) {
         photo = Math.ceil(Math.random() * 4);
         switch (photo) {
@@ -1219,16 +1226,20 @@
       circle.lifeSpan = Math.floor(this.convertToRange(this._bpm, [60, 600], [1000, 400]));
       circle.creationTime = new Date().getTime();
       circle.noStroke();
+      circle.type = 'blob';
       this._shapes.push(circle);
       if (this._automatic === true) {
         duration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
         if (peakTime - this._bpmJumpTime < duration && this._bpm > 280) {
           if (this._peakCount % 2 === 0) {
-            return this.makeSpecial(Math.floor(Math.random() * 9));
+            this.makeSpecial(Math.floor(Math.random() * 9));
           }
         } else if (type === 'hard' && this._peakCount % 4 === 0 && this._currentFreqVar === 'low' && this._bpm < 450) {
           this.makeSpecial(9);
-          return this.makeSpecial(0);
+          this.makeSpecial(0);
+        }
+        if ((this._currentFreqVar === 'low' && peakTime - this._bpmDropTime < 7000) || this._squishy === true) {
+          return this.squashShape();
         }
       }
     };
@@ -1511,7 +1522,47 @@
       }
     };
 
+    VisualsEngine.prototype.squishy = function() {
+      this._squishy = true;
+      clearTimeout(this._squishyTimer);
+      return this._squishyTimer = setTimeout((function(_this) {
+        return function() {
+          return _this._squishy = false;
+        };
+      })(this), 2000);
+    };
+
+    VisualsEngine.prototype.squashShape = function() {
+      var copy, shape, v, _i, _len, _ref, _results;
+      _ref = this._shapes;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        shape = _ref[_i];
+        if (shape.type === 'blob') {
+          shape.squashDestination = [];
+          shape.squashSpeed = this.convertToRange(this._bpm, [60, 600], [100, 25]) + (Math.random() * 20) - 10;
+          _results.push((function() {
+            var _j, _len1, _ref1, _results1;
+            _ref1 = shape._vertices;
+            _results1 = [];
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              v = _ref1[_j];
+              copy = {};
+              copy.x = v.x + Math.random() * this._two.width / 8 - 50;
+              copy.y = v.y + Math.random() * this._two.width / 8 - 50;
+              _results1.push(shape.squashDestination.push(copy));
+            }
+            return _results1;
+          }).call(this));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
     VisualsEngine.prototype.onTwoUpdate = function() {
+      var i, shape, v, _i, _len, _ref, _results;
       if (this._bgColLerp < 1 && this._pauseBgLerp === false) {
         this.lerpBackground();
       }
@@ -1528,8 +1579,33 @@
       if (Math.abs(this._targetBlur - this._currentBlur < 0.5)) {
         this._targetBlur = 0;
         this._currentBlur = 0;
-        return $('#twoMagic svg').css("-webkit-filter", "initial");
+        $('#twoMagic svg').css("-webkit-filter", "initial");
       }
+      _ref = this._shapes;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        shape = _ref[_i];
+        if (shape.squashDestination) {
+          _results.push((function() {
+            var _j, _len1, _ref1, _results1;
+            _ref1 = shape._vertices;
+            _results1 = [];
+            for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+              v = _ref1[i];
+              if (shape.squashDestination[i]) {
+                v.x += (shape.squashDestination[i].x - v.x) / shape.squashSpeed;
+                _results1.push(v.y += (shape.squashDestination[i].y - v.y) / shape.squashSpeed);
+              } else {
+                _results1.push(void 0);
+              }
+            }
+            return _results1;
+          })());
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
 
     VisualsEngine.prototype.lerpBackground = function() {

@@ -21,4 +21,5 @@ window.events = {
 	filter: new Signal()
 	transform: new Signal()
 	angela: new Signal()
+	squishy: new Signal()
 }
