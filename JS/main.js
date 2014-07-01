@@ -28,7 +28,7 @@
 
     AudioAnalysisEngine.prototype._waitingForPeak = false;
 
-    AudioAnalysisEngine.prototype._peakSensitivityOffset = 1.5;
+    AudioAnalysisEngine.prototype._peakSensitivityOffset = 1.2;
 
     AudioAnalysisEngine.prototype._bassWaitingForPeak = false;
 
@@ -1220,14 +1220,16 @@
       circle.creationTime = new Date().getTime();
       circle.noStroke();
       this._shapes.push(circle);
-      duration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
-      if (peakTime - this._bpmJumpTime < duration && this._bpm > 280) {
-        if (this._peakCount % 2 === 0) {
-          return this.makeSpecial(Math.floor(Math.random() * 9));
+      if (this._automatic === true) {
+        duration = Math.floor(this.convertToRange(this._bpm, [100, 600], [2500, 5000]));
+        if (peakTime - this._bpmJumpTime < duration && this._bpm > 280) {
+          if (this._peakCount % 2 === 0) {
+            return this.makeSpecial(Math.floor(Math.random() * 9));
+          }
+        } else if (type === 'hard' && this._peakCount % 4 === 0 && this._currentFreqVar === 'low' && this._bpm < 450) {
+          this.makeSpecial(9);
+          return this.makeSpecial(0);
         }
-      } else if (type === 'hard' && this._peakCount % 4 === 0 && this._currentFreqVar === 'low' && this._bpm < 450) {
-        this.makeSpecial(9);
-        return this.makeSpecial(0);
       }
     };
 

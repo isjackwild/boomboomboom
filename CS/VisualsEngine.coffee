@@ -268,13 +268,14 @@ class window.VisualsEngine
 		@_shapes.push circle
 
 		#make shapes if there's been a BPM jump recently. the duration should be set in bpm jump method
-		duration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
-		if peakTime - @_bpmJumpTime < duration and @_bpm > 280
-			if @_peakCount % 2 is 0
-				@makeSpecial Math.floor Math.random()*9
-		else if type is 'hard' and @_peakCount % 4 is 0 and @_currentFreqVar is 'low' and @_bpm < 450
-				@makeSpecial 9
-				@makeSpecial 0
+		if @_automatic is true
+			duration = Math.floor @convertToRange(@_bpm, [100,600], [2500, 5000])
+			if peakTime - @_bpmJumpTime < duration and @_bpm > 280
+				if @_peakCount % 2 is 0
+					@makeSpecial Math.floor Math.random()*9
+			else if type is 'hard' and @_peakCount % 4 is 0 and @_currentFreqVar is 'low' and @_bpm < 450
+					@makeSpecial 9
+					@makeSpecial 0
 
 
 	makeShape: (which) =>
