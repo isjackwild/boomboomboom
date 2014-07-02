@@ -38,7 +38,6 @@ class window.AudioAnalysisEngine
 	_longBreakLength: 2000
 	_breakSensitivity: 2
 
-	#move things such as volume and approx BPM into the Events.coffee file — send them out as events and listen / store in an object in there. Keep it clean.
 	_bpmCalcArray: []
 	_approxBPM: 0
 	_lastBPM: null
@@ -47,8 +46,6 @@ class window.AudioAnalysisEngine
 	_volCalcArray: []
 	_averageVol: 0
 
-	_debugCV: null
-	_debugCTX: null
 	_visible: true
 
 
@@ -158,7 +155,6 @@ class window.AudioAnalysisEngine
 				@calculateAverageBpm() #what is the bmp
 				@checkForFrequencyVariation()
 
-			#look for times where this is changing a lot... lots of songs have times where this changes a lot and then areas when all peaks are around average
 			if @_averageFrequency and @_frequencyOfPeak.freq > @_averageFrequency+@_sensivitityForHighPeak
 				@eventLogger "hiPeak"
 				window.events.peak.dispatch 'hi'
@@ -173,7 +169,7 @@ class window.AudioAnalysisEngine
 				window.events.peak.dispatch 'soft'
 
 
-	checkForBassPeak: => #would be good if this was based on a peak much lower than the average. At the moment a very bassy song would set this off every time a peak was detected.
+	checkForBassPeak: => 
 		if @_bassAverageAmp > @_averageVol / 1.5
 			if @_bassAverageAmp > @_lastBassAverageAmp and !@_bassWaitingForPeak
 				@_bassWaitingForPeak = true
@@ -184,11 +180,10 @@ class window.AudioAnalysisEngine
 				window.events.bass.dispatch()
 
 
-	#Do logic which detects when there has been a significant change in the averages over the last few averages
 	calculateAveragePeakFrequency: =>
 		@_averageFreqCalcArray.push @_frequencyOfPeak.freq #get ten peaks
 		if @_averageFreqCalcArray.length is 10
-			bAvFreq = 0
+			tempAvFreq = 0
 			for i in [0...@_averageFreqCalcArray.length]
 				tempAvFreq += @_averageFreqCalcArray[i]
 				if i is @_averageFreqCalcArray.length-1
@@ -226,7 +221,7 @@ class window.AudioAnalysisEngine
 							@_lastFrequencyVariation = @_currentFrequencyVariation
 
 
-	#check for jumps in the volume of the song
+	#check for jumps in the amplitude of the song
 	checkForBreak: =>
 		if !@_lastPeakTime
 				@_lastPeakTime = new Date().getTime()
@@ -243,7 +238,6 @@ class window.AudioAnalysisEngine
 
 
 
-	#Do logic which detects when there has been a significant change in the averages over the last few averages
 	calculateAverageBpm: =>
 		@_bpmCalcArray.push new Date().getTime() #get ten times of bpm
 		if @_bpmCalcArray.length is 10
@@ -278,9 +272,8 @@ class window.AudioAnalysisEngine
 					@_volCalcArray = []
 
 
-	#replace this with the events signal system
 	eventLogger: (event) =>
-		return
+		return #comment this out this to log events
 		switch event
 			when "hiPeak" then console.log 'high peak'
 			when "loPeak" then console.log 'low peak'
@@ -298,6 +291,7 @@ class window.AudioAnalysisEngine
 					console.log 'currently low frequency variation'
 
 
+	#tools
 	convertToRange: (value, srcRange, dstRange) ->
 		if value < srcRange[0]
 			return dstRange[0]

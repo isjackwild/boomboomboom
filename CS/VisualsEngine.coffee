@@ -10,6 +10,7 @@ class window.VisualsEngine
 	_middleGround: null
 	_foreGround: null
 
+	#these all get overwritten, but need a value to start with
 	_volume: 20
 	_frequency: 5
 	_currentFreqVar: 'low'
@@ -20,12 +21,15 @@ class window.VisualsEngine
 
 	_coloursSetup: false
 	_negativeColours: false
+
+	#start with specific colours, which are modified depending on different characteristics of the audio
 	_baseColours: {
 		fg: [{h: 346, s: 85, v: 95}, {h: 17, s: 90, v: 97}, {h: 45, s: 97, v: 97}, {h: 154, s: 65, v: 92}, {h: 149, s: 95, v: 70}, {h: 196, s: 87, v: 92}, {h: 220, s: 76, v: 80}, {h: 316, s: 40, v: 95}, {h: 277, s: 61, v: 71}, {h: 261, s: 46, v: 84}]
 	}
 	_colourBucket: {
 		fg: []
 	}
+	#controlling the lerp of the bg colours
 	_bgColFrom: {r: 50, g: 50, b: 50}
 	_bgColTo: {r: 97, g: 71, b: 152}
 	_bgColCurrent: {r: 111, g: 111, b: 111}
@@ -44,12 +48,14 @@ class window.VisualsEngine
 		@setupTwoJs()
 		@updateColourBucket()
 
+		#detect if window in focus. can disable visuals if not, but not using this anymore.
 		$(window).on 'blur', =>
 			@_visible = false
 		$(window).on 'focus', =>
 			@_visible = true
 		
 
+	#listeners
 	setupListeners: =>
 		window.events.peak.add @onPeak
 		window.events.bass.add @onBass
@@ -92,7 +98,6 @@ class window.VisualsEngine
 			@_automatic = true
 		else if onOff is 'off'
 			@_automatic = false
-
 		
 
 	gotBPM: (BPM) =>
@@ -144,6 +149,7 @@ class window.VisualsEngine
 		@updateColourBucket()
 
 
+	#fill the colour bucket with colours modified from the base colours
 	updateColourBucket: ->
 		if @_coloursSetup is false
 			@_coloursSetup = true
@@ -173,6 +179,7 @@ class window.VisualsEngine
 			@_bgColTo = col
 			@_bgColLerp = 0
 
+	#css filters over the whole visuals
 	addFilter: (type) =>
 		if @_filterTimer
 			clearTimeout @_filterTimer
@@ -182,6 +189,7 @@ class window.VisualsEngine
 				@_currentBlur = 0
 				$('#twoMagic svg').css "-webkit-filter", "blur("+@_currentBlur+"px)"
 
+	#transform the whoel visuals
 	onTransform: (type) =>
 		if @_transformTimer
 			clearTimeout @_transformTimer
@@ -191,6 +199,7 @@ class window.VisualsEngine
 			$('#twoMagic').removeClass type
 		,400
 	
+	#where most of the magic happens. most visuals (especially in auto mode) are triggered by peaks, and then take into account things such as bpm, frequency etc.
 	onPeak: (type) =>
 		@_peakCount++
 		peakTime = new Date().getTime()
@@ -282,7 +291,51 @@ class window.VisualsEngine
 				@squashShape()
 
 
+	onBreak: (length) =>
+		if @_pauseBgLerp is false
+			@_pauseBgLerp = true
+			if @_automatic is true and Math.random() > 0.9
+				if Math.random() > 0.5
+					@onTransform 'squashX'
+				else
+					@onTransform 'squashY'
+			if length is 'long'
+				offset = 75
+				hang = @convertToRange(@_bpm, [60,600], [200, 80])
+				if @_automatic is true and Math.random() > 0.9
+					photo = Math.ceil Math.random()*4
+					switch photo
+						when 1 then @showPhoto 'angela'
+						when 2 then @showPhoto 'obama'
+						when 3 then @showPhoto 'queen'
+						when 4 then @showPhoto 'charles'
+				else if @_automatic is true and Math.random() > 0.5
+					@onBass 'big'
+			else if length is 'short'
+				offset = 20
+				hang = @convertToRange(@_bpm, [60,600], [200, 80])
+			r = @_bgColCurrent.r + offset
+			g = @_bgColCurrent.g + offset
+			b = @_bgColCurrent.b + offset
+			col = "rgb("+r+","+g+","+b+")"
+			@_twoElem.style.background = col
+			clearTimeout breakTimer
+			breakTimer = setTimeout =>
+				@_twoElem.style.background = "rgb("+@_bgColCurrent.r+","+@_bgColCurrent.g+","+@_bgColCurrent.b+")"
+				@_pauseBgLerp = false
+			, hang
 
+
+	onBass: (bigOrSmall = 'small') =>
+		if @_middleGround.isScaling is false
+			@_middleGround.isScaling = true
+			if bigOrSmall is 'big'
+				@_middleGround.targetScale = 1.2
+			else
+				@_middleGround.targetScale = 1.05
+
+
+	#not used at the moment
 	makeShape: (which) =>
 		if which is 'intro'
 			whichCol = Math.ceil Math.random()*(@_colourBucket.fg.length-1)
@@ -299,6 +352,8 @@ class window.VisualsEngine
 			circle.creationTime = new Date().getTime()
 			@_shapes.push circle
 
+
+	#the animated lines
 	makeSpecial: (which) =>
 		switch which
 			when 1
@@ -373,6 +428,7 @@ class window.VisualsEngine
 			@_foreGround.add line
 			@_shapes.push line
 	
+	#the large text oevr the visuals
 	showText: (which) =>
 		if @_textTimer
 			clearTimeout @_textTimer
@@ -405,6 +461,7 @@ class window.VisualsEngine
 			$("#text .show").removeClass 'show'
 		, hang
 
+	#the illustations
 	showIllustration: (which) =>
 		if @_illustrationTimer
 			clearTimeout @_illustrationTimer
@@ -447,6 +504,7 @@ class window.VisualsEngine
 			$("#illus .show").removeClass 'show'
 		, hang
 
+	#the photos
 	showPhoto: (which) =>
 		$('#photo').removeClass()
 
@@ -462,47 +520,6 @@ class window.VisualsEngine
 			$('#photo').removeClass which
 		, 2500
 
-	onBreak: (length) =>
-		if @_pauseBgLerp is false
-			@_pauseBgLerp = true
-			if @_automatic is true and Math.random() > 0.9
-				if Math.random() > 0.5
-					@onTransform 'squashX'
-				else
-					@onTransform 'squashY'
-			if length is 'long'
-				offset = 75
-				hang = @convertToRange(@_bpm, [60,600], [200, 80])
-				if @_automatic is true and Math.random() > 0.9
-					photo = Math.ceil Math.random()*4
-					switch photo
-						when 1 then @showPhoto 'angela'
-						when 2 then @showPhoto 'obama'
-						when 3 then @showPhoto 'queen'
-						when 4 then @showPhoto 'charles'
-				else if @_automatic is true and Math.random() > 0.5
-					@onBass 'big'
-			else if length is 'short'
-				offset = 20
-				hang = @convertToRange(@_bpm, [60,600], [200, 80])
-			r = @_bgColCurrent.r + offset
-			g = @_bgColCurrent.g + offset
-			b = @_bgColCurrent.b + offset
-			col = "rgb("+r+","+g+","+b+")"
-			@_twoElem.style.background = col
-			clearTimeout breakTimer
-			breakTimer = setTimeout =>
-				@_twoElem.style.background = "rgb("+@_bgColCurrent.r+","+@_bgColCurrent.g+","+@_bgColCurrent.b+")"
-				@_pauseBgLerp = false
-			, hang
-
-	onBass: (bigOrSmall = 'small') =>
-		if @_middleGround.isScaling is false
-			@_middleGround.isScaling = true
-			if bigOrSmall is 'big'
-				@_middleGround.targetScale = 1.2
-			else
-				@_middleGround.targetScale = 1.05
 
 	squishy: =>
 		@squashShape()
@@ -511,6 +528,7 @@ class window.VisualsEngine
 		@_squishyTimer = setTimeout () =>
 			@_squishy = false
 		, 2000
+
 
 	squashShape: =>
 		for shape in @_shapes
@@ -553,6 +571,7 @@ class window.VisualsEngine
 		col = "rgb("+@_bgColCurrent.r+","+@_bgColCurrent.g+","+@_bgColCurrent.b+")"
 		@_twoElem.style.background = col
 
+	#the bulge
 	animateMiddleGroundFlux: () =>
 		if @_middleGround.targetScale > @_middleGround.scale
 			@_middleGround.scale += 0.03
@@ -570,6 +589,7 @@ class window.VisualsEngine
 				@_middleGround.scale = 1
 				@_middleGround.targetScale = 1
 				@_middleGround.isScaling = false
+
 
 	removeShapes: () =>
 		time = new Date().getTime()

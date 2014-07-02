@@ -76,10 +76,6 @@
 
     AudioAnalysisEngine.prototype._averageVol = 0;
 
-    AudioAnalysisEngine.prototype._debugCV = null;
-
-    AudioAnalysisEngine.prototype._debugCTX = null;
-
     AudioAnalysisEngine.prototype._visible = true;
 
     function AudioAnalysisEngine() {
@@ -240,10 +236,10 @@
     };
 
     AudioAnalysisEngine.prototype.calculateAveragePeakFrequency = function() {
-      var bAvFreq, i, _i, _ref, _results;
+      var i, tempAvFreq, _i, _ref, _results;
       this._averageFreqCalcArray.push(this._frequencyOfPeak.freq);
       if (this._averageFreqCalcArray.length === 10) {
-        bAvFreq = 0;
+        tempAvFreq = 0;
         _results = [];
         for (i = _i = 0, _ref = this._averageFreqCalcArray.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
           tempAvFreq += this._averageFreqCalcArray[i];
@@ -607,7 +603,7 @@
             return console.log('automatic ON');
           }
         };
-      })(this), 1000);
+      })(this), 7000);
     };
 
     return KeyboardController;
@@ -769,7 +765,7 @@
             return console.log('automatic ON');
           }
         };
-      })(this), 1000);
+      })(this), 7000);
     };
 
     return TabletController;
@@ -903,13 +899,13 @@
       this.onTwoUpdate = __bind(this.onTwoUpdate, this);
       this.squashShape = __bind(this.squashShape, this);
       this.squishy = __bind(this.squishy, this);
-      this.onBass = __bind(this.onBass, this);
-      this.onBreak = __bind(this.onBreak, this);
       this.showPhoto = __bind(this.showPhoto, this);
       this.showIllustration = __bind(this.showIllustration, this);
       this.showText = __bind(this.showText, this);
       this.makeSpecial = __bind(this.makeSpecial, this);
       this.makeShape = __bind(this.makeShape, this);
+      this.onBass = __bind(this.onBass, this);
+      this.onBreak = __bind(this.onBreak, this);
       this.onPeak = __bind(this.onPeak, this);
       this.onTransform = __bind(this.onTransform, this);
       this.addFilter = __bind(this.addFilter, this);
@@ -1243,6 +1239,71 @@
       }
     };
 
+    VisualsEngine.prototype.onBreak = function(length) {
+      var b, breakTimer, col, g, hang, offset, photo, r;
+      if (this._pauseBgLerp === false) {
+        this._pauseBgLerp = true;
+        if (this._automatic === true && Math.random() > 0.9) {
+          if (Math.random() > 0.5) {
+            this.onTransform('squashX');
+          } else {
+            this.onTransform('squashY');
+          }
+        }
+        if (length === 'long') {
+          offset = 75;
+          hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
+          if (this._automatic === true && Math.random() > 0.9) {
+            photo = Math.ceil(Math.random() * 4);
+            switch (photo) {
+              case 1:
+                this.showPhoto('angela');
+                break;
+              case 2:
+                this.showPhoto('obama');
+                break;
+              case 3:
+                this.showPhoto('queen');
+                break;
+              case 4:
+                this.showPhoto('charles');
+            }
+          } else if (this._automatic === true && Math.random() > 0.5) {
+            this.onBass('big');
+          }
+        } else if (length === 'short') {
+          offset = 20;
+          hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
+        }
+        r = this._bgColCurrent.r + offset;
+        g = this._bgColCurrent.g + offset;
+        b = this._bgColCurrent.b + offset;
+        col = "rgb(" + r + "," + g + "," + b + ")";
+        this._twoElem.style.background = col;
+        clearTimeout(breakTimer);
+        return breakTimer = setTimeout((function(_this) {
+          return function() {
+            _this._twoElem.style.background = "rgb(" + _this._bgColCurrent.r + "," + _this._bgColCurrent.g + "," + _this._bgColCurrent.b + ")";
+            return _this._pauseBgLerp = false;
+          };
+        })(this), hang);
+      }
+    };
+
+    VisualsEngine.prototype.onBass = function(bigOrSmall) {
+      if (bigOrSmall == null) {
+        bigOrSmall = 'small';
+      }
+      if (this._middleGround.isScaling === false) {
+        this._middleGround.isScaling = true;
+        if (bigOrSmall === 'big') {
+          return this._middleGround.targetScale = 1.2;
+        } else {
+          return this._middleGround.targetScale = 1.05;
+        }
+      }
+    };
+
     VisualsEngine.prototype.makeShape = function(which) {
       var circle, col, whichCol;
       if (which === 'intro') {
@@ -1454,71 +1515,6 @@
           return $('#photo').removeClass(which);
         };
       })(this), 2500);
-    };
-
-    VisualsEngine.prototype.onBreak = function(length) {
-      var b, breakTimer, col, g, hang, offset, photo, r;
-      if (this._pauseBgLerp === false) {
-        this._pauseBgLerp = true;
-        if (this._automatic === true && Math.random() > 0.9) {
-          if (Math.random() > 0.5) {
-            this.onTransform('squashX');
-          } else {
-            this.onTransform('squashY');
-          }
-        }
-        if (length === 'long') {
-          offset = 75;
-          hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
-          if (this._automatic === true && Math.random() > 0.9) {
-            photo = Math.ceil(Math.random() * 4);
-            switch (photo) {
-              case 1:
-                this.showPhoto('angela');
-                break;
-              case 2:
-                this.showPhoto('obama');
-                break;
-              case 3:
-                this.showPhoto('queen');
-                break;
-              case 4:
-                this.showPhoto('charles');
-            }
-          } else if (this._automatic === true && Math.random() > 0.5) {
-            this.onBass('big');
-          }
-        } else if (length === 'short') {
-          offset = 20;
-          hang = this.convertToRange(this._bpm, [60, 600], [200, 80]);
-        }
-        r = this._bgColCurrent.r + offset;
-        g = this._bgColCurrent.g + offset;
-        b = this._bgColCurrent.b + offset;
-        col = "rgb(" + r + "," + g + "," + b + ")";
-        this._twoElem.style.background = col;
-        clearTimeout(breakTimer);
-        return breakTimer = setTimeout((function(_this) {
-          return function() {
-            _this._twoElem.style.background = "rgb(" + _this._bgColCurrent.r + "," + _this._bgColCurrent.g + "," + _this._bgColCurrent.b + ")";
-            return _this._pauseBgLerp = false;
-          };
-        })(this), hang);
-      }
-    };
-
-    VisualsEngine.prototype.onBass = function(bigOrSmall) {
-      if (bigOrSmall == null) {
-        bigOrSmall = 'small';
-      }
-      if (this._middleGround.isScaling === false) {
-        this._middleGround.isScaling = true;
-        if (bigOrSmall === 'big') {
-          return this._middleGround.targetScale = 1.2;
-        } else {
-          return this._middleGround.targetScale = 1.05;
-        }
-      }
     };
 
     VisualsEngine.prototype.squishy = function() {
@@ -1879,9 +1875,8 @@
       window.events.makeSpecial.dispatch(3);
       return window.stripe = setInterval(function() {
         if (window.focus === true) {
-          window.events.makeSpecial.dispatch(3);
+          return window.events.makeSpecial.dispatch(3);
         }
-        return console.log('???');
       }, 2000);
     }, 1500);
     return navigator.webkitGetUserMedia({

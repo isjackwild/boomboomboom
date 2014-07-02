@@ -29,11 +29,10 @@ clickContinue = () ->
 		window.stripe = setInterval () ->
 			if window.focus is true
 				window.events.makeSpecial.dispatch 3
-			console.log '???'
 		,2000
 	,1500
 
-
+	#get user media
 	navigator.webkitGetUserMedia
 			audio: true
 		,setupMic, onError
@@ -115,7 +114,6 @@ $ =>
 		,2000
 	,4800
 
-	# console.log navigator.userAgent.toLowerCase()
 
 	if !is_chrome
 		$('#browserNotSupported').removeClass 'hidden'

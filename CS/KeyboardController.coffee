@@ -10,7 +10,7 @@ class window.KeyboardController
 	keydown: (e) =>
 		if e.keyCode >= 37 and e.keyCode <=40 or e.keyCode >= 48 and e.keyCode <= 57 or e.keyCode >= 65 and e.keyCode <= 90 or e.keyCode is 219 or e.keyCode is 221 or e.keyCode is 32
 			@setAutoTimer()
-			window.events.automatic.dispatch 'off'
+			window.events.automatic.dispatch 'off' #turn auto off when key is pressed
 
 		if e.metaKey is false
 			e.preventDefault()
@@ -74,7 +74,7 @@ class window.KeyboardController
 				when 186 then window.events.transform.dispatch 'squashX'
 				when 222 then window.events.transform.dispatch 'squashY'
 
-
+	#now disabled. but manual way of settign Bpm
 	getBPM: () =>
 		console.log 'bpm'
 		time = new Date().getTime()
@@ -102,6 +102,7 @@ class window.KeyboardController
 				window.events.BPMDrop.dispatch @_approxBPM
 			@_lastBPM = @_approxBPM
 
+	#turn auto on after 7secs of no keypress
 	setAutoTimer: () =>
 		clearInterval @_autoTimer
 		@_timeSinceLastKeyPress = 0
@@ -113,4 +114,4 @@ class window.KeyboardController
 				@_timeSinceLastKeyPress = 0
 				window.events.automatic.dispatch 'on'
 				console.log 'automatic ON'
-		,1000
+		,7000

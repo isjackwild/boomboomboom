@@ -8,14 +8,17 @@ class window.TabletController
 
 		@generateKey()
 
+	#generate key to enter on mobile device
 	generateKey: =>
 		window.key = 10000 + Math.floor Math.random()*89999
 		window.key = window.key.toString()
 
 		@_socket.emit 'new-desktop-client', window.key
 
+		#safety... callbacks from Socket to check if a key already exists or not. If already exists, generate a new key.
 		@_socket.on 'key-accepted', @onKeyAccepted
 		@_socket.on 'key-unaccepted', @generateKey
+
 
 	onKeyAccepted: =>
 		$('.key').html window.key
@@ -33,6 +36,7 @@ class window.TabletController
 			else
 				console.log 'incorrect key'
 
+	#map keycodes from device controller and send events
 	mapSocketEvents: (button) =>
 		@setAutoTimer()
 		window.events.automatic.dispatch 'off'
@@ -85,6 +89,7 @@ class window.TabletController
 			when "d0" then window.events.break.dispatch 'long'
 
 
+	#turn auto on after some time
 	setAutoTimer: () =>
 		clearInterval @_autoTimer
 		@_timeSinceLastKeyPress = 0
@@ -96,4 +101,4 @@ class window.TabletController
 				@_timeSinceLastKeyPress = 0
 				window.events.automatic.dispatch 'on'
 				console.log 'automatic ON'
-		,1000
+		,7000
