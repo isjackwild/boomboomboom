@@ -663,7 +663,6 @@
     TabletController.prototype.mapSocketEvents = function(button) {
       this.setAutoTimer();
       window.events.automatic.dispatch('off');
-      console.log(button);
       switch (button) {
         case "a1":
           return window.events.frequency.dispatch(1);
