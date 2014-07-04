@@ -1191,7 +1191,7 @@
       circle.type = 'blob';
       this._shapes.push(circle);
       if (this._automatic === true) {
-        if (this._shapes.length < 4 && Math.random() > 0.84) {
+        if (this._shapes.length < 5 && Math.random() > 0.9) {
           illu = Math.ceil(Math.random() * 5);
           switch (illu) {
             case 1:

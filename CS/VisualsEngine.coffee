@@ -254,7 +254,7 @@ class window.VisualsEngine
 
 		#make shapes if there's been a BPM jump recently. the duration should be set in bpm jump method
 		if @_automatic is true
-			if @_shapes.length < 4 and Math.random() > 0.84
+			if @_shapes.length < 5 and Math.random() > 0.9
 				illu = Math.ceil Math.random()*5
 				switch illu
 					when 1 then @showIllustration 'heart'
