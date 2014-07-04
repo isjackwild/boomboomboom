@@ -55,6 +55,7 @@ h2 {
   letter-spacing: 0.01em;
   line-height: 1.2em;
   margin-bottom: 70px;
+  margin-top: -10px;
 }
 @media screen and (max-width: 1250px) {
   h2 {
@@ -437,6 +438,10 @@ p.hidden {
   top: 0;
   left: 0;
   z-index: 4;
+}
+#text #boom,
+#quotes #boom {
+  margin-left: -1%;
 }
 #text span,
 #quotes span {

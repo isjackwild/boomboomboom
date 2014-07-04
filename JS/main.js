@@ -93,6 +93,7 @@
       this.setupMic = __bind(this.setupMic, this);
       this.setupFilters = __bind(this.setupFilters, this);
       this.setupAnalyser = __bind(this.setupAnalyser, this);
+      this.setupListeners = __bind(this.setupListeners, this);
       var e;
       try {
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -103,9 +104,13 @@
       }
       this.setupAnalyser();
       this.setupFilters();
-      window.events.automatic.add(this.toggleAuto);
-      window.events.micAccepted.add(this.setupMic);
+      this.setupListeners();
     }
+
+    AudioAnalysisEngine.prototype.setupListeners = function() {
+      window.events.automatic.add(this.toggleAuto);
+      return window.events.micAccepted.add(this.setupMic);
+    };
 
     AudioAnalysisEngine.prototype.setupAnalyser = function() {
       this._analyserNode = this._context.createAnalyser();
@@ -246,7 +251,10 @@
           if (i === this._averageFreqCalcArray.length - 1) {
             tempAvFreq /= this._averageFreqCalcArray.length;
             this._averageFrequency = tempAvFreq;
-            window.events.frequency.dispatch(this._averageFrequency);
+            if (this._automatic === true) {
+              console.log('send freq');
+              window.events.frequency.dispatch(this._averageFrequency);
+            }
             this._averageFreqCalcArray = [];
             _results.push(this._bassCutoff = this._averageFrequency + 3);
           } else {
@@ -603,7 +611,7 @@
             return console.log('automatic ON');
           }
         };
-      })(this), 7000);
+      })(this), 1000);
     };
 
     return KeyboardController;
@@ -1962,8 +1970,8 @@
       if (!is_chrome) {
         return $('#browserNotSupported').removeClass('hidden');
       } else {
-        window.visualsEngine = new window.VisualsEngine();
         window.audioAnalysisEngine = new window.AudioAnalysisEngine();
+        window.visualsEngine = new window.VisualsEngine();
         return window.keyboardController = new window.KeyboardController();
       }
     };

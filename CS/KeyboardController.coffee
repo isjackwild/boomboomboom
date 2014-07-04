@@ -114,4 +114,4 @@ class window.KeyboardController
 				@_timeSinceLastKeyPress = 0
 				window.events.automatic.dispatch 'on'
 				console.log 'automatic ON'
-		,7000
+		,1000

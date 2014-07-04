@@ -58,6 +58,10 @@ class window.AudioAnalysisEngine
 
 		@setupAnalyser()
 		@setupFilters()
+		@setupListeners()
+
+
+	setupListeners: =>
 		window.events.automatic.add @toggleAuto
 		window.events.micAccepted.add @setupMic
 
@@ -189,7 +193,9 @@ class window.AudioAnalysisEngine
 				if i is @_averageFreqCalcArray.length-1
 					tempAvFreq /= @_averageFreqCalcArray.length #get average freq of them
 					@_averageFrequency = tempAvFreq
-					window.events.frequency.dispatch @_averageFrequency
+					if @_automatic is true
+						console.log 'send freq'
+						window.events.frequency.dispatch @_averageFrequency
 					@_averageFreqCalcArray = []
 					@_bassCutoff = @_averageFrequency + 3
 

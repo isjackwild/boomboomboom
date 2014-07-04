@@ -118,6 +118,6 @@ $ =>
 	if !is_chrome
 		$('#browserNotSupported').removeClass 'hidden'
 	else
-		window.visualsEngine = new window.VisualsEngine();
-		window.audioAnalysisEngine = new window.AudioAnalysisEngine();
+		window.audioAnalysisEngine = new window.AudioAnalysisEngine()
+		window.visualsEngine = new window.VisualsEngine()
 		window.keyboardController = new window.KeyboardController()
