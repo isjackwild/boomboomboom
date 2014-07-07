@@ -46,6 +46,9 @@ h1 a {
 h1 a:hover {
   color: #000;
 }
+.accept h1 {
+  font-size: 2.5vw;
+}
 h2 {
   font-family: 'Lato', Helvetica, sans-serif;
   color: #fff;
