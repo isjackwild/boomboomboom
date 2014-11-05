@@ -114,6 +114,7 @@ p.hidden {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
   -webkit-backface-visibility: hidden;
   -webkit-transition: -webkit-transform 0.28s;
   -webkit-transition-timing-function: easeOutQuad;
